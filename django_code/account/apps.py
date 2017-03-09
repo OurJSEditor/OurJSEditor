@@ -4,4 +4,4 @@ from django.apps import AppConfig
 
 
 class MainConfig(AppConfig):
-    name = 'account_app'
+    name = 'account'
