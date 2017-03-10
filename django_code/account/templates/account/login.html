@@ -1,0 +1,36 @@
+<html>
+<head>
+    <title>
+        Login - OurJSE
+    </title>
+    <script>
+    var attemptLogin = function () {
+	var form = document.getElementById("login-form");
+	var data = {};
+	var inputs = form.getElementsByTagName("input");
+	for (var i = 0; i < inputs.length; i++) {
+	    if (inputs[i].id) {
+	        data[inputs[i].id] = inputs[i].value;
+	    }
+        }
+        data = JSON.stringify(data);
+        
+        var req = new XMLHttpRequest();
+        req.addEventListener("load", function () {console.log(this)});
+        req.open("POST", "login")
+        req.setRequestHeader("Content-Type", "application/json");
+        req.setRequestHeader("X-CSRFToken", "{{ csrf_token }}");
+        req.send(data);
+    };
+    </script>
+</head>
+<body>
+    <form action="javascript:attemptLogin()" method="POST" id="login-form">
+        <input type="text" id="username">
+        <br>
+        <input id="password" type="password">
+        <br>
+        <input type="submit">
+    </form>
+</body>
+</html>

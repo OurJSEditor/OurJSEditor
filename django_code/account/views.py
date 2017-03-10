@@ -22,8 +22,9 @@ def login(request):
 
         if user is not None:
             login(request, user)
+            return HttpResponse("\"Success\"", content_type="application/json")
         else:
             # Error here
             return HttpResponse("ERROR here.")
     elif request.method == 'GET':
-        return HttpResponse("HTML here.")
+        return HttpResponse(render(request, "account/login.html"))
