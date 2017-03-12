@@ -5,19 +5,55 @@
     </title>
     <script>
     var attemptLogin = function () {
-	var form = document.getElementById("login-form");
-	var data = {};
-	var inputs = form.getElementsByTagName("input");
-	for (var i = 0; i < inputs.length; i++) {
-	    if (inputs[i].id) {
-	        data[inputs[i].id] = inputs[i].value;
-	    }
+        var form = document.getElementById("login-form");
+        var data = {};
+        var inputs = form.elements;
+        for (var i = 0; i < inputs.length; i++) {
+            if (inputs[i].name) {
+                data[inputs[i].name] = inputs[i].value;
+            }
         }
         data = JSON.stringify(data);
-        
+
         var req = new XMLHttpRequest();
         req.addEventListener("load", function () {console.log(this)});
-        req.open("POST", "login")
+        req.open("POST", "login");
+        req.setRequestHeader("Content-Type", "application/json");
+        req.setRequestHeader("X-CSRFToken", "{{ csrf_token }}");
+        req.send(data);
+    };
+    var createAccount = function () {
+        form = document.getElementById("create-account-form");
+        if (form.username.value.match(/[^A-Za-z_0-9]/)) {
+           alert("Invalid username");
+           return;
+        }
+        if (!form.email.value.match(/^[a-zA-Z0-9.!#$%&’*+/=?^_`{|}~-]+@[a-zA-Z0-9-]+(?:\.[a-zA-Z0-9-]+)*$/)) {
+           alert("Invalid email");
+           return;
+        }
+        if (form.password.value !== form["password-confirm"].value) {
+           alert("Passwords do not match");
+           return;
+        }
+        var inputs = form.elements;
+        var data = {};
+        for (var i = 0; i < inputs.length; i++) {
+            if (inputs[i].value === "") {
+                alert("Please fill the " +  inputs[i].placeholder + " field.");
+                return
+            }else {
+                if (inputs[i].name && inputs[i].name !== "password-confirm") {
+                    data[inputs[i].name] = inputs[i].value;
+                }
+            }
+        }
+
+        data = JSON.stringify(data);
+
+        var req = new XMLHttpRequest();
+        req.addEventListener("load", function () {console.log(this)});
+        req.open("POST", "createAccount");
         req.setRequestHeader("Content-Type", "application/json");
         req.setRequestHeader("X-CSRFToken", "{{ csrf_token }}");
         req.send(data);
@@ -25,12 +61,31 @@
     </script>
 </head>
 <body>
-    <form action="javascript:attemptLogin()" method="POST" id="login-form">
-        <input type="text" id="username">
+    <form action="javascript:attemptLogin()" id="login-form" name="login-form">
+        Login:
         <br>
-        <input id="password" type="password">
+        <input type="text" name="username" placeholder="Username">
         <br>
-        <input type="submit">
+        <input type="password" name="password" placeholder="Password">
+        <br>
+        <input type="submit" value="Login">
+    </form>
+    <hr>
+    <form action="javascript:createAccount()" id="create-account-form" name="create-account-form">
+        Create Account:
+        <br>
+        <input type="text" name="first-name" placeholder="Name">
+        <br>
+        <input type="email" name="email" placeholder="Email">
+        <br>
+        <input type="text" name="username" placeholder="Username">
+        <br>
+        <input type="password" name="password" placeholder="Password">
+        <br>
+        <input type="password" name="password-confirm" placeholder="Repeat Password">
+        <br>
+        <input type="submit" value="Create Account">
     </form>
 </body>
 </html>
+

@@ -1,4 +1,4 @@
-from django.shortcuts import render
+from django.shortcuts import render, redirect
 from django.http import HttpResponse
 
 import json
@@ -6,7 +6,6 @@ import json
 from django.contrib import auth
 from django.contrib.auth.models import User
 from django.contrib.auth.decorators import login_required
-
 
 # Create your views here.
 
@@ -25,9 +24,24 @@ def login(request):
 
         if user is not None:
             auth.login(request, user)
-            return HttpResponse("\"Success\"", content_type="application/json")
+            return HttpResponse('{"loginSuccess":true}', content_type="application/json")
         else:
-            # Error here
-            return HttpResponse("\"Login failed\"", content_type="application/json")
+            # At this point, error should be handled by Javascript
+            return HttpResponse('{"loginSuccess":false}', content_type="application/json")
     elif request.method == 'GET':
-        return HttpResponse(render(request, "account/login.html"))
+        if request.user.is_authenticated:
+            return redirect(request.GET.get("next") or "/")
+        else:
+            return HttpResponse(render(request, "account/login.html"))
+
+def createAccount(request):
+    if request.method == 'POST':
+        data = json.loads(request.body))
+        user = User.objects.create_user(
+            data["username"],
+            data["email"],
+            data["password"],
+        )
+        user.first_name = data["firstName"]
+        user.save()
+
