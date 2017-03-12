@@ -19,8 +19,10 @@ BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 # Quick-start development settings - unsuitable for production
 # See https://docs.djangoproject.com/en/1.10/howto/deployment/checklist/
 
-# SECURITY WARNING: keep the secret key used in production secret!
-SECRET_KEY = ''
+# Get secret key from its file, removing the trailing newline.
+# This keeps the secret key secret.
+with open(os.path.join(BASE_DIR, "ourjseditor/secret_key.txt"), 'r') as f:
+    SECRET_KEY = f.readline().rstrip('\r\n')
 
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
@@ -38,7 +40,7 @@ INSTALLED_APPS = [
     'django.contrib.messages',
     'django.contrib.staticfiles',
     'meta',
-    'account_app',
+    'account',
 ]
 
 MIDDLEWARE = [
@@ -75,10 +77,17 @@ WSGI_APPLICATION = 'ourjseditor.wsgi.application'
 # Database
 # https://docs.djangoproject.com/en/1.10/ref/settings/#databases
 
+with open(os.path.join(BASE_DIR, "ourjseditor/database_password.txt"), 'r') as f:
+    database_password = f.readline().rstrip('\r\n')
+
 DATABASES = {
     'default': {
-        'ENGINE': 'django.db.backends.sqlite3',
-        'NAME': os.path.join(BASE_DIR, 'db.sqlite3'),
+        'ENGINE': 'django.db.backends.mysql',
+        'NAME': 'ourjseditor',
+        'USER': 'OurJSEsql',
+        'PASSWORD': database_password,
+        'HOST': 'localhost',
+        'PORT': '',
     }
 }
 
