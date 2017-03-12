@@ -32,7 +32,7 @@
            alert("Invalid email");
            return;
         }
-        if (form.password.value !== form["password-confirm"].value) {
+        if (form.password.value !== form.passwordConfirm.value) {
            alert("Passwords do not match");
            return;
         }
@@ -43,7 +43,7 @@
                 alert("Please fill the " +  inputs[i].placeholder + " field.");
                 return
             }else {
-                if (inputs[i].name && inputs[i].name !== "password-confirm") {
+                if (inputs[i].name && inputs[i].name !== "passwordConfirm") {
                     data[inputs[i].name] = inputs[i].value;
                 }
             }
@@ -74,7 +74,7 @@
     <form action="javascript:createAccount()" id="create-account-form" name="create-account-form">
         Create Account:
         <br>
-        <input type="text" name="first-name" placeholder="Name">
+        <input type="text" name="firstName" placeholder="Name">
         <br>
         <input type="email" name="email" placeholder="Email">
         <br>
@@ -82,7 +82,7 @@
         <br>
         <input type="password" name="password" placeholder="Password">
         <br>
-        <input type="password" name="password-confirm" placeholder="Repeat Password">
+        <input type="password" name="passwordConfirm" placeholder="Repeat Password">
         <br>
         <input type="submit" value="Create Account">
     </form>

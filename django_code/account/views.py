@@ -9,7 +9,6 @@ from django.contrib.auth.decorators import login_required
 
 # Create your views here.
 
-
 def index(request):
     return HttpResponse("Hello, world. You're at the index.")
 
@@ -36,7 +35,7 @@ def login(request):
 
 def createAccount(request):
     if request.method == 'POST':
-        data = json.loads(request.body))
+        data = json.loads(request.body)
         user = User.objects.create_user(
             data["username"],
             data["email"],
@@ -44,4 +43,5 @@ def createAccount(request):
         )
         user.first_name = data["firstName"]
         user.save()
+        return redirect(request.GET.get("next") or "/")
 
