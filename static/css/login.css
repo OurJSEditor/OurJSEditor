@@ -11,6 +11,7 @@ body{
     border:none;
 }
 #container{
+    margin: 0 auto;
     background-color:white;
     width:11em;
     text-align:left;
