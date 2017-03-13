@@ -4,16 +4,27 @@ body{
     color:#337ab7;
     font-family:sans-serif;
 }
+input{
+    font-size:1em;
+    width:100%;
+    margin-bottom:0.5em;
+    outline:none;
+}
 .btn{
-    width:13em;
+    font-size:1.2em;
+    width:100%;
     color:white;
     background-color:#337ab7;
     border:none;
+    transition:0.2s;
+}
+.btn:hover{
+    background-color:#235a87;
 }
 #container{
     margin: 0 auto;
     background-color:white;
-    width:11em;
+    width:15em;
     text-align:left;
     padding:1.5em;
     border-top:solid;

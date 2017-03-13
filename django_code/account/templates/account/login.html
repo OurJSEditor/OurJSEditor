@@ -7,6 +7,8 @@
     <link rel="stylesheet" type="text/css" href="/static/css/login.css">
     <script>
     var attemptLogin = function () {
+		var loginT=document.getElementById("loginT");
+        loginT.innerHTML="";
         var form = document.getElementById("login-form");
         var data = {};
         var inputs = form.elements;
@@ -18,31 +20,33 @@
         data = JSON.stringify(data);
 
         var req = new XMLHttpRequest();
-        req.addEventListener("load", function () {console.log(this)});
+        req.addEventListener("load", function () {console.log(this);loginT.innerHTML="Something went wrong.<br>";});
         req.open("POST", "login");
         req.setRequestHeader("Content-Type", "application/json");
         req.setRequestHeader("X-CSRFToken", "{{ csrf_token }}");
         req.send(data);
     };
     var createAccount = function () {
+		loginT=document.getElementById("loginT");
         form = document.getElementById("create-account-form");
+        loginT.innerHTML="";
         if (form.username.value.match(/[^A-Za-z_0-9]/)) {
-           alert("Invalid username");
+           loginT.innerHTML+="Invalid username<br>";
            return;
         }
         if (!form.email.value.match(/^[a-zA-Z0-9.!#$%&’*+/=?^_`{|}~-]+@[a-zA-Z0-9-]+(?:\.[a-zA-Z0-9-]+)*$/)) {
-           alert("Invalid email");
+           loginT.innerHTML+="Invalid email<br>";
            return;
         }
         if (form.password.value !== form.passwordConfirm.value) {
-           alert("Passwords do not match");
+           loginT.innerHTML+="Passwords don't match<br>";
            return;
         }
         var inputs = form.elements;
         var data = {};
         for (var i = 0; i < inputs.length; i++) {
             if (inputs[i].value === "") {
-                alert("Please fill the " +  inputs[i].placeholder + " field.");
+           loginT.innerHTML+="Please fill the " +  inputs[i].placeholder + " field.<br>";
                 return
             }else {
                 if (inputs[i].name && inputs[i].name !== "passwordConfirm") {
@@ -54,7 +58,7 @@
         data = JSON.stringify(data);
 
         var req = new XMLHttpRequest();
-        req.addEventListener("load", function () {console.log(this)});
+        req.addEventListener("load", function () {console.log(this);loginT.innerHTML="Something went wrong.<br>";});
         req.open("POST", "createAccount");
         req.setRequestHeader("Content-Type", "application/json");
         req.setRequestHeader("X-CSRFToken", "{{ csrf_token }}");
@@ -65,6 +69,7 @@
 <body>
     <div id="container">
     <form action="javascript:attemptLogin()" id="login-form" name="login-form">
+        <i id="loginT" style="color:red;"></i>
         <b>Login:</b>
         <br>
         <input type="text" name="username" placeholder="Username">
