@@ -46,7 +46,7 @@ def createAccount(request):
         #Checks for valid data. This only confirms what javascript has already checked, so errors
         #don't need to be verobse. It mostly only stops people making their own fake requests.
         if (username == "" or email == "" or password == "" or firstName == "" or
-            re.match(r"[^A-Za-z0-9_]", username]) or
+            re.match(r"[^A-Za-z0-9_]", username) or
             not re.match(r"(^[a-zA-Z0-9_.+-]+@[a-zA-Z0-9-]+\.[a-zA-Z0-9-.]+$)", email)
             ):
             return HttpResponse('{"creationSuccess":false}', content_type="application/json", status=500)
