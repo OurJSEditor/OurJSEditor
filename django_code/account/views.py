@@ -2,6 +2,7 @@ from django.shortcuts import render, redirect
 from django.http import HttpResponse
 
 import json
+import re
 
 from django.contrib import auth
 from django.contrib.auth.models import User
@@ -36,6 +37,20 @@ def login(request):
 def createAccount(request):
     if request.method == 'POST':
         data = json.loads(request.body)
+
+        username = data["username"]
+        email = data["email"]
+        password = data["password"]
+        firstName = data["firstName"]
+
+        #Checks for valid data. This only confirms what javascript has already checked, so errors
+        #don't need to be verobse. It mostly only stops people making their own fake requests.
+        if (username == "" or email == "" or password == "" or firstName == "" or
+            re.match(r"[^A-Za-z0-9_]", username]) or
+            not re.match(r"(^[a-zA-Z0-9_.+-]+@[a-zA-Z0-9-]+\.[a-zA-Z0-9-.]+$)", email)
+            ):
+            return HttpResponse('{"creationSuccess":false}', content_type="application/json", status=500)
+
         user = User.objects.create_user(
             data["username"],
             data["email"],
@@ -43,5 +58,7 @@ def createAccount(request):
         )
         user.first_name = data["firstName"]
         user.save()
-        return redirect(request.GET.get("next") or "/")
 
+        auth.login(request, user)
+
+        return HttpResponse('{"creationSuccess":true}', content_type="application/json")
