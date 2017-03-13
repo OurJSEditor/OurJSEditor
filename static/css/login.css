@@ -1,0 +1,20 @@
+body{
+    background-color:#161E2C;
+    text-align:center;
+    color:#337ab7;
+    font-family:sans-serif;
+}
+.btn{
+    width:13em;
+    color:white;
+    background-color:#337ab7;
+    border:none;
+}
+#container{
+    background-color:white;
+    width:11em;
+    text-align:left;
+    padding:1.5em;
+    border-top:solid;
+    border-width:0.5em;
+}

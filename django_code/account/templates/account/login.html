@@ -1,3 +1,4 @@
+<!DOCTYPE html>
 <html>
 <head>
     <title>
@@ -62,18 +63,19 @@
     </script>
 </head>
 <body>
+    <div id="container">
     <form action="javascript:attemptLogin()" id="login-form" name="login-form">
-        Login:
+        <b>Login:</b>
         <br>
         <input type="text" name="username" placeholder="Username">
         <br>
         <input type="password" name="password" placeholder="Password">
         <br>
-        <input type="submit" value="Login">
+        <input class="btn" type="submit" value="Login">
     </form>
     <hr>
     <form action="javascript:createAccount()" id="create-account-form" name="create-account-form">
-        Create Account:
+        <b>Create Account:</b>
         <br>
         <input type="text" name="firstName" placeholder="Name">
         <br>
@@ -85,8 +87,9 @@
         <br>
         <input type="password" name="passwordConfirm" placeholder="Repeat Password">
         <br>
-        <input type="submit" value="Create Account">
+        <input class="btn" type="submit" value="Create Account">
     </form>
+    </div>
 </body>
 </html>
 
