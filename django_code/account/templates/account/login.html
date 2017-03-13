@@ -7,7 +7,7 @@
     <link rel="stylesheet" type="text/css" href="/static/css/login.css">
     <script>
     var attemptLogin = function () {
-		var loginT=document.getElementById("loginT");
+        var loginT=document.getElementById("loginT");
         loginT.innerHTML="";
         var form = document.getElementById("login-form");
         var data = {};
@@ -20,7 +20,17 @@
         data = JSON.stringify(data);
 
         var req = new XMLHttpRequest();
-        req.addEventListener("load", function () {console.log(this);loginT.innerHTML="Something went wrong.<br>";});
+        req.addEventListener("load", function () {
+            console.log(this);
+            if (this.status !== 200) {
+                loginT.innerHTML="Something went wrong.<br>";
+                console.log(this);
+            }else if (JSON.parse(this.response).loginSuccess) {
+                location.href = "/";
+            }else {
+                loginT.innerHTML="Your username or password was incorrect.<br>";
+            }
+        });
         req.open("POST", "login");
         req.setRequestHeader("Content-Type", "application/json");
         req.setRequestHeader("X-CSRFToken", "{{ csrf_token }}");
