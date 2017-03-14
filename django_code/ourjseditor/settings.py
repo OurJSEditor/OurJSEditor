@@ -43,6 +43,7 @@ INSTALLED_APPS = [
     'django.contrib.redirects',
     'meta',
     'account',
+    'api',
 ]
 
 MIDDLEWARE = [
