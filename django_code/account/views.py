@@ -49,16 +49,18 @@ def createAccount(request):
             re.match(r"[^A-Za-z0-9_]", username) or
             not re.match(r"(^[a-zA-Z0-9_.+-]+@[a-zA-Z0-9-]+\.[a-zA-Z0-9-.]+$)", email)
             ):
-            return HttpResponse('{"creationSuccess":false}', content_type="application/json", status=500)
+            return HttpResponse('{"creationSuccess":false}', content_type="application/json", status=400)
 
         user = User.objects.create_user(
-            data["username"],
-            data["email"],
-            data["password"],
+            username,
+            email,
+            password,
         )
         user.first_name = data["firstName"]
         user.save()
 
         auth.login(request, user)
 
-        return HttpResponse('{"creationSuccess":true}', content_type="application/json")
+        response = HttpResponse('{"creationSuccess":true}', content_type="application/json", status=201)
+        response["Location"] = "/user/" + username
+        return response
