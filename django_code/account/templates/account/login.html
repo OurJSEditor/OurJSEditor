@@ -1,6 +1,5 @@
 <!DOCTYPE html>
-<html>
-<head>
+<html><head>
     <title>
         Login &mdash; OurJSE
     </title>
@@ -78,6 +77,29 @@
         req.setRequestHeader("X-CSRFToken", "{{ csrf_token }}");
         req.send(data);
     };
+    var checkUsername=function(){
+		var available=document.getElementById("available");
+    	var ans=false;
+      
+        var req = new XMLHttpRequest();
+        req.onreadystatechange = function() {
+            if (this.readyState == 4 && this.status == 200) {
+				ans= eval(req.responseText);
+				ans=ans["username_available"];
+            }
+        };
+        });
+        req.open("GET", "/api/users/username_available?username="+document.getElementById("username").value);
+		req.send();
+		if(ans){
+			available.innerHTML="&#x2714;";
+			available.style="color:green;";
+		}
+		else{
+			available.innerHTML="&#x2717;";
+			available.style="color:red;";
+		}
+    };
     </script>
 </head>
 <body>
@@ -100,7 +122,7 @@
         <br>
         <input type="email" name="email" placeholder="Email">
         <br>
-        <input type="text" name="username" placeholder="Username">
+        <input type="text" name="username" placeholder="Username" onchange="checkUsername()" id="username"> <b id="available"></b>
         <br>
         <input type="password" name="password" placeholder="Password">
         <br>

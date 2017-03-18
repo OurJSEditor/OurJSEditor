@@ -6,7 +6,7 @@ body{
 }
 input{
     font-size:1em;
-    width:100%;
+    width:90%;
     margin-bottom:0.5em;
     outline:none;
 }
@@ -24,7 +24,7 @@ input{
 #container{
     margin: 0 auto;
     background-color:white;
-    width:15em;
+    width:20em;
     text-align:left;
     padding:1.5em;
     border-top:solid;
