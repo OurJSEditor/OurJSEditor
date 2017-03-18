@@ -78,27 +78,26 @@
         req.send(data);
     };
     var checkUsername=function(){
-		var available=document.getElementById("available");
+        var available=document.getElementById("available");
     	var ans=false;
       
         var req = new XMLHttpRequest();
-        req.onreadystatechange = function() {
-            if (this.readyState == 4 && this.status == 200) {
-				ans= eval(req.responseText);
+        req.addEventListener("load", function() {
+            if (this.status == 200) {
+				ans=JSON.parse(this.response);
 				ans=ans["username_available"];
             }
-        };
+            if(ans){
+                  available.innerHTML="&#x2714;";
+                  available.style.color="green";
+            }
+            else{
+                   available.innerHTML="&#x2717;";
+                   available.style.color="red";
+            }
         });
         req.open("GET", "/api/users/username_available?username="+document.getElementById("username").value);
 		req.send();
-		if(ans){
-			available.innerHTML="&#x2714;";
-			available.style="color:green;";
-		}
-		else{
-			available.innerHTML="&#x2717;";
-			available.style="color:red;";
-		}
     };
     </script>
 </head>
