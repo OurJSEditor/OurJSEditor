@@ -47,6 +47,7 @@ def createAccount(request):
         #don't need to be verobse. It mostly only stops people making their own fake requests.
         if (username == "" or email == "" or password == "" or firstName == "" or
             re.match(r"[^A-Za-z0-9_]", username) or
+            User.objects.filter(username=username).exists() or
             not re.match(r"(^[a-zA-Z0-9_.+-]+@[a-zA-Z0-9-]+\.[a-zA-Z0-9-.]+$)", email)
             ):
             return HttpResponse('{"creationSuccess":false}', content_type="application/json", status=400)

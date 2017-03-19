@@ -49,6 +49,10 @@
            loginT.innerHTML = "Passwords don't match<br>";
            return;
         }
+        if (document.getElementById("available").innerHTML !== "\u2714") {
+           loginT.innerHTML = "That username is already taken<br>";
+           return;
+        }
         var inputs = form.elements;
         var data = {};
         for (var i = 0; i < inputs.length; i++) {
@@ -79,6 +83,7 @@
     };
     var checkUsername=function(){
         var available=document.getElementById("available");
+        available.innerHTML = "";
     	var ans=false;
       
         var req = new XMLHttpRequest();
@@ -121,7 +126,7 @@
         <br>
         <input type="email" name="email" placeholder="Email">
         <br>
-        <input type="text" name="username" placeholder="Username" onchange="checkUsername()" id="username"> <b id="available"></b>
+        <input type="text" name="username" placeholder="Username" onkeyup="checkUsername()" id="username"> <b id="available"></b>
         <br>
         <input type="password" name="password" placeholder="Password">
         <br>
