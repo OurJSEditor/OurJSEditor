@@ -3,6 +3,7 @@
 <head>
     <title>Editing {{ user.username }}'s profile</title>
     <script>
+        var current_username = "{{ user.username }}";
         var checkForm = function () {
             loginT = document.getElementById("loginT");
             form = document.getElementById("profileForm")
@@ -10,7 +11,7 @@
                 loginT.innerHTML = "Please fill the username field.<br>";
                 return false;
             }
-            if (form.username.value.match(/[^A-Za-z_0-9]/)) {
+            if (form.username.value.match(/[^a-zA-Z_0-9]/) || document.getElementById("available").innerHTML !== "\u2714") {
                loginT.innerHTML = "Invalid username<br>";
                return false;
             }
@@ -18,14 +19,43 @@
                 form.displayName.value = form.username.value;
             }
         };
+        var checkUsername = function() {
+            var available = document.getElementById("available");
+            available.innerHTML = "";
+            var ans=false;
+
+            if (current_username == document.getElementById("username").value) {
+                available.innerHTML = "&#x2714;";
+                available.style.color = "green";
+                return;
+            }
+
+            var req = new XMLHttpRequest();
+            req.addEventListener("load", function() {
+                if (this.status == 200) {
+                    ans = JSON.parse(this.response);
+                    ans = ans["username_available"];
+                }
+                if (ans) {
+                    available.innerHTML = "&#x2714;";
+                    available.style.color = "green";
+                }else {
+                    available.innerHTML = "&#x2717;";
+                    available.style.color = "red";
+                }
+            });
+            req.open("GET", "/api/users/username_available?username=" + document.getElementById("username").value);
+            req.send();
+        };
     </script>
 <head>
 <body>
     <i id="loginT" style="color:red;"></i>
     <form method="POST" id="profileForm" onsubmit="return checkForm()">
         {% csrf_token %}
-        <input type="text" name="displayName" value="{{ user.firstName }}" placeholder="Display Name"> <br>
-        <input type="text" name="username" value="{{ user.username }}" placeholder="Username"> <br>
+        <input type="text" name="displayName" value="{{ user.first_name }}" placeholder="Display Name"> <br>
+        <input type="text" name="username" value="{{ user.username }}" placeholder="Username" onkeyup="checkUsername()" id="username">
+        <b id="available"></b> <br>
         <textarea name="bio" placeholder="Tell everyone about yourself." cols="40" rows="5">{{ user.profile.bio }}</textarea><br>
         <input type="submit" value="Update">
     </form>
