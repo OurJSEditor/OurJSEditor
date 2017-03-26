@@ -16,14 +16,14 @@
             }
             if (form.displayName.value === "") {
                 form.displayName.value = form.username.value;
-                return false;
             }
         };
     </script>
 <head>
 <body>
     <i id="loginT" style="color:red;"></i>
-    <form action="." method="PUT" id="profileForm" onsubmit="return checkForm()">
+    <form method="POST" id="profileForm" onsubmit="return checkForm()">
+        {% csrf_token %}
         <input type="text" name="displayName" value="{{ user.firstName }}" placeholder="Display Name"> <br>
         <input type="text" name="username" value="{{ user.username }}" placeholder="Username"> <br>
         <textarea name="bio" placeholder="Tell everyone about yourself." cols="40" rows="5">{{ user.profile.bio }}</textarea><br>
