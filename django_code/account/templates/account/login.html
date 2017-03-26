@@ -37,7 +37,7 @@
     var createAccount = function () {
         loginT = document.getElementById("loginT");
         form = document.getElementById("create-account-form");
-        if (form.username.value.match(/[^A-Za-z_0-9]/)) {
+        if (form.username.value.match(/\W/)) {
            loginT.innerHTML = "Invalid username<br>";
            return;
         }
