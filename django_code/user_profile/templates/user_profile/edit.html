@@ -1,0 +1,34 @@
+<!DOCTYPE HTML>
+<html>
+<head>
+    <title>Editing {{ user.username }}'s profile</title>
+    <script>
+        var checkForm = function () {
+            loginT = document.getElementById("loginT");
+            form = document.getElementById("profileForm")
+            if (form.username.value === "") {
+                loginT.innerHTML = "Please fill the username field.<br>";
+                return false;
+            }
+            if (form.username.value.match(/[^A-Za-z_0-9]/)) {
+               loginT.innerHTML = "Invalid username<br>";
+               return false;
+            }
+            if (form.displayName.value === "") {
+                form.displayName.value = form.username.value;
+                return false;
+            }
+        };
+    </script>
+<head>
+<body>
+    <i id="loginT" style="color:red;"></i>
+    <form action="." method="PUT" id="profileForm" onsubmit="return checkForm()">
+        <input type="text" name="displayName" value="{{ user.firstName }}" placeholder="Display Name"> <br>
+        <input type="text" name="username" value="{{ user.username }}" placeholder="Username"> <br>
+        <textarea name="bio" placeholder="Tell everyone about yourself." cols="40" rows="5">{{ user.profile.bio }}</textarea><br>
+        <input type="submit" value="Update">
+    </form>
+</body>
+</html>
+
