@@ -1,36 +1,26 @@
 <!DOCTYPE html>
-<html xmlns="http://www.w3.org/TR/REC-html40">
-   <head>
-		<meta http-equiv=Content-Type content="text/html; charset=windows-1252">
-		<title>Profile for {{ user.username }}</title>
-   </head>
-   <body bgcolor="#0070C0" lang=EN-US style='tab-interval:.5in'>
-      <div class=WordSection1>
-         <table class=MsoTableGrid border=0 cellspacing=0 cellpadding=0 width="101%"
-            style='width:100%;height:200px;background:white;'>
-            <tr style='height:39.0pt'>
-               <td width=200px rowspan=2 style='width:200px;height:200px;padding:0in 5.4pt 0in 5.4pt;'>
-                  <p class='ApprovedProfilePicture' style='margin-bottom:0in;margin-bottom:.0001pt;line-height:
-                     normal'>
-                     <span>
-                        <img width=200 height=200 src="{{ user.ApprovedProfilePicture }}">
-                      </span>
-                  </p>
+<html><head>
+    <title>Profile for {{ user.username }}</title>
+    </head>
+    <body style="background-color: #161E2C;">
+         <table class="main-table" border="0" cellspacing="" cellpadding="0" width="101%" style="width: 70%; background: white; border-spacing: 10px; padding: 0px; margin-left: 15%;">
+            <tbody><tr style="height: 30%;">
+               <td rowspan="2" style="width: 200px;">
+                   <img width="200" height="200" src="https://cdn.discordapp.com/avatars/254274910816436234/d3d11d86997ba1aacce982f222a64117.jpg?size=1024">
                </td>
-               <td  valign=bottom style='height:70px; padding:0in 5.4pt 0in 5.4pt;'>
-                  <p class='Username' ><span style='font-size:20.0pt'>{{ user.first_name }}<br></span>
-                     <b><span style='font-size:14.0pt;'>@<span class=SpellE>{{ user.username }}</span></span></b>
+               <td valign="bottom" style="height: 70px; background: #337ab7; padding-left: 20px;">
+                  <p class="username"><span style="font-size:20.0pt">{{ user.first_name }}<br></span>
+                     <b><span style="font-size:14.0pt;">@<span class="SpellE">{{ user.username }}</span></span></b>
                   </p>
                </td>
             </tr>
-            <tr style='height:24.6pt'>
-               <td  style='height:130px; background:#D5DCE4;padding:0in 5.4pt 0in 5.4pt;'>
-                  <p class='Bio' style='margin-bottom:0in;margin-bottom:.0001pt;line-height:normal'>
+            <tr style="height: 70%;">
+               <td>
+                  <p class="bio">
                      {{ user.profile.bio }}
                   </p>
                </td>
             </tr>
-         </table>
-      </div>
-   </body>
-</html>
+         </tbody>
+     </table>
+</body></html>
