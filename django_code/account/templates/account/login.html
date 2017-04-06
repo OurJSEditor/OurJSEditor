@@ -84,13 +84,13 @@
     var checkUsername=function(){
         var available=document.getElementById("available");
         available.innerHTML = "";
-    	var ans=false;
-      
+        var ans=false;
+
         var req = new XMLHttpRequest();
         req.addEventListener("load", function() {
             if (this.status == 200) {
-				ans=JSON.parse(this.response);
-				ans=ans["username_available"];
+                ans=JSON.parse(this.response);
+                ans=ans["username_available"];
             }
             if(ans){
                   available.innerHTML="&#x2714;";
@@ -102,7 +102,7 @@
             }
         });
         req.open("GET", "/api/users/username_available?username="+document.getElementById("username").value);
-		req.send();
+        req.send();
     };
     </script>
 </head>
