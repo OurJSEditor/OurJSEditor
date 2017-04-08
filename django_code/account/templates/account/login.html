@@ -100,7 +100,7 @@
         <input class="btn" type="submit" value="Login">
     </form>
     <hr>
-    <form method="POST" id="create-account-form" name="create-account-form" onsubmit="return checkNewAccount()">
+    <form method="POST" id="create-account-form" name="create-account-form" onsubmit="return checkNewAccount()" action="createAccount">
         <b>Create Account:</b>
         {% csrf_token %}
         <br>
