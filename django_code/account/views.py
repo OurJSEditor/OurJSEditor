@@ -36,19 +36,17 @@ def login(request):
 
 def createAccount(request):
     if request.method == 'POST':
-        data = json.loads(request.body)
-
-        username = data["username"]
-        email = data["email"]
-        password = data["password"]
-        firstName = data["firstName"]
+        username = request.POST.get('username', '')
+        email = request.POST.get('email', '')
+        password = request.POST.get('password', '')
+        firstName = request.POST.get('firstName', '')
 
         #Checks for valid data. This only confirms what javascript has already checked, so errors
         #don't need to be verobse. It mostly only stops people making their own fake requests.
-        if (username == "" or email == "" or password == "" or firstName == "" or
+        if (username == "" or password == "" or firstName == "" or
             re.match(r"\W", username) or
             User.objects.filter(username=username).exists() or
-            not re.match(r"(^[a-zA-Z0-9_.+-]+@[a-zA-Z0-9-]+\.[a-zA-Z0-9-.]+$)", email)
+            not re.match(r"^([\w.+-]+@[a-zA-Z0-9-]+(?:\.[a-zA-Z0-9-]+)+)?$", email)
             ):
             return HttpResponse('{"creationSuccess":false}', content_type="application/json", status=400)
 
@@ -57,11 +55,9 @@ def createAccount(request):
             email,
             password,
         )
-        user.first_name = data["firstName"]
+        user.first_name = firstName
         user.save()
 
         auth.login(request, user)
 
-        response = HttpResponse('{"creationSuccess":true}', content_type="application/json", status=201)
-        response["Location"] = "/user/" + username
-        return response
+        return redirect("/user/" + username)

@@ -34,63 +34,44 @@
         req.setRequestHeader("X-CSRFToken", "{{ csrf_token }}");
         req.send(data);
     };
-    var createAccount = function () {
+    var checkNewAccount = function () {
         loginT = document.getElementById("loginT");
         form = document.getElementById("create-account-form");
-        if (form.username.value.match(/\W/)) {
-           loginT.innerHTML = "Invalid username<br>";
-           return;
+        if (form.username.value.match(/\W|$^/)) {
+           loginT.innerHTML = "Please enter a valid username<br>";
+           return false;
         }
-        if (!form.email.value.match(/^[a-zA-Z0-9.!#$%&’*+/=?^_`{|}~-]+@[a-zA-Z0-9-]+(?:\.[a-zA-Z0-9-]+)*$/)) {
-           loginT.innerHTML = "Invalid email<br>";
-           return;
+        if (!form.email.value.match(/^(?:[\w.+-]+@[a-zA-Z0-9-]+(?:\.[a-zA-Z0-9-]+)+)?$/)) {
+           loginT.innerHTML = "Please enter a valid email, or no email at all.<br>";
+           return false;
         }
         if (form.password.value !== form.passwordConfirm.value) {
            loginT.innerHTML = "Passwords don't match<br>";
-           return;
+           return false;
         }
         if (document.getElementById("available").innerHTML !== "\u2714") {
            loginT.innerHTML = "That username is already taken<br>";
-           return;
+           return false;
         }
-        var inputs = form.elements;
-        var data = {};
-        for (var i = 0; i < inputs.length; i++) {
-            if (inputs[i].value === "") {
-                loginT.innerHTML = "Please fill the " +  inputs[i].placeholder + " field.<br>";
-                return;
-            }else {
-                if (inputs[i].name && inputs[i].name !== "passwordConfirm") {
-                    data[inputs[i].name] = inputs[i].value;
-                }
-            }
+        if (form.password.value === "") {
+            loginT.innerHTML = "Please enter a password<br>";
+            return false;
         }
-
-        data = JSON.stringify(data);
-
-        var req = new XMLHttpRequest();
-        req.addEventListener("load", function () {
-            if (JSON.parse(this.response).creationSuccess) {
-                location.href = "/";
-            }else {
-                loginT.innerHTML = "Something went wrong.<br>";
-            }
-        });
-        req.open("POST", "createAccount");
-        req.setRequestHeader("Content-Type", "application/json");
-        req.setRequestHeader("X-CSRFToken", "{{ csrf_token }}");
-        req.send(data);
+        if (form.firstName.value === "") {
+            form.firstName.value = form.username.value;
+        }
+        return true;
     };
     var checkUsername=function(){
         var available=document.getElementById("available");
         available.innerHTML = "";
-    	var ans=false;
-      
+        var ans=false;
+
         var req = new XMLHttpRequest();
         req.addEventListener("load", function() {
             if (this.status == 200) {
-				ans=JSON.parse(this.response);
-				ans=ans["username_available"];
+                ans=JSON.parse(this.response);
+                ans=ans["username_available"];
             }
             if(ans){
                   available.innerHTML="&#x2714;";
@@ -102,7 +83,7 @@
             }
         });
         req.open("GET", "/api/users/username_available?username="+document.getElementById("username").value);
-		req.send();
+        req.send();
     };
     </script>
 </head>
@@ -119,8 +100,9 @@
         <input class="btn" type="submit" value="Login">
     </form>
     <hr>
-    <form action="javascript:createAccount()" id="create-account-form" name="create-account-form">
+    <form method="POST" id="create-account-form" name="create-account-form" onsubmit="return checkNewAccount()" action="createAccount">
         <b>Create Account:</b>
+        {% csrf_token %}
         <br>
         <input type="text" name="firstName" placeholder="Name">
         <br>
