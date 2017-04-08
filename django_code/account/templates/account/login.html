@@ -41,7 +41,7 @@
            loginT.innerHTML = "Please enter a valid username<br>";
            return false;
         }
-        if (!form.email.value.match(/^(?:[\w.+-]+@[a-zA-Z0-9-]+(?:\.[a-zA-Z0-9-]+)+)?$s/)) {
+        if (!form.email.value.match(/^(?:[\w.+-]+@[a-zA-Z0-9-]+(?:\.[a-zA-Z0-9-]+)+)?$/)) {
            loginT.innerHTML = "Please enter a valid email, or no email at all.<br>";
            return false;
         }
