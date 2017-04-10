@@ -11,7 +11,8 @@
                 loginT.innerHTML = "Please fill the username field.<br>";
                 return false;
             }
-            if (form.username.value.match(/\W/) || document.getElementById("available").innerHTML !== "\u2714") {
+            if (form.username.value.match(/\W/) ||
+                (form.username.value !== current_username && document.getElementById("available").innerHTML !== "\u2714")) {
                loginT.innerHTML = "Invalid username<br>";
                return false;
             }
