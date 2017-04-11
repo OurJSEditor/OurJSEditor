@@ -7,7 +7,7 @@ body {
     width: 70%;
     max-width: 70%;
     background: white;
-    border-spacing: 10px;
+    border-spacing: 20px;
     padding: 0px;
     margin-left: 15%;
 }
@@ -38,4 +38,27 @@ body {
 .bio {
     max-height: 90px;
     overflow: hidden;
+}
+
+.button {
+    font-size: 1.2em;
+    width: 100%;
+    color: white;
+    background-color: #337ab7;
+    border: none;
+    transition: 0.2s;
+    text-decoration: none;
+}
+
+.button:hover {
+    background-color: #235a87;
+}
+
+.profile-edit {
+    padding: 3px 10px;
+}
+
+.edit-wrap {
+    text-align: right;
+    vertical-align: bottom;
 }

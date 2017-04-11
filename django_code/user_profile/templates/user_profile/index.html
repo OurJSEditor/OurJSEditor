@@ -7,7 +7,7 @@
     <table class="main-table">
         <tbody>
             <tr>
-                <td rowspan="2" style="width: 200px;">
+                <td rowspan="3" style="width: 200px;">
                     <img class="profile-image" src="/static/images/logo.png">
                 </td>
                 <td class="name">
@@ -24,6 +24,13 @@
                     <p class="bio">
                         {{ user.profile.bio }}
                     </p>
+                </td>
+            </tr>
+            <tr>
+                <td class="edit-wrap">
+                    {% if currentUser is user %}
+                        <a href="edit" class="button profile-edit">Edit Your Profile</a>
+                    {% endif %}
                 </td>
             </tr>
         </tbody>
