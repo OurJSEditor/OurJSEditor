@@ -28,7 +28,7 @@
             </tr>
             <tr>
                 <td class="edit-wrap">
-                    {% if currentUser is user %}
+                    {% if user.username == currentUser.username %}
                         <a href="edit" class="button profile-edit">Edit Your Profile</a>
                     {% endif %}
                 </td>
