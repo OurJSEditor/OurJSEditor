@@ -19,7 +19,7 @@ def edit(request, username):
        username = request.POST.get('username', '')
        first_name = request.POST.get('displayName', '')
        bio = request.POST.get('bio', '')
-       if (username == '' or re.match(r"\W", username) or
+       if (username == '' or re.search(r"\W", username) or
           (username != request.user.username and User.objects.filter(username=username).exists())):
            return HttpResponse('null', content_type="application/json", status=400)
        if (first_name == ''):
