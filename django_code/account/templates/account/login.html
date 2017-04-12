@@ -93,7 +93,7 @@
     <form action="javascript:attemptLogin()" id="login-form" name="login-form">
         <b>Login:</b>
         <br>
-        <input type="text" name="username" placeholder="Username">
+        <input type="text" name="username" placeholder="Username" maxlength="45">
         <br>
         <input type="password" name="password" placeholder="Password">
         <br>
@@ -104,11 +104,12 @@
         <b>Create Account:</b>
         {% csrf_token %}
         <br>
-        <input type="text" name="display_name" placeholder="Name">
+        <input type="text" name="display_name" placeholder="Name" maxlength="45">
         <br>
         <input type="email" name="email" placeholder="Email">
         <br>
-        <input type="text" name="username" placeholder="Username" onkeyup="checkUsername()" id="username"> <b id="available"></b>
+        <input type="text" name="username" placeholder="Username" onkeyup="checkUsername()" id="username" maxlength="45">
+        <b id="available"></b>
         <br>
         <input type="password" name="password" placeholder="Password">
         <br>

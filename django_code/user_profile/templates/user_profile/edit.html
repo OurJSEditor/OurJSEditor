@@ -54,10 +54,10 @@
     <i id="loginT" style="color:red;"></i>
     <form method="POST" id="profileForm" onsubmit="return checkForm()">
         {% csrf_token %}
-        <input type="text" name="display_name" value="{{ user.profile.display_name }}" placeholder="Display Name"> <br>
-        <input type="text" name="username" value="{{ user.username }}" placeholder="Username" onkeyup="checkUsername()" id="username">
+        <input type="text" name="display_name" value="{{ user.profile.display_name }}" placeholder="Display Name" maxlength="45"> <br>
+        <input type="text" name="username" value="{{ user.username }}" placeholder="Username" onkeyup="checkUsername()" id="username" maxlength="45">
         <b id="available"></b> <br>
-        <textarea name="bio" placeholder="Tell everyone about yourself." cols="40" rows="5">{{ user.profile.bio }}</textarea><br>
+        <textarea name="bio" placeholder="Tell everyone about yourself." cols="40" rows="5" maxlength="500">{{ user.profile.bio }}</textarea><br>
         <input type="submit" value="Update">
     </form>
 </body>

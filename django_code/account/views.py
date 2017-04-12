@@ -44,7 +44,7 @@ def createAccount(request):
         #Checks for valid data. This only confirms what javascript has already checked, so errors
         #don't need to be verobse. It mostly only stops people making their own fake requests.
         if (username == "" or password == "" or display_name == "" or
-            re.search(r"\W", username) or
+            re.search(r"\W", username) or len(display_name) > 45 or len(username) > 45 or
             User.objects.filter(username=username).exists() or
             not re.match(r"^([\w.+-]+@[a-zA-Z0-9-]+(?:\.[a-zA-Z0-9-]+)+)?$", email)
             ):
