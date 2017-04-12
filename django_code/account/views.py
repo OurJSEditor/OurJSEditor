@@ -39,11 +39,11 @@ def createAccount(request):
         username = request.POST.get('username', '')
         email = request.POST.get('email', '')
         password = request.POST.get('password', '')
-        firstName = request.POST.get('firstName', '')
+        display_name = request.POST.get('display_name', '')
 
         #Checks for valid data. This only confirms what javascript has already checked, so errors
         #don't need to be verobse. It mostly only stops people making their own fake requests.
-        if (username == "" or password == "" or firstName == "" or
+        if (username == "" or password == "" or display_name == "" or
             re.search(r"\W", username) or
             User.objects.filter(username=username).exists() or
             not re.match(r"^([\w.+-]+@[a-zA-Z0-9-]+(?:\.[a-zA-Z0-9-]+)+)?$", email)
@@ -55,7 +55,7 @@ def createAccount(request):
             email,
             password,
         )
-        user.first_name = firstName
+        user.profile.display_name = display_name
         user.save()
 
         auth.login(request, user)
