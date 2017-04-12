@@ -9,8 +9,10 @@ from django.dispatch import receiver
 
 class Profile(models.Model):
     user = models.OneToOneField(User, on_delete=models.CASCADE)
-    #max_length is not enforced automatically
+    # max_length is not enforced automatically
     bio = models.TextField(max_length=500, blank=True)
+    # Max length of 45 (is enforced for CharField). Not required, but should always be filled.
+    display_name = models.CharField(max_length=45, blank=True)
 
 @receiver(post_save, sender=User)
 def create_user_profile(sender, instance, created, **kwargs):
