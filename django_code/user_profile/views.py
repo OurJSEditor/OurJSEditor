@@ -10,7 +10,7 @@ from django.http import HttpResponse
 def index(request, username):
     try:
         user = User.objects.select_related('profile').get(username=username)
-        return render(request, 'user_profile/index.html', {'user': user, 'currentUser': request.user})
+        return render(request, 'user_profile/user_profile.html', {'user': user, 'currentUser': request.user})
     except User.DoesNotExist:
         return render(request, 'user_profile/doesNotExist.html', {'username': username}, status=404)
 
