@@ -17,15 +17,15 @@ def index(request, username):
 def edit(request, username):
     if (request.method == 'POST'):
        username = request.POST.get('username', '')
-       first_name = request.POST.get('displayName', '')
+       display_name = request.POST.get('display_name', '')
        bio = request.POST.get('bio', '')
        if (username == '' or re.search(r"\W", username) or
           (username != request.user.username and User.objects.filter(username=username).exists())):
            return HttpResponse('null', content_type="application/json", status=400)
-       if (first_name == ''):
-           first_name = username
+       if (display_name == ''):
+           display_name = username
        request.user.username = username;
-       request.user.first_name = first_name;
+       request.user.profile.display_name = display_name;
        request.user.profile.bio = bio;
        request.user.save()
        return redirect("/user/" + username)

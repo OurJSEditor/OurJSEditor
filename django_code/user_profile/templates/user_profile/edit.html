@@ -16,8 +16,8 @@
                loginT.innerHTML = "Invalid username<br>";
                return false;
             }
-            if (form.displayName.value === "") {
-                form.displayName.value = form.username.value;
+            if (form.display_name.value === "") {
+                form.display_name.value = form.username.value;
             }
         };
         var checkUsername = function() {
@@ -54,7 +54,7 @@
     <i id="loginT" style="color:red;"></i>
     <form method="POST" id="profileForm" onsubmit="return checkForm()">
         {% csrf_token %}
-        <input type="text" name="displayName" value="{{ user.first_name }}" placeholder="Display Name"> <br>
+        <input type="text" name="display_name" value="{{ user.profile.display_name }}" placeholder="Display Name"> <br>
         <input type="text" name="username" value="{{ user.username }}" placeholder="Username" onkeyup="checkUsername()" id="username">
         <b id="available"></b> <br>
         <textarea name="bio" placeholder="Tell everyone about yourself." cols="40" rows="5">{{ user.profile.bio }}</textarea><br>
