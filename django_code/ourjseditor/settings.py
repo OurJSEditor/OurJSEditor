@@ -27,7 +27,7 @@ with open(os.path.join(BASE_DIR, "ourjseditor/secret_key.txt"), 'r') as f:
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
 
-ALLOWED_HOSTS = ['ourjseditor.com','45.56.88.22','ourjse.us.to']
+ALLOWED_HOSTS = ['ourjseditor.com','45.56.88.22','localhost','127.0.0.1']
 
 
 # Application definition
