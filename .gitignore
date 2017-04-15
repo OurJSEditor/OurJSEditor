@@ -1,6 +1,7 @@
 *.log
 *.sql
 *.sqlite
+*.sqlite3
 *.pyc
 secret_key.txt
 database_password.txt
