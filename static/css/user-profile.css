@@ -89,5 +89,18 @@ body {
 }
 
 #available {
-    color: white;
+    color: rgb(232, 232, 232);
+}
+
+.name-edit::placeholder {
+    color: rgb(232, 232, 232);
+}
+.name-edit::-webkit-input-placeholder {
+    color: rgb(232, 232, 232);
+}
+.name-edit::-moz-placeholder {
+    color: rgb(232, 232, 232);
+}
+.name-edit:-ms-input-placeholder {
+    color: rgb(232, 232, 232);
 }
