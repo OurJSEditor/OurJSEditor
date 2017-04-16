@@ -10,7 +10,7 @@ from django.http import HttpResponse
 def index(request, username):
     try:
         user = User.objects.select_related('profile').get(username=username)
-        return render(request, 'user_profile/user_profile.html', {'user': user, 'currentUser': request.user})
+        return render(request, 'user_profile/user_profile.html', {'user': user, 'currentUser': request.user, 'editing': False})
     except User.DoesNotExist:
         return render(request, 'user_profile/doesNotExist.html', {'username': username}, status=404)
 
@@ -34,7 +34,7 @@ def edit(request, username):
         try:
             user = User.objects.select_related('profile').get(username=username)
             if (user.username == request.user.username):
-                return render(request, 'user_profile/edit.html')
+                return render(request, 'user_profile/user_profile.html', {'editing': True})
             else:
                 return render(request, 'user_profile/accessDenied.html', {'username': username}, status=403)
         except User.DoesNotExist:

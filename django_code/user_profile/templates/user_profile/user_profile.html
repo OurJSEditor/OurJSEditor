@@ -1,10 +1,22 @@
 <!DOCTYPE html>
 <html><head>
-    <title>Profile for {{ user.username }}</title>
     <link rel="stylesheet" type="text/css" href="/static/css/user-profile.css">
+    {% if editing %}
+        <title>Editing {{ user.username }}'s profile</title>
+        <script>
+            var current_username = "{{ user.username }}";
+        </script>
+        <script src="/static/scripts/edit.js"></script>
+    {% else %}
+        <title>Profile for {{ user.username }}</title>
+    {% endif %}
 </head>
 <body>
     <table class="main-table">
+        {% if editing %}
+            <form method="POST" id="profileForm" onsubmit="return checkForm()">
+            {% csrf_token %}
+        {% endif %}
         <tbody>
             <tr>
                 <td rowspan="3" style="width: 200px;">
@@ -12,27 +24,46 @@
                 </td>
                 <td class="name">
                     <div class="display-name">
-                        {{ user.profile.display_name }}
+                        {% if editing %}
+                            <input class="name-edit" type="text" name="display_name" value="{{ user.profile.display_name }}" placeholder="Display Name" maxlength="45">
+                        {% else %}
+                            {{ user.profile.display_name }}
+                        {% endif %}
                     </div>
                     <div class="username">
-                        @{{ user.username }}
+                        {% if editing %}
+                            <input class="name-edit" type="text" name="username" value="{{ user.username }}" placeholder="Username" onkeyup="checkUsername()" id="username" maxlength="45">
+                            <b id="available"></b><br>
+                        {% else %}
+                            {{ user.username }}
+                        {% endif %}
                     </div>
                 </td>
             </tr>
             <tr>
                 <td>
                     <p class="bio">
-                        {{ user.profile.bio }}
+                        {% if editing %}
+                            <textarea class="bio-edit" name="bio" placeholder="Tell everyone about yourself." maxlength="500">{{ user.profile.bio }}</textarea>
+                        {% else %}
+                            {{ user.profile.bio }}
+                        {% endif %}
                     </p>
                 </td>
             </tr>
             <tr>
                 <td class="edit-wrap">
-                    {% if user.username == currentUser.username %}
+                    {% if editing %}
+                        <i id="loginT" style="color:red;"></i>
+                        <input type="submit" value="Update Your Profile" class="button profile-edit">
+                    {% elif user.username == currentUser.username %}
                         <a href="edit" class="button profile-edit">Edit Your Profile</a>
                     {% endif %}
                 </td>
             </tr>
         </tbody>
+        {% if editing %}
+            </form>
+        {% endif %}
     </table>
 </body></html>

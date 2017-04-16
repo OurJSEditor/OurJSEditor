@@ -21,7 +21,6 @@ var checkUsername = function() {
 
     if (current_username == document.getElementById("username").value) {
         available.innerHTML = "&#x2714;";
-        available.style.color = "green";
         return;
     }
 
@@ -33,10 +32,8 @@ var checkUsername = function() {
         }
         if (ans) {
             available.innerHTML = "&#x2714;";
-            available.style.color = "green";
         }else {
             available.innerHTML = "&#x2717;";
-            available.style.color = "red";
         }
     });
     req.open("GET", "/api/users/username_available?username=" + document.getElementById("username").value);
