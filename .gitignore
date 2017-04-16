@@ -3,5 +3,6 @@
 *.sqlite
 *.sqlite3
 *.pyc
+OurEnv
 secret_key.txt
 database_password.txt
