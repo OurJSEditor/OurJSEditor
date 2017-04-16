@@ -35,9 +35,15 @@ body {
     font-weight: bold;
 }
 
+.username::before {
+    content: "@";
+    font-weight: normal;
+}
+
 .bio {
-    max-height: 90px;
+    max-height: 130px;
     overflow: hidden;
+    margin: 0;
 }
 
 .button {
@@ -56,9 +62,45 @@ body {
 
 .profile-edit {
     padding: 3px 10px;
+    width: initial;
 }
 
 .edit-wrap {
     text-align: right;
     vertical-align: bottom;
+}
+
+.name-edit {
+    background: none;
+    border: none;
+    outline: none;
+    border-bottom: white solid 2px;
+    color: white;
+    font: inherit;
+}
+
+.bio-edit {
+    font: inherit;
+    width: 98%;
+    height: 118px;
+    padding: 5px;
+    outline: none;
+    resize: none;
+}
+
+#available {
+    color: rgb(232, 232, 232);
+}
+
+.name-edit::placeholder {
+    color: rgb(232, 232, 232);
+}
+.name-edit::-webkit-input-placeholder {
+    color: rgb(232, 232, 232);
+}
+.name-edit::-moz-placeholder {
+    color: rgb(232, 232, 232);
+}
+.name-edit:-ms-input-placeholder {
+    color: rgb(232, 232, 232);
 }
