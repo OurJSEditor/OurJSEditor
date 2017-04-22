@@ -24,6 +24,11 @@ var checkUsername = function() {
         return;
     }
 
+    if (document.getElementById("username").value === "") {
+        available.innerHTML = "";
+        return;
+    }
+
     var req = new XMLHttpRequest();
     req.addEventListener("load", function() {
         if (this.status == 200) {
