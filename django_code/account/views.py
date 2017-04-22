@@ -20,11 +20,10 @@ def login(request):
             username=data["username"],
             password=data["password"]
         )
-        #return HttpResponse(request.body)
 
         if user is not None:
             auth.login(request, user)
-            return HttpResponse('{"loginSuccess":true}', content_type="application/json")
+            return HttpResponse('{"loginSuccess":true,"username":"' + user.username + '"}', content_type="application/json")
         else:
             # At this point, error should be handled by Javascript
             return HttpResponse('{"loginSuccess":false}', content_type="application/json")
