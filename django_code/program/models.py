@@ -14,7 +14,13 @@ def generate_id():
     while len(id_string) < 6:
         id_string += random.choice(chars)
 
-    return id_string
+    try:
+        # Try to get a program with the current id
+        Program.objects.get(program_id=id_string)
+        # If we don't error there is a program with this id already. Re-generate id
+        return generate_id()
+    except Program.DoesNotExist:
+        return id_string
 
 def get_default_user_profile():
     return User.objects.get(username="admin").profile
