@@ -41,6 +41,6 @@ var checkUsername = function() {
             available.innerHTML = "&#x2717;";
         }
     });
-    req.open("GET", "/api/users/username_available?username=" + document.getElementById("username").value);
+    req.open("GET", "/api/user/username_available?username=" + document.getElementById("username").value);
     req.send();
 };
