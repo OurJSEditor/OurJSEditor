@@ -55,6 +55,25 @@ def program(request, program_id):
                 html = requested_program.html
             )
             return HttpResponse(json.dumps(program_dict), content_type="application/json", status=200)
+        elif (request.method == "PATCH"):
+            try:
+                data = json.loads(request.body)
+
+                if request.user != requested_program.user.user:
+                    return HttpResponse('{"success":false,"error":"Not authorized."}', content_type="application/json", status=403)
+
+                valid_props = ["html", "js", "css", "title"]
+                for prop in valid_props:
+                    if prop in data:
+                        setattr(requested_program, prop, data[prop])
+
+                requested_program.save()
+
+                return HttpResponse('', status=204)
+            except ValueError:
+                return HttpResponse('{"success":false,"error":"Missing or malformed JSON."}', content_type="application/json", status=400)
+        else:
+            return HttpResponse("The method " + request.method + " is not allowed for the requested URL.", status=405)
     except Program.DoesNotExist:
         return HttpResponse("No program exists with that id.", status=404)
 
