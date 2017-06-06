@@ -42,20 +42,21 @@ def new_program(request):
     else:
         return HttpResponse("The method " + request.method + " is not allowed for the requested URL.", status=405)
 
-def view_program(request, program_id):
-    try:
-        requested_program = Program.objects.get(program_id=program_id)
-        program_dict = dict(
-            author_username = requested_program.user.user.username,
-            id = requested_program.program_id,
-            title = requested_program.title,
-            css = requested_program.css_content,
-            js = requested_program.js_content,
-            html = requested_program.html_content
-        )
-        return HttpResponse(json.dumps(program_dict), content_type="application/json", status=200)
-    except Program.DoesNotExist:
-        return HttpResponse("No program exists with that id.", status=404)
+def program(request, program_id):
+    if (request.method == "GET"):
+        try:
+            requested_program = Program.objects.get(program_id=program_id)
+            program_dict = dict(
+                author_username = requested_program.user.user.username,
+                id = requested_program.program_id,
+                title = requested_program.title,
+                css = requested_program.css_content,
+                js = requested_program.js_content,
+                html = requested_program.html_content
+            )
+            return HttpResponse(json.dumps(program_dict), content_type="application/json", status=200)
+        except Program.DoesNotExist:
+            return HttpResponse("No program exists with that id.", status=404)
 
 def error(request):
     return HttpResponse('null', content_type="application/json", status=400)
