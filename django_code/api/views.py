@@ -26,9 +26,9 @@ def new_program(request):
                 program = Program.objects.create(
                     user = request.user.profile,
                     title = data["title"],
-                    html_content = data["html"],
-                    js_content = data["js"],
-                    css_content = data["css"],
+                    html = data["html"],
+                    js = data["js"],
+                    css = data["css"],
                 )
 
                 response = HttpResponse('{"creationSuccess":true}', content_type="application/json", status=201)
@@ -50,9 +50,9 @@ def program(request, program_id):
                 author_username = requested_program.user.user.username,
                 id = requested_program.program_id,
                 title = requested_program.title,
-                css = requested_program.css_content,
-                js = requested_program.js_content,
-                html = requested_program.html_content
+                css = requested_program.css,
+                js = requested_program.js,
+                html = requested_program.html
             )
             return HttpResponse(json.dumps(program_dict), content_type="application/json", status=200)
         except Program.DoesNotExist:
