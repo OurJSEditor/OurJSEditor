@@ -72,6 +72,13 @@ def program(request, program_id):
                 return HttpResponse('', status=204)
             except ValueError:
                 return HttpResponse('{"success":false,"error":"Missing or malformed JSON."}', content_type="application/json", status=400)
+        elif (request.method == "DELETE"):
+            if request.user != requested_program.user.user:
+                return HttpResponse('{"success":false,"error":"Not authorized."}', content_type="application/json", status=403)
+
+            requested_program.delete()
+
+            return HttpResponse('', status=204)
         else:
             return HttpResponse("The method " + request.method + " is not allowed for the requested URL.", status=405)
     except Program.DoesNotExist:
