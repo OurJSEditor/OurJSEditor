@@ -5,7 +5,7 @@ from __future__ import unicode_literals
 from django.db import migrations, models
 import django.db.models.deletion
 import program.models
-
+from django.conf import settings
 
 class Migration(migrations.Migration):
 
@@ -21,7 +21,7 @@ class Migration(migrations.Migration):
             fields=[
                 ('html', models.TextField(blank=True)),
                 ('title', models.CharField(default='Program', max_length=45)),
-                ('user', models.ForeignKey(default=program.models.get_default_user_profile, on_delete=django.db.models.deletion.CASCADE, to='user_profile.Profile')),
+                ('user', models.ForeignKey(default=program.models.get_default_user, on_delete=django.db.models.deletion.CASCADE, to=settings.AUTH_USER_MODEL)),
                 ('css', models.TextField(blank=True)),
                 ('js', models.TextField(blank=True)),
                 ('program_id', models.CharField(default=program.models.generate_id, max_length=6, primary_key=True, serialize=False)),

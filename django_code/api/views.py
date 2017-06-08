@@ -24,7 +24,7 @@ def new_program(request):
             data = json.loads(request.body)
             if request.user.is_authenticated:
                 program = Program.objects.create(
-                    user = request.user.profile,
+                    user = request.user,
                     title = data["title"],
                     html = data["html"],
                     js = data["js"],
@@ -47,7 +47,7 @@ def program(request, program_id):
         requested_program = Program.objects.get(program_id=program_id)
         if (request.method == "GET"):
             program_dict = dict(
-                author_username = requested_program.user.user.username,
+                author_username = requested_program.user.username,
                 id = requested_program.program_id,
                 title = requested_program.title,
                 css = requested_program.css,
@@ -59,7 +59,7 @@ def program(request, program_id):
             try:
                 data = json.loads(request.body)
 
-                if request.user != requested_program.user.user:
+                if request.user != requested_program.user:
                     return HttpResponse('{"success":false,"error":"Not authorized."}', content_type="application/json", status=403)
 
                 valid_props = ["html", "js", "css", "title"]
@@ -73,7 +73,7 @@ def program(request, program_id):
             except ValueError:
                 return HttpResponse('{"success":false,"error":"Missing or malformed JSON."}', content_type="application/json", status=400)
         elif (request.method == "DELETE"):
-            if request.user != requested_program.user.user:
+            if request.user != requested_program.user:
                 return HttpResponse('{"success":false,"error":"Not authorized."}', content_type="application/json", status=403)
 
             requested_program.delete()
