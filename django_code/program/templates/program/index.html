@@ -115,9 +115,9 @@
                 programData.title = "Program";
             }
 
-            jsEditor.setValue(programData.js);
-            cssEditor.setValue(programData.css);
-            htmlEditor.setValue(programData.html);
+            jsEditor.setValue(programData.js, -1);
+            cssEditor.setValue(programData.css, -1);
+            htmlEditor.setValue(programData.html, -1);
             document.getElementById("program-title").innerText = programData.title
 
             if (programData.canEditProgram) {
