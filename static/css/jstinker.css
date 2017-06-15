@@ -106,7 +106,13 @@ body {
     box-sizing: border-box;
     font-family: inherit;
     font-size: inherit;
-    line-height: inherit
+    line-height: inherit;
+    font-size: 17px;
+    font-weight: bold;
+}
+
+#btnSave {
+    display: none;
 }
 
 .dropdown {
