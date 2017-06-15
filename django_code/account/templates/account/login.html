@@ -87,7 +87,7 @@
                    available.style.color="red";
             }
         });
-        req.open("GET", "/api/users/username_available?username="+document.getElementById("username").value);
+        req.open("GET", "/api/user/username_available?username="+document.getElementById("username").value);
         req.send();
     };
     </script>
