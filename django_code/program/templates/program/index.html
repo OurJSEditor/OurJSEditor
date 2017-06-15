@@ -1,0 +1,107 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>New program &mdash; OurJSEditor</title>
+
+    <!-- Beautify Web - HTML, CSS, JS -->
+    <script src="js/beautify-web/beautify-html.js"></script>
+    <script src="js/beautify-web/beautify-css.js"></script>
+    <script src="js/beautify-web/beautify.js"></script>
+    <!-- Ace Editor -->
+    <script src="js/ace/ace.js" type="text/javascript" charset="utf-8"></script>
+    <script src="js/ace/ext-language_tools.js" type="text/javascript" charset="utf-8"></script>
+    <!-- Together -->
+    <script src="https://togetherjs.com/togetherjs-min.js"></script>
+    <!-- JSTinker Scripts -->
+    <script src="js/jstinker.js"></script>
+    <!-- JSTinker Style -->
+    <link rel="stylesheet" href="css/jstinker.css" type="text/css">
+</head>
+<body>
+    <nav class="navbar navbar-default">
+        <!-- Brand and toggle get grouped for better mobile display -->
+        <div class="navbar-header">
+            <a class="navbar-brand" href="#"><img src="logo-text.png" height="20px"></img></a>
+        </div>
+
+        <!-- Collect the nav links, forms, and other content for toggling -->
+        <div id="toolbar">
+            <ul class="nav navbar-nav">
+                <li id="btnRun"><a href=""><span class="glyphicon glyphicon-play" aria-hidden="true"></span> Run</a></li>
+                <li id="btnTidyUp"><a href=""><span class="glyphicon glyphicon-flash" aria-hidden="true"></span> TidyUp</a></li>
+                <li id="btnTogether"><a href=""><span class="glyphicon glyphicon-star-empty" aria-hidden="true"></span> Collaborate</a></li>
+                <li id="btnSave"><a href=""><span class="glyphicon glyphicon-floppy-disk" aria-hidden="true"></span> Save</a></li>
+            </ul>
+        </div><!-- /.navbar-collapse -->
+    </nav>
+
+    <!-- Sidebar -->
+    <div id="sidebar">
+        <div class="panel-body">
+            <input type="text" placeholder="Name your program" id="program-title">
+            When to run JS
+            <select name="selectJSRun" id="selectJSRun" class="dropdown">
+                <option value="onLoad">onLoad</option>
+                <!-- <option value="onDomReady">onDomReady</option> -->
+                <option value="inHead" selected>No wrap - in head</option>
+                <option value="inBody">No wrap - in body</option>
+            </select>
+        </div>
+    </div><!-- /sidebar -->
+
+    <div class="editors">
+        <div class="top">
+            <!-- HTML Editor -->
+            <div class="editorContainer">
+                <div class="editor" id="html-editor"></div>
+            </div>
+            <!-- CSS EDitor -->
+            <div class="editorContainer">
+                <div class="editor" id="css-editor"></div>
+            </div>
+        </div>
+        <div class="bottom">
+            <!-- JS Editor -->
+            <div class="editorContainer">
+                <div class="editor" id="js-editor"></div>
+            </div>
+            <!-- Preview -->
+            <div class="editorContainer">
+                <iframe class="editor" id="preview" name="result" sandbox="allow-forms allow-popups allow-scripts allow-same-origin" frameborder="0">
+                    #document
+                </iframe>
+            </div>
+        </div>
+    </div>
+
+    </div>
+
+    <!-- Set Editor Modes -->
+    <script>
+        ace.require("ace/ext/language_tools");
+
+        var htmlEditor = ace.edit("html-editor");
+        htmlEditor.setTheme("ace/theme/textmate");
+        htmlEditor.getSession().setMode("ace/mode/html");
+        htmlEditor.setOptions({
+            enableBasicAutocompletion: true
+        });
+
+        var cssEditor = ace.edit("css-editor");
+        cssEditor.setTheme("ace/theme/textmate");
+        cssEditor.getSession().setMode("ace/mode/css");
+        cssEditor.setOptions({
+            enableBasicAutocompletion: true
+        });
+
+        var jsEditor = ace.edit("js-editor");
+        jsEditor.setTheme("ace/theme/textmate");
+        jsEditor.getSession().setMode("ace/mode/javascript");
+        jsEditor.setOptions({
+            enableBasicAutocompletion: true
+        });
+    </script>
+
+</body>
+</html>
