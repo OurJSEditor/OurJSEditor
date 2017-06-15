@@ -13,6 +13,7 @@ def program (request, program_id):
 
     if program_id == "new":
         data_dict["new"] = True
+        data_dict["canEditProgram"] = True
     else:
         try:
             current_program = Program.objects.select_related('user').get(program_id=program_id)
@@ -22,7 +23,7 @@ def program (request, program_id):
             data_dict["js"] = current_program.js
             data_dict["css"] = current_program.css
             data_dict["html"] = current_program.html
-            data_dict["canEditProgram"] = (current_program.user == request.user or program_id == "new")
+            data_dict["canEditProgram"] = (current_program.user == request.user)
             data_dict["author"] = dict(
                 username=current_program.user.username,
                 displayName=current_program.user.profile.display_name
