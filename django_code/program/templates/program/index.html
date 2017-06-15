@@ -5,24 +5,24 @@
     <title>New program &mdash; OurJSEditor</title>
 
     <!-- Beautify Web - HTML, CSS, JS -->
-    <script src="js/beautify-web/beautify-html.js"></script>
-    <script src="js/beautify-web/beautify-css.js"></script>
-    <script src="js/beautify-web/beautify.js"></script>
+    <script src="/static/scripts/beautify-web/beautify-html.js"></script>
+    <script src="/static/scripts/beautify-web/beautify-css.js"></script>
+    <script src="/static/scripts/beautify-web/beautify.js"></script>
     <!-- Ace Editor -->
-    <script src="js/ace/ace.js" type="text/javascript" charset="utf-8"></script>
-    <script src="js/ace/ext-language_tools.js" type="text/javascript" charset="utf-8"></script>
+    <script src="/static/scripts/ace/ace.js" type="text/javascript" charset="utf-8"></script>
+    <script src="/static/scripts/ace/ext-language_tools.js" type="text/javascript" charset="utf-8"></script>
     <!-- Together -->
     <script src="https://togetherjs.com/togetherjs-min.js"></script>
     <!-- JSTinker Scripts -->
-    <script src="js/jstinker.js"></script>
+    <script src="/static/scripts/jstinker.js"></script>
     <!-- JSTinker Style -->
-    <link rel="stylesheet" href="css/jstinker.css" type="text/css">
+    <link rel="stylesheet" href="/static/css/jstinker.css" type="text/css">
 </head>
 <body>
     <nav class="navbar navbar-default">
         <!-- Brand and toggle get grouped for better mobile display -->
         <div class="navbar-header">
-            <a class="navbar-brand" href="#"><img src="logo-text.png" height="20px"></img></a>
+            <a class="navbar-brand" href="#"><img src="/static/images/logo-text.png" height="20px"></img></a>
         </div>
 
         <!-- Collect the nav links, forms, and other content for toggling -->
@@ -31,7 +31,7 @@
                 <li id="btnRun"><a href=""><span class="glyphicon glyphicon-play" aria-hidden="true"></span> Run</a></li>
                 <li id="btnTidyUp"><a href=""><span class="glyphicon glyphicon-flash" aria-hidden="true"></span> TidyUp</a></li>
                 <li id="btnTogether"><a href=""><span class="glyphicon glyphicon-star-empty" aria-hidden="true"></span> Collaborate</a></li>
-                <li id="btnSave"><a href=""><span class="glyphicon glyphicon-floppy-disk" aria-hidden="true"></span> Save</a></li>
+                <li id="btnSave"><a href="javascript:save();"><span class="glyphicon glyphicon-floppy-disk" aria-hidden="true"></span> Save</a></li>
             </ul>
         </div><!-- /.navbar-collapse -->
     </nav>
@@ -39,7 +39,7 @@
     <!-- Sidebar -->
     <div id="sidebar">
         <div class="panel-body">
-            <input type="text" placeholder="Name your program" id="program-title">
+            <div id="program-title">Name your program</div>
             When to run JS
             <select name="selectJSRun" id="selectJSRun" class="dropdown">
                 <option value="onLoad">onLoad</option>
@@ -77,8 +77,15 @@
 
     </div>
 
-    <!-- Set Editor Modes -->
     <script>
+        var runningLocal = false;
+
+        try {
+            var programData = JSON.parse('{{ data_dict|escapejs }}')
+        }catch (e) {
+            var runningLocal = true;
+        }
+
         ace.require("ace/ext/language_tools");
 
         var htmlEditor = ace.edit("html-editor");
@@ -101,7 +108,52 @@
         jsEditor.setOptions({
             enableBasicAutocompletion: true
         });
-    </script>
 
+        if (!runningLocal) {
+            if (programData.new) {
+                programData.js = programData.css = programData.html = "";
+                programData.title = "Program";
+            }
+
+            jsEditor.setValue(programData.js);
+            cssEditor.setValue(programData.css);
+            htmlEditor.setValue(programData.html);
+            document.getElementById("program-title").innerText = programData.title
+
+            if (programData.canEditProgram) {
+                document.getElementById("btnSave").style.display = "block"
+                document.getElementById("program-title").contentEditable = true;
+            }
+        }
+
+        var save = function () {
+            if (runningLocal) return;
+
+            //Update programData with the lastest textbox code
+            programData.title = document.getElementById("program-title").innerText;
+            programData.js = jsEditor.getValue();
+            programData.css = cssEditor.getValue();
+            programData.html = htmlEditor.getValue();
+
+            var req = new XMLHttpRequest();
+            req.addEventListener("load", function (a) {
+                if (programData.new) {
+                    window.location.href = this.getResponseHeader("Location")
+                }
+            })
+            if (programData.id) {
+                req.open("PATCH", "/api/program/" + programData.id)
+            }else {
+                req.open("POST", "/api/program/new");
+            }
+            req.setRequestHeader("X-CSRFToken", "{{ csrf_token }}")
+            req.send(JSON.stringify({
+                "title" : programData.title,
+                "js" : programData.js,
+                "css" : programData.css,
+                "html" : programData.html,
+            }))
+        }
+    </script>
 </body>
 </html>
