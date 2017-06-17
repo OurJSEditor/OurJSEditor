@@ -1,0 +1,28 @@
+<!DOCTYPE HTML>
+<html>
+<head>
+    <title>OurJSEditor execution environment.</title>
+    <style>
+        body {
+            margin: 0;
+        }
+        #output-frame {
+            position: absolute;
+            width: 100%;
+            height: 100%;
+            border: none;
+        }
+    </style>
+</head>
+<body>
+    <iframe src="about:blank" id="output-frame"></iframe>
+
+    <script>
+    window.addEventListener("message", function (msg) {
+        var outputDoc = document.getElementById("output-frame").contentDocument;
+        outputDoc.write(msg.data);
+        outputDoc.close();
+    });
+    </script>
+</body>
+</html>

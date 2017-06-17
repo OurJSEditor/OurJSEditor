@@ -4,33 +4,34 @@ document.addEventListener("DOMContentLoaded", function() {
     document.getElementById("btnRun").addEventListener("click", function(event) {
         event.preventDefault();
 
-        var previewDoc = window.frames[0].document;
-
         var css    = ace.edit("css-editor").getSession().getValue();
         var script = ace.edit("js-editor").getSession().getValue();
         var html   = ace.edit("html-editor").getSession().getValue();
 
-        previewDoc.write("<!DOCTYPE html>");
-        previewDoc.write("<html>");
-        previewDoc.write("<head>");
-        previewDoc.write("<style type='text/css'>" + css + "</style>");
+        var combinedCode = "";
+
+        combinedCode += "<!DOCTYPE html>";
+        combinedCode += "<html>";
+        combinedCode += "<head>";
+        combinedCode += "<style type='text/css'>" + css + "</style>";
 
         var selectJSRun = document.getElementById("selectJSRun").value;
 
         if (selectJSRun === "onLoad")
-            previewDoc.write("<script type='text/javascript'>window.onload = function() {" + script + "\n}</script>");
+            combinedCode += "<script type='text/javascript'>window.onload = function() {" + script + "\n}</script>";
         //else if (selectJSRun === "onDomready")
         //
         else if (selectJSRun === "inHead")
-            previewDoc.write("<script type='text/javascript'>" + script + "</script>");
-        previewDoc.write("</head>");
-        previewDoc.write("<body>");
-        previewDoc.write(html);
+            combinedCode += "<script type='text/javascript'>" + script + "</script>";
+        combinedCode += "</head>";
+        combinedCode += "<body>";
+        combinedCode += html;
         if (selectJSRun === "inBody")
-            previewDoc.write("<script type='text/javascript'>" + script + "</script>");
-        previewDoc.write("</body>");
-        previewDoc.write("</html>");
-        previewDoc.close();
+            combinedCode += "<script type='text/javascript'>" + script + "</script>";
+        combinedCode += "</body>";
+        combinedCode += "</html>";
+
+        document.getElementById("preview").contentWindow.postMessage(combinedCode, "*");
     });
 
     // Preview code on page load
