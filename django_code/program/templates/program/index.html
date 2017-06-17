@@ -77,6 +77,8 @@
 
     <script>
         var runningLocal = false;
+        
+        document.domain = "ourjseditor.com";
 
         try {
             var programData = JSON.parse('{{ data_dict|escapejs }}')
