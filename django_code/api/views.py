@@ -74,6 +74,10 @@ def program(request, program_id):
                     return HttpResponse('{"success":false,"error":"Not authorized."}', content_type="application/json", status=403)
 
                 valid_props = ["html", "js", "css", "title"]
+
+                if "title" in data and len(data["title"]) > 45:
+                    return HttpResponse('{"creationSuccess":false, "error":"Title length exceeds maximum characters."}', content_type="application/json", status=400)
+
                 for prop in valid_props:
                     if prop in data:
                         setattr(requested_program, prop, data[prop])
