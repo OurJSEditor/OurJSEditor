@@ -1,6 +1,7 @@
 from django.shortcuts import render
 from django.http import HttpResponse
 from django.contrib.auth.models import User
+from django import db
 
 import json
 
@@ -20,9 +21,12 @@ def username_available(request):
 
 def new_program(request):
     if request.method == 'POST':
-        try:
-            data = json.loads(request.body)
-            if request.user.is_authenticated:
+        if request.user.is_authenticated:
+            try:
+                data = json.loads(request.body)
+                if (len(data["title"]) > 45):
+                    return HttpResponse('{"creationSuccess":false, "error":"Title length exceeds maximum characters."}', content_type="application/json", status=400)
+
                 program = Program.objects.create(
                     user = request.user,
                     title = data["title"],
@@ -34,11 +38,18 @@ def new_program(request):
                 response = HttpResponse('{"creationSuccess":true}', content_type="application/json", status=201)
                 response["Location"] = "/program/" + program.program_id
                 return response
-            else:
-                return HttpResponse('{"creationSuccess":false,"error":"Not logged in."}', content_type="application/json", status=403)
-        except ValueError:
-            # Catch and return 400 on malformed JSON
-            return HttpResponse('{"creationSuccess":false,"error":"Missing or malformed JSON."}', content_type="application/json", status=400)
+
+            # KeyError if user-passed dict is missing something we want
+            except KeyError as err:
+                return HttpResponse('{"creationSuccess":false, "error":"Missing data for %s."}' % str(err), content_type="application/json", status=400)
+            # db.Error if the db rejects what we try to include; TypeError for other things, e.g. title is an int and len() fails or data is a string and ["title"] fails
+            except (db.Error, TypeError):
+                return HttpResponse('{"creationSuccess":false, "error":"Invalid data."}', content_type="application/json", status=400)
+            # ValueError if parsing the JSON failed
+            except ValueError:
+                return HttpResponse('{"creationSuccess":false,"error":"Missing or malformed JSON."}', content_type="application/json", status=400)
+        else:
+            return HttpResponse('{"creationSuccess":false,"error":"Not logged in."}', content_type="application/json", status=403)
     else:
         return HttpResponse("The method " + request.method + " is not allowed for the requested URL.", status=405)
 
