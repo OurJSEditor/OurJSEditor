@@ -14,20 +14,7 @@ def index(request):
     return HttpResponse("Hello, world. You're at the index.")
 
 def login(request):
-    if request.method == 'POST':
-        data = json.loads(request.body)
-        user = auth.authenticate(
-            username=data["username"],
-            password=data["password"]
-        )
-
-        if user is not None:
-            auth.login(request, user)
-            return HttpResponse('{"loginSuccess":true,"username":"' + user.username + '"}', content_type="application/json")
-        else:
-            # At this point, error should be handled by Javascript
-            return HttpResponse('{"loginSuccess":false}', content_type="application/json")
-    elif request.method == 'GET':
+    if request.method == 'GET':
         if request.user.is_authenticated:
             return redirect(request.GET.get("next") or "/")
         else:

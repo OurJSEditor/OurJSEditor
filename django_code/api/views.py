@@ -1,6 +1,7 @@
 from django.shortcuts import render
 from django.http import HttpResponse
 from django.contrib.auth.models import User
+from django.contrib import auth
 from django import db
 
 import json
@@ -18,6 +19,23 @@ def username_available(request):
         return HttpResponse('{"username_available":false}', content_type="application/json", status=200)
     except User.DoesNotExist:
         return HttpResponse('{"username_available":true}', content_type="application/json", status=200)
+
+def login(request):
+    if request.method == 'POST':
+        data = json.loads(request.body)
+        user = auth.authenticate(
+            username=data["username"],
+            password=data["password"]
+        )
+
+        if user is not None:
+            auth.login(request, user)
+            return HttpResponse('{"loginSuccess":true,"username":"' + user.username + '"}', content_type="application/json")
+        else:
+            # At this point, error should be handled by Javascript
+            return HttpResponse('{"loginSuccess":false}', content_type="application/json")
+    else:
+        return HttpResponse("The method " + request.method + " is not allowed for the requested URL.", status=405)
 
 def new_program(request):
     if request.method == 'POST':

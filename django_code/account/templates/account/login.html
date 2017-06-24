@@ -29,7 +29,7 @@
                 loginT.innerHTML = "Your username or password was incorrect.<br>";
             }
         });
-        req.open("POST", "login");
+        req.open("POST", "/api/account/login");
         req.setRequestHeader("Content-Type", "application/json");
         req.setRequestHeader("X-CSRFToken", "{{ csrf_token }}");
         req.send(data);
