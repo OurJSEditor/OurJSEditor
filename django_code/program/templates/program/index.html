@@ -120,7 +120,6 @@
 
             if (programData.canEditProgram) {
                 document.getElementById("btnSave").style.display = "block"
-                document.getElementById("program-title").contentEditable = true;
             }
         }
 
@@ -135,7 +134,21 @@
 
             var req = new XMLHttpRequest();
             req.addEventListener("load", function (a) {
-                if (programData.new) {
+                //Something went wrong:
+                if (this.status >= 400) {
+                    var contentType = this.getResponseHeader("content-type").toLowerCase();
+                    var outputMessage = "Program " + (programData.new ? "creating" : "editing") + " failed";
+                    if (contentType.indexOf("json") > -1) {
+                        console.log(JSON.parse(this.response));
+                        outputMessage += " with the error message:\n\n" + JSON.parse(this.response).error;
+                    }else if (contentType.indexOf("html") > -1) {
+                        outputMessage += "; a new window/tab with more information has been opened.";
+                        window.open("data:text/html," + this.response, "_blank");
+                    }else {
+                        outputMessage += ".";
+                    }
+                    alert(outputMessage);
+                }else if (programData.new) {
                     window.location.href = this.getResponseHeader("Location")
                 }
             })

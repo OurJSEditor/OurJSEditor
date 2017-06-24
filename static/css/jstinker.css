@@ -111,6 +111,10 @@ body {
     font-weight: bold;
 }
 
+#program-title.editable:hover {
+    cursor: pointer;
+}
+
 #btnSave {
     display: none;
 }
