@@ -17,7 +17,7 @@ Windows setup should be roughly similar, but will probably require some Googling
 5. `virtualenv` creates a virtual environment for each one of your python projects you don't have conflicts. Run `pip install virtualenv`.
 6. Inside the OurJSEditor directory, create a virtual environment with `virtualenv OurEnv`. The name doesn't really matter, but OurEnv is ignored in `.gitignore` for you.
 7. Activate the virtual environment with `source OurEnv/bin/activate`. Once it's activated, you should see `(OurEnv)` appended to the front of your terminal prompt. **Use `deactivate` at any time to exit the virtual environment.**
-8. Now, installing Django. `pip install Django`.
+8. Now, installing requirements. Running `pip install -r requirements.txt` install the correct versions of a list of python requirements.
 9. Now, you need a database. The server uses mySQL, but it's far easier to set up `sqlite3` for local development. On Mac, with homebrew installed, `brew install sqlite3`. You'll have to look into doing it on other operating systems. Once it's installed, `sqlite3 -version` from the command line should print the version.
 10. Point Django at the new database by replacing the [`DATABASE` config](https://github.com/OurJSEditor/OurJSEditor/blob/0768f0126042193b6aa1e51605c74cc49c2850dc/django_code/ourjseditor/settings.py#L90) with:
 ```py
