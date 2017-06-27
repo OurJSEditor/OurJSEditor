@@ -18,10 +18,10 @@ from django.conf.urls import url, include
 from django.contrib import admin
 
 urlpatterns = [
-    url(r'^admin/', admin.site.urls),
-    url(r'^account/', include('account.urls')),
+    url(r'^admin/(\w+)/$', admin.site.urls),
+    url(r'^account/(settings/|profile/)?$', include('account.urls')),
     url(r'^api/', include('api.urls')),
-    url(r'^program/', include('program.urls')),
-    url(r'^user/(\w+)/', include('user_profile.urls')),
+    url(r'^program/(new|[-_\w]{6})/$', include('program.urls')),
+    url(r'^user/(\w+)/$', include('user_profile.urls')),
     url(r'^$', include('meta.urls')),
 ]
