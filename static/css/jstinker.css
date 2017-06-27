@@ -39,7 +39,7 @@ body {
     font-size: 11px;
     width: 217px;
     position: absolute;
-    top: 51px;
+    top: 0;
     left: 0;
     background-color: #fff;
     color: #444;
@@ -55,6 +55,7 @@ body {
     margin-bottom: 0px;
     min-height: 50px;
     position: relative;
+    z-index: 1;
 }
 
 .navbar-default .navbar-brand {
