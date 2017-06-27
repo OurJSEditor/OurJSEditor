@@ -19,6 +19,44 @@ function removeTitleInput (event) {
     titleInput.parentNode.removeChild(titleInput);
 }
 
+function deleteConfirm () {
+    document.getElementById("backCover").style.display = "block";
+    document.getElementById("deleteConfirm").style.display = "block";
+    document.getElementById("backCover").addEventListener("click", closeConfirm);
+}
+
+function closeConfirm () {
+    document.getElementById("backCover").style.display = "none";
+    document.getElementById("deleteConfirm").style.display = "none";
+    document.getElementById("backCover").removeEventListener("click", closeConfirm);
+}
+
+function deleteProgram () {
+    var req = new XMLHttpRequest();
+    req.addEventListener("load", function (a) {
+        //Something went wrong:
+        if (this.status >= 400) {
+            var contentType = this.getResponseHeader("content-type").toLowerCase();
+            var outputMessage = "Program deleting failed";
+            if (contentType.indexOf("json") > -1) {
+                console.log(JSON.parse(this.response));
+                outputMessage += " with the error message:\n\n" + JSON.parse(this.response).error;
+            }else if (contentType.indexOf("html") > -1) {
+                outputMessage += "; a new window/tab with more information has been opened.";
+                window.open("data:text/html," + this.response, "_blank");
+            }else {
+                outputMessage += ".";
+            }
+            alert(outputMessage);
+        }else {
+            window.location.href = "/user/" + programData.author.username;
+        }
+    })
+    req.open("DELETE", "/api/program/" + programData.id);
+    req.setRequestHeader("X-CSRFToken", csrf_token)
+    req.send()
+}
+
 document.addEventListener("DOMContentLoaded", function() {
 
     // RUN Button

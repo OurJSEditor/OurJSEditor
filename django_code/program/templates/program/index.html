@@ -32,6 +32,7 @@
                 <li id="btnTidyUp"><a href="">TidyUp</a></li>
                 <li id="btnTogether"><a href="">Collaborate</a></li>
                 <li id="btnSave"><a href="javascript:save();">Save</a></li>
+                <li id="btnDelete"><a href="javascript:deleteConfirm();">Delete</a></li>
             </ul>
         </div><!-- /.navbar-collapse -->
     </nav>
@@ -74,11 +75,22 @@
         </div>
     </div>
 
+    <div id="backCover"></div>
+    <div class="confirm" id="deleteConfirm">
+        <span class="confirm-info">Are you sure you want to delete this program?</span>
+        <br>
+        <span class="confirm-buttons">
+            <a href='javascript:closeConfirm();' class='confirm-cancel'>Cancel</a>
+            <a href='javascript:deleteProgram();' class='confirm-confirm'>Delete</a>
+        </span>
+    </div>
+
     <script>
         var runningLocal = false;
 
         try {
-            var programData = JSON.parse('{{ data_dict|escapejs }}')
+            var programData = JSON.parse('{{ data_dict|escapejs }}');
+            var csrf_token = "{{ csrf_token }}";
         }catch (e) {
             var runningLocal = true;
         }
@@ -119,6 +131,9 @@
 
             if (programData.canEditProgram) {
                 document.getElementById("btnSave").style.display = "block"
+                if (!programData.new) {
+                    document.getElementById("btnDelete").style.display = "block"
+                }
             }
         }
 
@@ -156,7 +171,7 @@
             }else {
                 req.open("POST", "/api/program/new");
             }
-            req.setRequestHeader("X-CSRFToken", "{{ csrf_token }}")
+            req.setRequestHeader("X-CSRFToken", csrf_token)
             req.send(JSON.stringify({
                 "title" : programData.title,
                 "js" : programData.js,

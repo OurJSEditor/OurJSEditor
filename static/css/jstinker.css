@@ -1,3 +1,8 @@
+html {
+    min-height: 100%;
+    position: relative;
+}
+
 body {
     font-family: "Helvetica Neue",Helvetica,Arial,sans-serif;
     font-size: 12px;
@@ -5,6 +10,7 @@ body {
     color: #333;
     background-color: #fff;
     margin: 0;
+    height: 100%;
 }
 
 .editors {
@@ -116,8 +122,55 @@ body {
     cursor: pointer;
 }
 
-#btnSave {
+/*Things hidden initially by CSS, then revealed by Javascript*/
+#btnSave, #btnDelete, #backCover, .confirm {
     display: none;
+}
+
+#backCover {
+    /*display: none;*/
+    position: absolute;
+    top:0;
+    bottom:0;
+    left:0;
+    right:0;
+    background: #000000;
+    opacity: 0.3;
+    z-index: 100;
+}
+
+.confirm {
+    z-index: 101;
+    transform: translate(-50%, -50%);
+    position: absolute;
+    top: 25%;
+    left: 50%;
+    background: #FFFFFF;
+    padding: 25px;
+    border: 1px solid #d7d7d7;
+    font-size: 15px;
+}
+
+.confirm-buttons {
+    text-align: right;
+    width: 100%;
+    display: inline-block;
+    margin-top: 25px;
+}
+
+.confirm-buttons a {
+    padding: 6px 10px;
+    margin: 5px;
+    text-decoration: none;
+    background: rgb(65, 118, 169);
+    color: #FFFFFF;
+}
+.confirm-buttons a:active,  .confirm-buttons a:hover{
+    color: #f0f0f0;
+}
+
+#deleteConfirm .confirm-cancel {
+    font-weight: bold;
 }
 
 .dropdown {
