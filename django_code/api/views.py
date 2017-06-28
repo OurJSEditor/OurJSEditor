@@ -5,6 +5,7 @@ from django.contrib import auth
 from django import db
 
 import json
+import re
 
 from program.models import Program
 
@@ -116,6 +117,62 @@ def program(request, program_id):
             return HttpResponse("The method " + request.method + " is not allowed for the requested URL.", status=405)
     except Program.DoesNotExist:
         return HttpResponse("No program exists with that id.", status=404)
+
+def user(request, username):
+    try:
+        requested_user = User.objects.select_related('profile').get(username=username)
+        if request.method == "GET":
+            program_dict = dict(
+                username = requested_user.username,
+                displayName = requested_user.profile.display_name,
+                bio = requested_user.profile.bio,
+                programs = list(Program.objects.filter(user=requested_user).values_list("program_id", flat=True))
+            )
+            return HttpResponse(json.dumps(program_dict), content_type="application/json", status=200)
+        elif request.method == "PATCH":
+            try:
+                data = json.loads(request.body)
+
+                if request.user != requested_user:
+                    return HttpResponse('{"success":false,"error":"Not authorized."}', content_type="application/json", status=403)
+
+                if "display_name" in data:
+                    if len(data["display_name"]) > 45:
+                        return HttpResponse('{"creationSuccess":false, "error":"display_name length exceeds maximum characters."}', content_type="application/json", status=400)
+                    else:
+                        requested_user.profile.display_name = data["display_name"]
+
+                if "bio" in data:
+                    if len(data["bio"]) > 500:
+                        return HttpResponse('{"creationSuccess":false, "error":"bio length exceeds maximum characters."}', content_type="application/json", status=400)
+                    else:
+                        requested_user.profile.bio = data["bio"]
+
+                if "username" in data:
+                    if  (len(data["username"]) > 45 or data["username"] == '' or re.search(r"\W", data["username"]) or
+                        (data["username"] != request.user.username and User.objects.filter(username=data["username"]).exists())):
+                        return HttpResponse('{"creationSuccess":false, "error":"Invalid username."}', content_type="application/json", status=400)
+                    else:
+                        requested_user.username = data["username"]
+
+                requested_user.save()
+
+                return HttpResponse('', status=204)
+            except ValueError:
+                return HttpResponse('{"success":false,"error":"Missing or malformed JSON."}', content_type="application/json", status=400)
+        elif (request.method == "DELETE"):
+            if request.user != requested_user:
+                return HttpResponse('{"success":false,"error":"Not authorized."}', content_type="application/json", status=403)
+
+            requested_user.delete()
+
+            return HttpResponse('', status=204)
+        else:
+            return HttpResponse("The method " + request.method + " is not allowed for the requested URL.", status=405)
+
+
+    except User.DoesNotExist:
+        return HttpResponse("No user with matching username.", status=404)
 
 def error(request):
     return HttpResponse('null', content_type="application/json", status=400)
