@@ -18,8 +18,12 @@
     <iframe src="about:blank" id="output-frame"></iframe>
 
     <script>
+    var frame = document.getElementById("output-frame");
     window.addEventListener("message", function (msg) {
-        var outputDoc = document.getElementById("output-frame").contentDocument;
+        //This removes the frame element from the DOM (and then replaces it), clearing the user's old code.
+        frame.parentNode.replaceChild(frame, frame);
+
+        var outputDoc = frame.contentDocument;
         outputDoc.write(msg.data);
         outputDoc.close();
     });
