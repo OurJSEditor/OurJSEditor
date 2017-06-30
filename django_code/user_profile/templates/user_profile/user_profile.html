@@ -46,7 +46,7 @@
                         {% if editing %}
                             <textarea class="bio-edit" name="bio" placeholder="Tell everyone about yourself." maxlength="500">{{ user.profile.bio }}</textarea>
                         {% else %}
-                            {{ user.profile.bio }}
+                            {{ user.profile.bio|linebreaksbr }}
                         {% endif %}
                     </p>
                 </td>

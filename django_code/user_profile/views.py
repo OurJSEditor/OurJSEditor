@@ -25,7 +25,7 @@ def edit(request, username):
     if (request.method == 'POST'):
        username = request.POST.get('username', '')
        display_name = request.POST.get('display_name', '')
-       bio = request.POST.get('bio', '')
+       bio = re.sub(r'\r', '', request.POST.get('bio', ''))
        if (username == '' or re.search(r"\W", username) or
           len(username) > 45 or len(display_name) > 45 or len(bio) > 500 or
           (username != request.user.username and User.objects.filter(username=username).exists())):
