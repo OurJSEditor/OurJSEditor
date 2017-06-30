@@ -109,12 +109,15 @@ body {
     padding: 15px;
 }
 
+.author-ref {
+    font-size: 15px;
+}
+
 #program-title {
     box-sizing: border-box;
     font-family: inherit;
-    font-size: inherit;
     line-height: inherit;
-    font-size: 17px;
+    font-size: 19px;
     font-weight: bold;
 }
 

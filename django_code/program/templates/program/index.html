@@ -42,6 +42,7 @@
         <div style="height: 51px;"></div>
         <div class="panel-body">
             <div id="program-title">Name your program</div>
+            <div class="author-ref">Created by <a id="program-author">You</a>.</div>
             When to run JS
             <select name="selectJSRun" id="selectJSRun" class="dropdown">
                 <option value="onLoad">onLoad</option>
@@ -122,6 +123,9 @@
             if (programData.new) {
                 programData.js = programData.css = programData.html = "";
                 programData.title = "Program";
+            }else {
+                document.getElementById("program-author").innerText = programData.author.displayName;
+                document.getElementById("program-author").setAttribute("href", "/user/" + programData.author.username);
             }
 
             jsEditor.setValue(programData.js, -1);
