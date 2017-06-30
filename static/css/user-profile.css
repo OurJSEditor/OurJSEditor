@@ -1,6 +1,7 @@
 body {
     background-color: #161E2C;
     font-family: sans-serif;
+    margin: 0;
 }
 
 .main-table {
@@ -9,7 +10,19 @@ body {
     background: white;
     border-spacing: 20px;
     padding: 0px;
+    margin: 20px;
     margin-left: 15%;
+}
+
+.programs td {
+    padding: 10px;
+}
+
+.program-link {
+    text-decoration: none;
+    border-bottom: 1px solid rgb(148, 148, 148);
+    padding: 1px 5px 1px 2px;
+    color: black;
 }
 
 .profile-image, .image-wrap {

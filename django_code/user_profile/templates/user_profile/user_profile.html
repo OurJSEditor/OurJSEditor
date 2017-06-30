@@ -12,7 +12,7 @@
     {% endif %}
 </head>
 <body>
-    <table class="main-table">
+    <table class="main-table profile">
         {% if editing %}
             <form method="POST" id="profileForm" onsubmit="return checkForm()">
             {% csrf_token %}
@@ -66,4 +66,16 @@
             </form>
         {% endif %}
     </table>
+
+    {% if not editing %}
+        <table class="main-table programs">
+            {% for program in user_programs %}
+                <tr>
+                    <td>
+                        <a class="program-link" href="/program/{{ program.program_id }}">{{ program.title }}</a>
+                    </td>
+                </tr>
+            {% endfor %}
+        </table>
+    {% endif %}
 </body></html>

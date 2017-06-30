@@ -3,6 +3,8 @@ from django.shortcuts import render, redirect
 from django.contrib.auth.models import User
 from django.http import HttpResponse
 
+from program.models import Program;
+
 # Create your views here.
 
 # username was captured by the regular expression that matched the url.
@@ -10,7 +12,12 @@ from django.http import HttpResponse
 def index(request, username):
     try:
         user = User.objects.select_related('profile').get(username=username)
-        return render(request, 'user_profile/user_profile.html', {'user': user, 'currentUser': request.user, 'editing': False})
+        return render(request, 'user_profile/user_profile.html', {
+            'user': user,
+            'currentUser': request.user,
+            'editing': False,
+            'user_programs': Program.objects.filter(user=user)
+        })
     except User.DoesNotExist:
         return render(request, 'user_profile/doesNotExist.html', {'username': username}, status=404)
 
