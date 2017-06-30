@@ -1,5 +1,5 @@
 # OurJSEditor
-This repository is for storing the server-side code which powers [OurJSEditor.com](http://ourjseditor.com).
+This repository is for storing the server-side code which powers [OurJSEditor.com](https://ourjseditor.com).
 
 ### Local Setup
 ***Note: This is to get a full database and Django setup working.***
