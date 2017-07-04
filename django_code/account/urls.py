@@ -3,7 +3,6 @@ from django.conf.urls import url
 from . import views
 
 urlpatterns = [
-    url(r'^$', views.index, name='index'),
-    url(r'^login(?:/|\?.*?)?$', views.login, name='login'),
-    url(r'^createAccount$', views.createAccount, name='createAccount')
+    url(r'^login$', views.login, name='login'), #Used for the UI for both creation and logging in
+    url(r'^createAccount$', views.createAccount, name='createAccount'), #Used by POST for creation
 ]

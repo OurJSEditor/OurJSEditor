@@ -22,6 +22,6 @@ urlpatterns = [
     url(r'^account/', include('account.urls')),
     url(r'^api/', include('api.urls')),
     url(r'^program/', include('program.urls')),
-    url(r'^user/(\w+)/', include('user_profile.urls')),
-    url(r'^$', include('meta.urls')),
+    url(r'^user/', include('user_profile.urls')),
+    url(r'^', include('meta.urls')),
 ]
