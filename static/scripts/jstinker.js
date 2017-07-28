@@ -57,44 +57,42 @@ function deleteProgram () {
     req.send()
 }
 
-document.addEventListener("DOMContentLoaded", function() {
-
-    // RUN Button
-    document.getElementById("btnRun").addEventListener("click", function(event) {
+function runProgram (event) {
+    if (event) {
         event.preventDefault();
+    }
 
-        var css    = ace.edit("css-editor").getSession().getValue();
-        var script = ace.edit("js-editor").getSession().getValue();
-        var html   = ace.edit("html-editor").getSession().getValue();
+    var css    = ace.edit("css-editor").getSession().getValue();
+    var script = ace.edit("js-editor").getSession().getValue();
+    var html   = ace.edit("html-editor").getSession().getValue();
 
-        var combinedCode = "";
+    var combinedCode = "";
 
-        combinedCode += "<!DOCTYPE html>";
-        combinedCode += "<html>";
-        combinedCode += "<head>";
-        combinedCode += "<style type='text/css'>" + css + "</style>";
+    combinedCode += "<!DOCTYPE html>";
+    combinedCode += "<html>";
+    combinedCode += "<head>";
+    combinedCode += "<style type='text/css'>" + css + "</style>";
 
-        var selectJSRun = document.getElementById("selectJSRun").value;
+    var selectJSRun = document.getElementById("selectJSRun").value;
 
-        if (selectJSRun === "onLoad")
-            combinedCode += "<script type='text/javascript'>window.onload = function() {" + script + "\n}</script>";
-        //else if (selectJSRun === "onDomready")
-        //
-        else if (selectJSRun === "inHead")
-            combinedCode += "<script type='text/javascript'>" + script + "</script>";
-        combinedCode += "</head>";
-        combinedCode += "<body>";
-        combinedCode += html;
-        if (selectJSRun === "inBody")
-            combinedCode += "<script type='text/javascript'>" + script + "</script>";
-        combinedCode += "</body>";
-        combinedCode += "</html>";
+    if (selectJSRun === "onLoad")
+        combinedCode += "<script type='text/javascript'>window.onload = function() {" + script + "\n}</script>";
+    //else if (selectJSRun === "onDomready")
+    //
+    else if (selectJSRun === "inHead")
+        combinedCode += "<script type='text/javascript'>" + script + "</script>";
+    combinedCode += "</head>";
+    combinedCode += "<body>";
+    combinedCode += html;
+    if (selectJSRun === "inBody")
+        combinedCode += "<script type='text/javascript'>" + script + "</script>";
+    combinedCode += "</body>";
+    combinedCode += "</html>";
 
-        document.getElementById("preview").contentWindow.postMessage(combinedCode, "*");
-    });
+    document.getElementById("preview").contentWindow.postMessage(combinedCode, "*");
+}
 
-    // Preview code on page load
-    document.getElementById("btnRun").click();
+document.addEventListener("DOMContentLoaded", function() {
 
     // TIDYUP Button
     document.getElementById("btnTidyUp").addEventListener("click", function(event) {
@@ -136,4 +134,9 @@ document.addEventListener("DOMContentLoaded", function() {
             titleInput.focus();
         });
     }
+});
+
+//Run program on window load. That way Ace is definitely loaded.
+window.addEventListener("load", function () {
+    runProgram();
 });
