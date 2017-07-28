@@ -57,7 +57,7 @@
                         <i id="loginT" style="color:red;"></i>
                         <input type="submit" value="Update Your Profile" class="button profile-edit">
                     {% elif user.username == currentUser.username %}
-                        <a href="/user/{% user.username %}/edit" class="button profile-edit">Edit Your Profile</a>
+                        <a href="/user/{{ user.username }}/edit" class="button profile-edit">Edit Your Profile</a>
                     {% endif %}
                 </td>
             </tr>
