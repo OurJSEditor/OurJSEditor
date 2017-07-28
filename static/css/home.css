@@ -296,25 +296,26 @@ body {
 	margin-top: 25px;
 	margin-bottom: 30px;
 }
-.desc button, .desc2 button {
+.desc .button, .desc2 .button {
 	background-color: #363636;
 	color: #fff;
 	font-weight: bold;
 	border: none;
 	padding: 10px 30px;
+	margin-right: 10px;
 }
-.desc button {
+.desc .button {
 	background-color: #363636;
 	-webkit-transition: all 0.3s ease;
 	transition: all 0.3s ease;
 }
-.desc button:hover, .desc button:focus { background-color: #777; }
-.desc2 button {
+.desc .button:hover, .desc .button:focus { background-color: #777; }
+.desc2 .button {
 	background-color: #a92446;
 	-webkit-transition: all 0.3s ease;
 	transition: all 0.3s ease;
 }
-.desc2 button:hover, .desc2 button:focus { background-color: #DD426A; }
+.desc2 .button:hover, .desc2 .button:focus { background-color: #DD426A; }
 .desc2 ul {
 	padding: 10px 15px 30px;
 	line-height: 2;

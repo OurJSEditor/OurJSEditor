@@ -3,4 +3,4 @@ from django.shortcuts import render
 # Create your views here.
 
 def index(request):
-    return render(request, 'ourjseditor/index.html')
+    return render(request, 'ourjseditor/index.html', { 'logged_in': request.user.is_authenticated })
