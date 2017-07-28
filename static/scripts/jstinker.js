@@ -7,12 +7,11 @@ titleInput.addEventListener("blur", removeTitleInput);
 titleInput.addEventListener("keypress", function (e) {
     //If the enter or return key is pressed.
     if (e.which === 13) {
-        //Fires the change event, which normally only fires if the text is different
-        titleInput.dispatchEvent(new Event("change"));
+        removeTitleInput();
     }
 });
 
-function removeTitleInput (event) {
+function removeTitleInput () {
     if (titleInput.parentNode === null) return;
     titleLabel.innerText = titleInput.value;
     titleInput.parentNode.insertBefore(titleLabel, titleInput);
