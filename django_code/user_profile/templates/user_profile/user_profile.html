@@ -75,6 +75,16 @@
                         <a class="program-link" href="/program/{{ program.program_id }}">{{ program.title }}</a>
                     </td>
                 </tr>
+            {% empty %}
+                <tr>
+                    <td>
+                        {% if user.username == currentUser.username %}
+                            You don't have any programs. Try <a href="/program/new">making one</a>.
+                        {% else %}
+                            {{ user.profile.display_name }} doesn't have any programs.
+                        {% endif %}
+                    </td>
+                </tr>
             {% endfor %}
         </table>
     {% endif %}
