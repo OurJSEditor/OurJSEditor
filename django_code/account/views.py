@@ -13,9 +13,9 @@ from django.contrib.auth.decorators import login_required
 def login(request):
     if request.method == 'GET':
         if request.user.is_authenticated:
-            return redirect(request.GET.get("next") or "/")
+            return redirect(request.GET.get("next") or "/user/" + request.user.username)
         else:
-            return HttpResponse(render(request, "account/login.html"))
+            return render(request, "account/login.html")
 
 def new_user(request):
     if request.method == 'POST':
