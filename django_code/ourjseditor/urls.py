@@ -21,9 +21,9 @@ from . import views
 
 urlpatterns = [
     url(r'^admin/', admin.site.urls),
-    url(r'^account/', include('account.urls')),
     url(r'^api/', include('api.urls')),
     url(r'^program/', include('program.urls')),
+    url(r'^user/', include('account.urls')),
     url(r'^user/', include('user_profile.urls')),
     url(r'^$', views.index, name='index'),
 ]

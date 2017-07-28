@@ -174,5 +174,45 @@ def user(request, username):
     except User.DoesNotExist:
         return HttpResponse("No user with matching username.", status=404)
 
+def new_user(request):
+    if request.method == 'POST':
+        try:
+            data = json.loads(request.body)
+
+            username = data['username']
+            email = data['email']
+            password = data['password']
+            display_name = data['display_name']
+
+            if (username == "" or re.search(r"\W", username) or len(username) > 45):
+                return HttpResponse('{"creationSuccess":false,"error":"Invalid username"}', content_type="application/json", status=400)
+            if (User.objects.filter(username=username).exists()):
+                return HttpResponse('{"creationSuccess":false,"error":"Username is already taken"}', content_type="application/json", status=400)
+            if (password == ""):
+                return HttpResponse('{"creationSuccess":false,"error":"Password cannot be blank"}', content_type="application/json", status=400)
+            if (display_name == "" or len(display_name) > 45):
+                return HttpResponse('{"creationSuccess":false,"error":"Invalid display name"}', content_type="application/json", status=400)
+            if (not re.match(r"^([\w.+-]+@[a-zA-Z0-9-]+(?:\.[a-zA-Z0-9-]+)+)?$", email)):
+                return HttpResponse('{"creationSuccess":false,"error":"Invalid email"}', content_type="application/json", status=400)
+
+            user = User.objects.create_user(
+                username,
+                email,
+                password,
+            )
+            user.profile.display_name = display_name
+            user.save()
+
+            auth.login(request, user)
+
+            response = HttpResponse('{"creationSuccess":true}', content_type="application/json", status=201)
+            response["Location"] = "/user/" + user.username
+            return response
+        except KeyError as err:
+            return HttpResponse('{"creationSuccess":false, "error":"Missing data for %s."}' % str(err), content_type="application/json", status=400)
+        except ValueError:
+            return HttpResponse('{"success":false,"error":"Missing or malformed JSON."}', content_type="application/json", status=400)
+
+
 def error(request):
     return HttpResponse('null', content_type="application/json", status=400)

@@ -17,7 +17,7 @@ def login(request):
         else:
             return HttpResponse(render(request, "account/login.html"))
 
-def createAccount(request):
+def new_user(request):
     if request.method == 'POST':
         username = request.POST.get('username', '')
         email = request.POST.get('email', '')
