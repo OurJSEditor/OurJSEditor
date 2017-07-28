@@ -41,7 +41,7 @@ INSTALLED_APPS = [
     'django.contrib.staticfiles',
     'django.contrib.sites',
     'django.contrib.redirects',
-    'meta',
+    'ourjseditor',
     'account',
     'api',
     'user_profile',
