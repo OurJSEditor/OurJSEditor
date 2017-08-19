@@ -17,7 +17,7 @@ class Profile(models.Model):
     # Max length of 45 (is enforced for CharField). Not required, but should always be filled.
     display_name = models.CharField(max_length=45, blank=True)
     # id. 6 digits, doesn't overlap with program ids
-    profile_id = models.CharField(max_length=6, default="")
+    profile_id = models.CharField(primary_key=True, max_length=6, default=generate_id)
 
 @receiver(post_save, sender=User)
 def create_user_profile(sender, instance, created, **kwargs):
