@@ -1,25 +1,13 @@
 # -*- coding: utf-8 -*-
 from __future__ import unicode_literals
-import random
 
 from django.db import models
 
 from django.contrib.auth.models import User
 
 def generate_id():
-    chars = "abcdefghijklmnopqrstuvwzyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789_-"
-
-    id_string = ""
-    while len(id_string) < 6:
-        id_string += random.choice(chars)
-
-    try:
-        # Try to get a program with the current id
-        Program.objects.get(program_id=id_string)
-        # If we don't error there is a program with this id already. Re-generate id
-        return generate_id()
-    except Program.DoesNotExist:
-        return id_string
+    from ourjseditor.funcs import get_id
+    return get_id();
 
 def get_default_user():
     return User.objects.get(username="admin")
