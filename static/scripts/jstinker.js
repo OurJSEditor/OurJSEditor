@@ -145,6 +145,8 @@ document.addEventListener("DOMContentLoaded", function() {
       return false;
     });
 
+    document.getElementById("btnRun").addEventListener("click", runProgram);
+
     titleLabel = document.getElementById("program-title");
     if (!runningLocal && programData.canEditProgram) {
         titleLabel.classList.add("editable");
