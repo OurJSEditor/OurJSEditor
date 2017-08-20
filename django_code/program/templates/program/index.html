@@ -2,7 +2,7 @@
 <html lang="en">
 <head>
     <meta charset="UTF-8">
-    <title>New program &mdash; OurJSEditor</title>
+    <title id="title-tag">New program &mdash; OurJSEditor</title>
 
     <!-- Beautify Web - HTML, CSS, JS -->
     <script src="/static/scripts/beautify-web/beautify-html.js"></script>
@@ -126,6 +126,8 @@
             }else {
                 document.getElementById("program-author").innerText = programData.author.displayName;
                 document.getElementById("program-author").setAttribute("href", "/user/" + programData.author.username);
+
+                document.getElementById("title-tag").innerText = programData.title + " \u2014 OurJSEditor";
             }
 
             jsEditor.setValue(programData.js, -1);
