@@ -3,7 +3,8 @@ from django.shortcuts import render, redirect
 from django.contrib.auth.models import User
 from django.http import HttpResponse
 
-from program.models import Program;
+from program.models import Program
+from ourjseditor.funcs import check_username
 
 # Create your views here.
 
@@ -26,9 +27,7 @@ def edit(request, username):
        username = request.POST.get('username', '')
        display_name = request.POST.get('display_name', '')
        bio = re.sub(r'\r', '', request.POST.get('bio', ''))
-       if (username == '' or re.search(r"\W", username) or
-          len(username) > 45 or len(display_name) > 45 or len(bio) > 500 or
-          (username != request.user.username and User.objects.filter(username=username).exists())):
+       if (not check_username(username, request.user.username)):
            return HttpResponse('null', content_type="application/json", status=400)
        if (display_name == ''):
            display_name = username

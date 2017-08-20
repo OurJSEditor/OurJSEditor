@@ -16,7 +16,6 @@ var checkForm = function () {
 };
 var checkUsername = function() {
     var available = document.getElementById("available");
-    available.innerHTML = "";
     var ans=false;
 
     if (current_username == document.getElementById("username").value) {
@@ -33,7 +32,7 @@ var checkUsername = function() {
     req.addEventListener("load", function() {
         if (this.status == 200) {
             ans = JSON.parse(this.response);
-            ans = ans["username_available"];
+            ans = ans.usernameValid;
         }
         if (ans) {
             available.innerHTML = "&#x2714;";
@@ -41,6 +40,6 @@ var checkUsername = function() {
             available.innerHTML = "&#x2717;";
         }
     });
-    req.open("GET", "/api/user/username_available?username=" + document.getElementById("username").value);
+    req.open("GET", "/api/user/username_valid/" + encodeURIComponent(document.getElementById("username").value));
     req.send();
 };

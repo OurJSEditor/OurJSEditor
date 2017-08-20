@@ -26,7 +26,8 @@ def program (request, program_id):
             data_dict["canEditProgram"] = (current_program.user == request.user)
             data_dict["author"] = dict(
                 username=current_program.user.username,
-                displayName=current_program.user.profile.display_name
+                displayName=current_program.user.profile.display_name,
+                id=current_program.user.profile.profile_id
             )
         except Program.DoesNotExist:
             return HttpResponse("404: No program found with that id", status=404)

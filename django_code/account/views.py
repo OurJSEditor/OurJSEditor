@@ -1,12 +1,13 @@
 from django.shortcuts import render, redirect
 from django.http import HttpResponse
 
-import json
-import re
+import json, re
 
 from django.contrib import auth
 from django.contrib.auth.models import User
 from django.contrib.auth.decorators import login_required
+
+from ourjseditor.funcs import check_username
 
 # Create your views here.
 
@@ -26,9 +27,8 @@ def new_user(request):
 
         #Checks for valid data. This only confirms what javascript has already checked, so errors
         #don't need to be verobse. It mostly only stops people making their own fake requests.
-        if (username == "" or password == "" or display_name == "" or
-            re.search(r"\W", username) or len(display_name) > 45 or len(username) > 45 or
-            User.objects.filter(username=username).exists() or
+        if (password == "" or display_name == "" or len(display_name) > 45 or
+            not check_username(username, "") or
             not re.match(r"^([\w.+-]+@[a-zA-Z0-9-]+(?:\.[a-zA-Z0-9-]+)+)?$", email)
             ):
             return HttpResponse('{"creationSuccess":false}', content_type="application/json", status=400)

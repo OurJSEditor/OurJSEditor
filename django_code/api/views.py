@@ -8,18 +8,18 @@ import json
 import re
 
 from program.models import Program
+from user_profile.models import Profile
+from ourjseditor.funcs import check_username
 
 # Create your views here.
 
-def username_available(request):
-    username = request.GET.get("username", "")
-    if (username == ""):
-        return error(request)
-    try:
-        user = User.objects.get(username=username)
-        return HttpResponse('{"username_available":false}', content_type="application/json", status=200)
-    except User.DoesNotExist:
-        return HttpResponse('{"username_available":true}', content_type="application/json", status=200)
+def username_valid(request, username):
+    valid = "false"
+    if (check_username(username, "")):
+        valid = "true"
+
+    return HttpResponse('{"usernameValid":%s}' % valid, content_type="application/json", status=200)
+
 
 def login(request):
     if request.method == 'POST':
@@ -77,7 +77,7 @@ def program(request, program_id):
         requested_program = Program.objects.get(program_id=program_id)
         if (request.method == "GET"):
             program_dict = dict(
-                author_username = requested_program.user.username,
+                author_id = requested_program.user.profile.profile_id,
                 id = requested_program.program_id,
                 title = requested_program.title,
                 css = requested_program.css,
@@ -95,7 +95,7 @@ def program(request, program_id):
                 valid_props = ["html", "js", "css", "title"]
 
                 if "title" in data and len(data["title"]) > 45:
-                    return HttpResponse('{"creationSuccess":false, "error":"Title length exceeds maximum characters."}', content_type="application/json", status=400)
+                    return HttpResponse('{"success":false, "error":"Title length exceeds maximum characters."}', content_type="application/json", status=400)
 
                 for prop in valid_props:
                     if prop in data:
@@ -118,61 +118,63 @@ def program(request, program_id):
     except Program.DoesNotExist:
         return HttpResponse("No program exists with that id.", status=404)
 
-def user(request, username):
+def user(request, id):
     try:
-        requested_user = User.objects.select_related('profile').get(username=username)
-        if request.method == "GET":
-            program_dict = dict(
-                username = requested_user.username,
-                displayName = requested_user.profile.display_name,
-                bio = requested_user.profile.bio,
-                programs = list(Program.objects.filter(user=requested_user).values_list("program_id", flat=True))
-            )
-            return HttpResponse(json.dumps(program_dict), content_type="application/json", status=200)
-        elif request.method == "PATCH":
-            try:
-                data = json.loads(request.body)
+        requested_user = Profile.objects.select_related('user').get(profile_id=id).user
+    except Profile.DoesNotExist:
+        try:
+            requested_user = User.objects.select_related('profile').get(username=id)
+        except User.DoesNotExist:
+            return HttpResponse("No user with matching username or id.", status=404)
 
-                if request.user != requested_user:
-                    return HttpResponse('{"success":false,"error":"Not authorized."}', content_type="application/json", status=403)
+    if request.method == "GET":
+        user_dict = dict(
+            username = requested_user.username,
+            id = requested_user.profile.profile_id,
+            displayName = requested_user.profile.display_name,
+            bio = requested_user.profile.bio,
+            programs = list(Program.objects.filter(user=requested_user).values_list("program_id", flat=True))
+        )
+        return HttpResponse(json.dumps(user_dict), content_type="application/json", status=200)
+    elif request.method == "PATCH":
+        try:
+            data = json.loads(request.body)
 
-                if "display_name" in data:
-                    if len(data["display_name"]) > 45:
-                        return HttpResponse('{"creationSuccess":false, "error":"display_name length exceeds maximum characters."}', content_type="application/json", status=400)
-                    else:
-                        requested_user.profile.display_name = data["display_name"]
-
-                if "bio" in data:
-                    if len(data["bio"]) > 500:
-                        return HttpResponse('{"creationSuccess":false, "error":"bio length exceeds maximum characters."}', content_type="application/json", status=400)
-                    else:
-                        requested_user.profile.bio = data["bio"]
-
-                if "username" in data:
-                    if  (len(data["username"]) > 45 or data["username"] == '' or re.search(r"\W", data["username"]) or
-                        (data["username"] != request.user.username and User.objects.filter(username=data["username"]).exists())):
-                        return HttpResponse('{"creationSuccess":false, "error":"Invalid username."}', content_type="application/json", status=400)
-                    else:
-                        requested_user.username = data["username"]
-
-                requested_user.save()
-
-                return HttpResponse('', status=204)
-            except ValueError:
-                return HttpResponse('{"success":false,"error":"Missing or malformed JSON."}', content_type="application/json", status=400)
-        elif (request.method == "DELETE"):
             if request.user != requested_user:
                 return HttpResponse('{"success":false,"error":"Not authorized."}', content_type="application/json", status=403)
 
-            requested_user.delete()
+            if "display_name" in data:
+                if len(data["display_name"]) > 45:
+                    return HttpResponse('{"creationSuccess":false, "error":"display_name length exceeds maximum characters."}', content_type="application/json", status=400)
+                else:
+                    requested_user.profile.display_name = data["display_name"]
+
+            if "bio" in data:
+                if len(data["bio"]) > 500:
+                    return HttpResponse('{"creationSuccess":false, "error":"bio length exceeds maximum characters."}', content_type="application/json", status=400)
+                else:
+                    requested_user.profile.bio = data["bio"]
+
+            if "username" in data:
+                if  (check_username(data["username"], requested_user.username)):
+                    return HttpResponse('{"creationSuccess":false, "error":"Invalid username."}', content_type="application/json", status=400)
+                else:
+                    requested_user.username = data["username"]
+
+            requested_user.save()
 
             return HttpResponse('', status=204)
-        else:
-            return HttpResponse("The method " + request.method + " is not allowed for the requested URL.", status=405)
+        except ValueError:
+            return HttpResponse('{"success":false,"error":"Missing or malformed JSON."}', content_type="application/json", status=400)
+    elif (request.method == "DELETE"):
+        if request.user != requested_user:
+            return HttpResponse('{"success":false,"error":"Not authorized."}', content_type="application/json", status=403)
 
+        requested_user.delete()
 
-    except User.DoesNotExist:
-        return HttpResponse("No user with matching username.", status=404)
+        return HttpResponse('', status=204)
+    else:
+        return HttpResponse("The method " + request.method + " is not allowed for the requested URL.", status=405)
 
 def new_user(request):
     if request.method == 'POST':
@@ -184,10 +186,8 @@ def new_user(request):
             password = data['password']
             display_name = data['display_name']
 
-            if (username == "" or re.search(r"\W", username) or len(username) > 45):
+            if (not check_username(username, "")):
                 return HttpResponse('{"creationSuccess":false,"error":"Invalid username"}', content_type="application/json", status=400)
-            if (User.objects.filter(username=username).exists()):
-                return HttpResponse('{"creationSuccess":false,"error":"Username is already taken"}', content_type="application/json", status=400)
             if (password == ""):
                 return HttpResponse('{"creationSuccess":false,"error":"Password cannot be blank"}', content_type="application/json", status=400)
             if (display_name == "" or len(display_name) > 45):
