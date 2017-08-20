@@ -42,7 +42,8 @@ function removeTitleInput () {
     programData.title = document.getElementById("program-title").innerText;
 }
 
-function deleteConfirm () {
+function deleteConfirm (event) {
+    event.preventDefault();
     document.getElementById("backCover").style.display = "block";
     document.getElementById("deleteConfirm").style.display = "block";
     document.getElementById("backCover").addEventListener("click", closeConfirm);
@@ -146,6 +147,8 @@ document.addEventListener("DOMContentLoaded", function() {
     });
 
     document.getElementById("btnRun").addEventListener("click", runProgram);
+    document.getElementById("btnSave").addEventListener("click", save);
+    document.getElementById("btnDelete").addEventListener("click", deleteConfirm);
 
     titleLabel = document.getElementById("program-title");
     if (!runningLocal && programData.canEditProgram) {
