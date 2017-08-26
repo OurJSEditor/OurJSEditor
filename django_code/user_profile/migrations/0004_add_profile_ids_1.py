@@ -43,4 +43,7 @@ class Migration(migrations.Migration):
         ),
         # At this point the model needs to be updated with primary_key=True and default=generate_id
         # models.CharField(primary_key=True, max_length=6, default=generate_id)
+
+        # Also, if using mysql, the following line of SQL must be run:
+        # ALTER TABLE user_profile_profile DROP PRIMARY KEY, CHANGE COLUMN id id int(11) PRIMARY KEY;
     ]
