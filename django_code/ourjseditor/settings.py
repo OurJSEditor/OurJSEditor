@@ -11,6 +11,7 @@ https://docs.djangoproject.com/en/1.10/ref/settings/
 """
 
 import os
+from decouple import config
 
 # Build paths inside the project like this: os.path.join(BASE_DIR, ...)
 BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
@@ -19,10 +20,8 @@ BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 # Quick-start development settings - unsuitable for production
 # See https://docs.djangoproject.com/en/1.10/howto/deployment/checklist/
 
-# Get secret key from its file, removing the trailing newline.
-# This keeps the secret key secret.
-with open(os.path.join(BASE_DIR, "ourjseditor/secret_key.txt"), 'r') as f:
-    SECRET_KEY = f.readline().rstrip('\r\n')
+# Get secret key from the .env file, using decouple
+SECRET_KEY = config('SECRET_KEY')
 
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
@@ -85,16 +84,13 @@ WSGI_APPLICATION = 'ourjseditor.wsgi.application'
 # Database
 # https://docs.djangoproject.com/en/1.10/ref/settings/#databases
 
-with open(os.path.join(BASE_DIR, "ourjseditor/database_password.txt"), 'r') as f:
-    database_password = f.readline().rstrip('\r\n')
-
 DATABASES = {
     'default': {
-        'ENGINE': 'django.db.backends.mysql',
-        'NAME': 'ourjseditor',
-        'USER': 'OurJSEsql',
-        'PASSWORD': database_password,
-        'HOST': 'localhost',
+        'NAME': config('DB_NAME').format(file_path=os.path.join(BASE_DIR, 'db.sqlite3')),
+        'ENGINE': config('DB_ENGINE'),
+        'USER': config('DB_USER', ''),
+        'PASSWORD': config('DB_PASSWORD', ''),
+        'HOST': config('DB_HOST', ''),
         'PORT': '',
     }
 }

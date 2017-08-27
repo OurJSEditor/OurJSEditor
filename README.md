@@ -19,21 +19,13 @@ Windows setup should be roughly similar, but will probably require some Googling
 7. Activate the virtual environment with `source OurEnv/bin/activate`. Once it's activated, you should see `(OurEnv)` appended to the front of your terminal prompt. **Use `deactivate` at any time to exit the virtual environment.**
 8. Now, installing requirements. Running `pip install -r requirements.txt` install the correct versions of a list of python requirements.
 9. Now, you need a database. The server uses mySQL, but it's far easier to set up `sqlite3` for local development. On Mac, with homebrew installed, `brew install sqlite3`. You'll have to look into doing it on other operating systems. Once it's installed, `sqlite3 -version` from the command line should print the version.
-10. Point Django at the new database by replacing the [`DATABASE` config](https://github.com/OurJSEditor/OurJSEditor/blob/0768f0126042193b6aa1e51605c74cc49c2850dc/django_code/ourjseditor/settings.py#L90) with:
-```py
-'default': {
-    'NAME': os.path.join(BASE_DIR, 'db.sqlite3'),
-    'ENGINE': 'django.db.backends.sqlite3',
-}
+10. Move forward into `django_code`, `cd django_code`.
+11. There are a few settings that need to be changed, that are loaded from the `.env` file. There is a basic example of the settings needed for a local server in the `.env.local` file. Rename that to `.env` so Django can find it:
 ```
-11. Remove or comment out the code that grabs the mySQL password, [here](https://github.com/OurJSEditor/OurJSEditor/blob/0768f0126042193b6aa1e51605c74cc49c2850dc/django_code/ourjseditor/settings.py#L86), or it will error. You could also give it a database_password.txt, but this seems easier.
-12. Move forward into `django_code`, `cd django_code`.
-13. Create a secret key. This is a random string of characters, and unless you plan on actually hosting a server isn't important to keep secret. The following will work.
-```sh
-echo "(0(ymvwi+b\!qckrk&_i2fmnqr5#v938-#b6srb)8%b16^@.a7" > ourjseditor/secret_key.txt
+cp .env.local .env
 ```
-14. Run database migrations. `python manage.py migrate`
-15. Start up a server! `python manage.py runserver`. You should now see you own copy of the website at http://localhost:8000, complete with the ability to create and edit users and stuff! You can stop following these instructions now.
+12. Run database migrations. `python manage.py migrate`
+13. Start up a server! `python manage.py runserver`. You should now see you own copy of the website at http://localhost:8000, complete with the ability to create and edit users and stuff! You can stop following these instructions now.
 
 After following these instructions, you can use ctrl+C to stop the server and `deactivate` to exit the virtual environment.
 Then, to start the server again, re-activate the virtual environment and use `python manage.py runserver`.
