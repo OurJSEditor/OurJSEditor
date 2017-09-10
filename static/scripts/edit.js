@@ -40,6 +40,6 @@ var checkUsername = function() {
             available.innerHTML = "&#x2717;";
         }
     });
-    req.open("GET", "/api/user/username_valid/" + encodeURIComponent(document.getElementById("username").value));
+    req.open("GET", "/api/user/username-valid/" + encodeURIComponent(document.getElementById("username").value));
     req.send();
 };

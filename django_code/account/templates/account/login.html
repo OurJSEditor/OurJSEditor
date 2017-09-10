@@ -86,7 +86,7 @@
                    available.style.color="red";
             }
         });
-        req.open("GET", "/api/user/username_valid/" + encodeURIComponent(document.getElementById("username").value));
+        req.open("GET", "/api/user/username-valid/" + encodeURIComponent(document.getElementById("username").value));
         req.send();
     };
     </script>

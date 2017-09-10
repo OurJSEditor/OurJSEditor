@@ -62,7 +62,7 @@ def forgot_password(request):
 
             token = token_generator.make_token(user)
 
-            link = "{protocol}://{domain}/user/reset_password?{query_params}"
+            link = "{protocol}://{domain}/user/reset-password?{query_params}"
             link = link.format(
                 protocol="https" if request.is_secure() else "http",
                 domain=Site.objects.get_current().domain,
