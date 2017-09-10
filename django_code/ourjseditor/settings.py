@@ -96,6 +96,15 @@ DATABASES = {
 }
 
 
+# Email Sending:
+
+EMAIL_BACKEND = config('EMAIL_BACKEND')
+EMAIL_HOST = config('EMAIL_HOST')
+EMAIL_PORT = config('EMAIL_PORT', default=0, cast=int)
+EMAIL_HOST_USER = config('EMAIL_USER', '')
+EMAIL_HOST_PASSWORD = config('EMAIL_PASSWORD','')
+EMAIL_USE_TLS = config('EMAIL_TLS', default=False, cast=bool)
+
 # Password validation
 # https://docs.djangoproject.com/en/1.10/ref/settings/#auth-password-validators
 

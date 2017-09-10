@@ -6,8 +6,10 @@ import json, re
 from django.contrib import auth
 from django.contrib.auth.models import User
 from django.contrib.auth.decorators import login_required
+from django.contrib.auth.tokens import default_token_generator as token_generator
 
 from ourjseditor.funcs import check_username
+from user_profile.models import Profile
 
 # Create your views here.
 
@@ -44,3 +46,26 @@ def new_user(request):
         auth.login(request, user)
 
         return redirect("/user/" + username)
+
+def forgot_password(request):
+    return render(request, 'account/forgotPassword.html')
+
+def reset_password(request):
+    if (request.method == "GET"):
+        return render(request, 'account/resetPassword.html', request.GET.dict())
+    elif (request.method == "POST"):
+        profile_id = request.POST.get("user_id","")
+        token = request.POST.get("token","")
+
+        try:
+            user = Profile.objects.get(profile_id=profile_id).user
+            if (token_generator.check_token(user, token)):
+                user.set_password(request.POST.get("password"))
+                user.save()
+                auth.login(request, user)
+                return redirect("/user/" + user.username)
+            else:
+                return render(request, 'account/resetPassword.html', {"error": "Invalid token or user."})
+
+        except Profile.DoesNotExist:
+            return render(request, 'account/resetPassword.html', {"error": "Invalid user."})
