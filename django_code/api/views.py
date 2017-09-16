@@ -128,6 +128,7 @@ def program(request, program_id):
         if (request.method == "GET"):
             program_dict = dict(
                 author_id = requested_program.user.profile.profile_id,
+                created = requested_program.created.replace(microsecond=0).isoformat() + "Z",
                 id = requested_program.program_id,
                 title = requested_program.title,
                 css = requested_program.css,

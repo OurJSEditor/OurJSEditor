@@ -23,6 +23,7 @@ def program (request, program_id):
             data_dict["js"] = current_program.js
             data_dict["css"] = current_program.css
             data_dict["html"] = current_program.html
+            data_dict["created"] = current_program.created.replace(microsecond=0).isoformat() + "Z"
             data_dict["canEditProgram"] = (current_program.user == request.user)
             data_dict["author"] = dict(
                 username=current_program.user.username,
