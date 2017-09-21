@@ -62,6 +62,10 @@ http://www.templatemo.com/tm-478-accord
                                                 <a href="/user/login" class="button">
                                                     SIGN UP
                                                 </a>
+                                            {% else %}
+                                                <a href="/user/{{username}}" class="button">
+                                                    YOUR PROGRAMS
+                                                </a>
                                             {% endif %}
                                             <a href="/program/new" class="button">
                                                 NEW PROGRAM
