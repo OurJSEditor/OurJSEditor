@@ -172,6 +172,7 @@
                 req.open("POST", "/api/program/new");
             }
             req.setRequestHeader("X-CSRFToken", csrf_token)
+            req.setRequestHeader("Content-Type", "application/json");
             req.send(JSON.stringify({
                 "title" : programData.title,
                 "js" : programData.js,
