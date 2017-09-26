@@ -23,12 +23,12 @@ def login(request):
 
         if user is not None:
             auth.login(request, user)
-            return HttpResponse('{"loginSuccess":true,"username":"' + user.username + '"}', content_type="application/json")
+            return HttpResponse('{"success":true,"username":"' + user.username + '"}', content_type="application/json")
         else:
             # At this point, error should be handled by Javascript
-            return HttpResponse('{"loginSuccess":false}', content_type="application/json")
+            return HttpResponse('{"success":false}', content_type="application/json")
     else:
-        return HttpResponse("The method " + request.method + " is not allowed for the requested URL.", status=405)
+        return HttpResponse('{"success":false,"error":"The method ' + request.method + ' is not allowed for the requested URL."}', content_type="application/json", status=405)
 
 def forgot_password(request):
     if request.method == 'POST':
@@ -66,13 +66,13 @@ def forgot_password(request):
                 message="Here's your password reset link: " + link,
                 html_message=message)
 
-            return HttpResponse('{"resetRequestSuccess":true,"userId":"%s"}' % user.profile.profile_id, content_type="application/json")
+            return HttpResponse('{"success":true,"userId":"%s"}' % user.profile.profile_id, content_type="application/json")
         except User.DoesNotExist:
-            return HttpResponse('{"resetRequestSuccess":false,"error":"No user found with matching email and username."}', content_type="application/json", status=400)
+            return HttpResponse('{"success":false,"error":"No user found with matching email and username."}', content_type="application/json", status=400)
         except KeyError as err:
-            return HttpResponse('{"resetRequestSuccess":false, "error":"Missing data for %s."}' % str(err), content_type="application/json", status=400)
+            return HttpResponse('{"success":false, "error":"Missing data for %s."}' % str(err), content_type="application/json", status=400)
         except ValueError:
-            return HttpResponse('{"resetRequestSuccess":false,"error":"Missing or malformed JSON."}', content_type="application/json", status=400)
+            return HttpResponse('{"success":false,"error":"Missing or malformed JSON."}', content_type="application/json", status=400)
 
 def new_user(request):
     if request.method == 'POST':
@@ -85,13 +85,13 @@ def new_user(request):
             display_name = data['display_name']
 
             if (not check_username(username, "")):
-                return HttpResponse('{"creationSuccess":false,"error":"Invalid username"}', content_type="application/json", status=400)
+                return HttpResponse('{"success":false,"error":"Invalid username"}', content_type="application/json", status=400)
             if (password == ""):
-                return HttpResponse('{"creationSuccess":false,"error":"Password cannot be blank"}', content_type="application/json", status=400)
+                return HttpResponse('{"success":false,"error":"Password cannot be blank"}', content_type="application/json", status=400)
             if (display_name == "" or len(display_name) > 45):
-                return HttpResponse('{"creationSuccess":false,"error":"Invalid display name"}', content_type="application/json", status=400)
+                return HttpResponse('{"success":false,"error":"Invalid display name"}', content_type="application/json", status=400)
             if (not re.match(r"^([\w.+-]+@[a-zA-Z0-9-]+(?:\.[a-zA-Z0-9-]+)+)?$", email)):
-                return HttpResponse('{"creationSuccess":false,"error":"Invalid email"}', content_type="application/json", status=400)
+                return HttpResponse('{"success":false,"error":"Invalid email"}', content_type="application/json", status=400)
 
             user = User.objects.create_user(
                 username,
@@ -103,10 +103,10 @@ def new_user(request):
 
             auth.login(request, user)
 
-            response = HttpResponse('{"creationSuccess":true}', content_type="application/json", status=201)
+            response = HttpResponse('{"success":true}', content_type="application/json", status=201)
             response["Location"] = "/user/" + user.username
             return response
         except KeyError as err:
-            return HttpResponse('{"creationSuccess":false, "error":"Missing data for %s."}' % str(err), content_type="application/json", status=400)
+            return HttpResponse('{"success":false, "error":"Missing data for %s."}' % str(err), content_type="application/json", status=400)
         except ValueError:
             return HttpResponse('{"success":false,"error":"Missing or malformed JSON."}', content_type="application/json", status=400)

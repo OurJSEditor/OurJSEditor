@@ -11,7 +11,7 @@ def new_program(request):
             try:
                 data = json.loads(request.body)
                 if (len(data["title"]) > 45):
-                    return HttpResponse('{"creationSuccess":false, "error":"Title length exceeds maximum characters."}', content_type="application/json", status=400)
+                    return HttpResponse('{"success":false, "error":"Title length exceeds maximum characters."}', content_type="application/json", status=400)
 
                 program = Program.objects.create(
                     user = request.user,
@@ -21,23 +21,23 @@ def new_program(request):
                     css = data["css"],
                 )
 
-                response = HttpResponse('{"creationSuccess":true}', content_type="application/json", status=201)
+                response = HttpResponse('{"success":true}', content_type="application/json", status=201)
                 response["Location"] = "/program/" + program.program_id
                 return response
 
             # KeyError if user-passed dict is missing something we want
             except KeyError as err:
-                return HttpResponse('{"creationSuccess":false, "error":"Missing data for %s."}' % str(err), content_type="application/json", status=400)
+                return HttpResponse('{"success":false, "error":"Missing data for %s."}' % str(err), content_type="application/json", status=400)
             # db.Error if the db rejects what we try to include; TypeError for other things, e.g. title is an int and len() fails or data is a string and ["title"] fails
             except (db.Error, TypeError):
-                return HttpResponse('{"creationSuccess":false, "error":"Invalid data."}', content_type="application/json", status=400)
+                return HttpResponse('{"success":false, "error":"Invalid data."}', content_type="application/json", status=400)
             # ValueError if parsing the JSON failed
             except ValueError:
-                return HttpResponse('{"creationSuccess":false,"error":"Missing or malformed JSON."}', content_type="application/json", status=400)
+                return HttpResponse('{"success":false,"error":"Missing or malformed JSON."}', content_type="application/json", status=400)
         else:
-            return HttpResponse('{"creationSuccess":false,"error":"Not logged in."}', content_type="application/json", status=403)
+            return HttpResponse('{"success":false,"error":"Not logged in."}', content_type="application/json", status=403)
     else:
-        return HttpResponse("The method " + request.method + " is not allowed for the requested URL.", status=405)
+        return HttpResponse('{"success":false,"error":"The method ' + request.method + ' is not allowed for the requested URL."}', content_type="application/json", status=405)
 
 def program(request, program_id):
     try:
@@ -82,6 +82,6 @@ def program(request, program_id):
 
             return HttpResponse('', status=204)
         else:
-            return HttpResponse("The method " + request.method + " is not allowed for the requested URL.", status=405)
+            return HttpResponse('{"success":false,"error":"The method ' + request.method + ' is not allowed for the requested URL."}', content_type="application/json", status=405)
     except Program.DoesNotExist:
-        return HttpResponse("No program exists with that id.", status=404)
+        return HttpResponse('{"success":false,"error":"No program exists with that id."}', content_type="application/json", status=404)

@@ -21,7 +21,7 @@ def user(request, id):
         try:
             requested_user = User.objects.select_related('profile').get(username=id)
         except User.DoesNotExist:
-            return HttpResponse("No user with matching username or id.", status=404)
+            return HttpResponse('{"success":false,"error":"No user with matching username or id."}', status=404)
 
     if request.method == "GET":
         user_dict = dict(
@@ -41,19 +41,19 @@ def user(request, id):
 
             if "display_name" in data:
                 if len(data["display_name"]) > 45:
-                    return HttpResponse('{"creationSuccess":false, "error":"display_name length exceeds maximum characters."}', content_type="application/json", status=400)
+                    return HttpResponse('{"success":false, "error":"display_name length exceeds maximum characters."}', content_type="application/json", status=400)
                 else:
                     requested_user.profile.display_name = data["display_name"]
 
             if "bio" in data:
                 if len(data["bio"]) > 500:
-                    return HttpResponse('{"creationSuccess":false, "error":"bio length exceeds maximum characters."}', content_type="application/json", status=400)
+                    return HttpResponse('{"success":false, "error":"bio length exceeds maximum characters."}', content_type="application/json", status=400)
                 else:
                     requested_user.profile.bio = data["bio"]
 
             if "username" in data:
                 if  (check_username(data["username"], requested_user.username)):
-                    return HttpResponse('{"creationSuccess":false, "error":"Invalid username."}', content_type="application/json", status=400)
+                    return HttpResponse('{"success":false, "error":"Invalid username."}', content_type="application/json", status=400)
                 else:
                     requested_user.username = data["username"]
 
@@ -70,4 +70,4 @@ def user(request, id):
 
         return HttpResponse('', status=204)
     else:
-        return HttpResponse("The method " + request.method + " is not allowed for the requested URL.", status=405)
+        return HttpResponse('{"success":false,"error":"The method ' + request.method + ' is not allowed for the requested URL."}', content_type="application/json", status=405)
