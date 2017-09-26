@@ -19,9 +19,27 @@ from django.contrib import admin
 
 from . import views
 
+from user_profile import api as user_api
+from account import api as account_api
+from program import api as program_api
+
+api_urls = [
+    url(r'^user/', include([
+        url(r'^new$', account_api.new_user, name='new-user-api'), #account
+        url(r'^login$', account_api.login, name='login-api'), #account
+        url(r'^forgot-password$', account_api.forgot_password, name='forgot-password-api'), #account
+        url(r'^username-valid/(.+)$', user_api.username_valid, name='username-valid'),
+        url(r'^(\w+)$', user_api.user, name='user-api'),
+    ])),
+    url(r'^program/', include([
+        url(r'^new$', program_api.new_program, name="new-program-api"),
+        url(r'^([-\w]{6})$', program_api.program, name="program-api"),
+    ])),
+]
+
 urlpatterns = [
     url(r'^admin/', admin.site.urls),
-    url(r'^api/', include('api.urls')),
+    url(r'^api/', include(api_urls)),
     url(r'^program/', include('program.urls')),
     url(r'^user/', include('account.urls')),
     url(r'^user/', include('user_profile.urls')),

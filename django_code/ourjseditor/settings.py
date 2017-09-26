@@ -42,9 +42,9 @@ INSTALLED_APPS = [
     'django.contrib.redirects',
     'ourjseditor',
     'account',
-    'api',
     'user_profile',
     'program',
+    'comment',
 ]
 
 MIDDLEWARE = [
