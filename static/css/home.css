@@ -286,7 +286,7 @@ body {
 }
 .heading p { color: #10a5cd; }
 .heading2 p { color: #a92446; }
-.desc, .desc2 {
+.desc {
 	float: left;
 	width: 100%;
 	padding-left: 15px;
@@ -296,31 +296,18 @@ body {
 	margin-top: 25px;
 	margin-bottom: 30px;
 }
-.desc .button, .desc2 .button {
-	background-color: #363636;
+.desc .button {
 	color: #fff;
 	font-weight: bold;
 	border: none;
 	padding: 10px 30px;
-	margin-right: 10px;
-}
-.desc .button {
+	margin: 5px 10px 5px 0;
+	display: inline-block;
 	background-color: #363636;
 	-webkit-transition: all 0.3s ease;
 	transition: all 0.3s ease;
 }
 .desc .button:hover, .desc .button:focus { background-color: #777; }
-.desc2 .button {
-	background-color: #a92446;
-	-webkit-transition: all 0.3s ease;
-	transition: all 0.3s ease;
-}
-.desc2 .button:hover, .desc2 .button:focus { background-color: #DD426A; }
-.desc2 ul {
-	padding: 10px 15px 30px;
-	line-height: 2;
-	text-transform: uppercase;
-}
 
 /****box design style*****/
 .box {
@@ -895,7 +882,6 @@ textarea.form-control {	height:135px; }
 		font-size:14px;
 		display:block;
 	}
-	.desc2 ul {	display: block;	}
 	.heading, .heading2 { margin: 15px 0px;	}
 	.carousel { min-height: auto; }
 
@@ -946,8 +932,6 @@ textarea.form-control {	height:135px; }
 }
 
 @media (max-width:400px) {
-
-	.desc2 { font-size: 12px; }
 
 	.contact-content-upper { padding: 20px;	}
 }
