@@ -57,7 +57,6 @@
                         <i id="loginT" style="color:red;"></i>
 		        <a href="/user/{{ user.username }}" class="button profile-edit">Cancel changes</a>
                         <input type="submit" value="Update Your Profile" class="button profile-edit">
-                        <input type="submit" value="Update Your Profile" class="button profile-edit">
                     {% elif user.username == currentUser.username %}
                         <a href="/user/{{ user.username }}/edit" class="button profile-edit">Edit Your Profile</a>
                     {% endif %}
