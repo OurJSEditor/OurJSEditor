@@ -60,7 +60,8 @@ body {
 }
 
 .button {
-    font-size: 20px;
+    font-size: 1.2em;
+    font-family: sans-serif;
     width: 100%;
     color: white;
     background-color: #337ab7;
