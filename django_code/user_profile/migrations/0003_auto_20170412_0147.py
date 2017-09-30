@@ -6,7 +6,7 @@ from django.db import migrations
 from django.contrib.auth.models import User
 
 def copy_first_name (apps, schema_editor):
-    for user in User.objects.all().select_related("profile"):
+    for user in User.objects.all():
         user.profile.display_name = user.first_name
         user.first_name = ""
         user.save()
