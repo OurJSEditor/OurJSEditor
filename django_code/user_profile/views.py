@@ -17,7 +17,7 @@ def index(request, username):
             'user': user,
             'currentUser': request.user,
             'editing': False,
-            'user_programs': Program.objects.filter(user=user)
+            'user_programs': Program.objects.filter(user=user).order_by("-created")
         })
     except User.DoesNotExist:
         return render(request, 'user_profile/doesNotExist.html', {'username': username}, status=404)
