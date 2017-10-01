@@ -23,7 +23,7 @@
             if (this.status !== 200) {
                 loginT.innerHTML = "Something went wrong.<br>";
                 console.log(this);
-            }else if (JSON.parse(this.response).loginSuccess) {
+            }else if (JSON.parse(this.response).success) {
                 location.href = "/user/" + JSON.parse(this.response).username;
             }else {
                 loginT.innerHTML = "Your username or password was incorrect.<br>";
