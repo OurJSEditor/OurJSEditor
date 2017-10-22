@@ -113,10 +113,7 @@
         });
 
         if (!runningLocal) {
-            if (programData.new) {
-                programData.js = programData.css = programData.html = "";
-                programData.title = "Program";
-            }else {
+            if (!programData.new) {
                 document.getElementById("program-author").innerText = programData.author.displayName;
                 document.getElementById("program-author").setAttribute("href", "/user/" + programData.author.username);
 
