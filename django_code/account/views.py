@@ -25,7 +25,7 @@ def new_user(request):
         username = request.POST.get('username', '')
         email = request.POST.get('email', '')
         password = request.POST.get('password', '')
-        display_name = request.POST.get('display_name', '')
+        display_name = request.POST.get('displayName', '')
 
         #Checks for valid data. This only confirms what javascript has already checked, so errors
         #don't need to be verobse. It mostly only stops people making their own fake requests.
@@ -33,7 +33,7 @@ def new_user(request):
             not check_username(username, "") or
             not re.match(r"^([\w.+-]+@[a-zA-Z0-9-]+(?:\.[a-zA-Z0-9-]+)+)?$", email)
             ):
-            return HttpResponse('{"creationSuccess":false}', content_type="application/json", status=400)
+            return render(request, "account/login.html", {"error": "Your request seems wrong for some reason. What did you do?"})
 
         user = User.objects.create_user(
             username,
