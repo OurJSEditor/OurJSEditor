@@ -1,6 +1,6 @@
 {
     "title":"Program",
-    "html":"<!DOCTYPE HTML>\n<html>\n<head>\n    <style>\n        /*[OurJSEditor insert:CSS]*/\n    </style>\n</head>\n<body>\n    <div id=\"display\">Our JS Editor</div>\n    <script>\n        /*[OurJSEditor insert:JS]*/\n    </script>\n</body>\n</html>",
+    "html":"<!DOCTYPE HTML>\n<html>\n<head>\n    <style>\n        /*[OurJSEditor insert:CSS]*/\n    </style>\n</head>\n<body>\n    <div id=\"display\"><img src=\"https://ourjseditor.com/static/images/logo-text.png\"></div>\n    <script>\n        /*[OurJSEditor insert:JS]*/\n    </script>\n</body>\n</html>",
     "js":"var el = document.getElementById(\"display\");\nvar angle = -Math.PI/2;\n\nfunction update () {\n    el.style.left = Math.cos(angle) * 125 + window.innerWidth/2 + \"px\";\n    el.style.top = Math.sin(angle) * 125 + 400/2 + \"px\";\n    angle += 0.02;\n}\n\nwindow.setInterval(function () {\n    update();\n}, 1000/60);",
-    "css":"body {\n    height: 100%;\n    background: #4A7FB1;\n    overflow: hidden;\n}\n\n#display {\n    color: white;\n    font-family: Helvetica, sans-serif;\n    position: absolute;\n    transform: translate(-50%, -50%);\n    font-size: 2em;\n    font-weight: bold;\n    white-space: nowrap;\n    /* Before the Javascript's fired, keep it off-screen */\n    left: -100000px;\n    top: -100000px;\n}"
+    "css":"body {\n    height: 100%;\n    background: #4A7FB1;\n    overflow: hidden;\n}\n\n#display {\n    color: white;\n    font-family: Helvetica, sans-serif;\n    position: absolute;\n    transform: translate(-50%, -50%);\n    font-weight: bold;\n    white-space: nowrap;\n    /* Before the Javascript's fired, keep it off-screen */\n    left: -100000px;\n    top: -100000px;\n}\n\n#display img {\n    height: 24px;\n    width: auto;\n}"
 }
