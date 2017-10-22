@@ -29,6 +29,10 @@ def edit(request, username):
        bio = re.sub(r'\r', '', request.POST.get('bio', ''))
        if (not check_username(username, request.user.username)):
            return HttpResponse('null', content_type="application/json", status=400)
+       if (len(display_name) > 45):
+           return HttpResponse('null', content_type="application/json", status=400)
+       if (len(bio) > 500):
+           return HttpResponse('null', content_type="application/json", status=400)
        if (display_name == ''):
            display_name = username
        request.user.username = username;
