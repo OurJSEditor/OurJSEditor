@@ -36,13 +36,14 @@ api_urls = [
         url(r'^new$', program_api.new_program, name="new-program-api"),
         url(r'^([-\w]{6})', include([
             url(r'^$', program_api.program, name="program-api"),
-            url(r'/comments', include([
-                # url(r'', comment_api.program_comments, name="progrom-comments-api"),
-                url(r'/new$', comment_api.new_comment, name="new-comment-api"),
-                # url(r'', comment_api.comment, name="comment-api"),
+            url(r'^/comments$', comment_api.program_comments, name="progrom-comments-api"),
+            url(r'^/comment/', include([
+                url(r'^new$', comment_api.new_comment, name="new-comment-api"),
+                url(r'^([-\w]{10})$', comment_api.comment, name="comment-api"),
             ])),
         ])),
     ])),
+    url(r'^comment/([-\w]{10})$', comment_api.comment, name="comment-api"),
 ]
 
 urlpatterns = [

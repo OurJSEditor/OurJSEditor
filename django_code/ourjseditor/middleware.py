@@ -5,6 +5,8 @@ from django.core import urlresolvers
 from django.core.exceptions import ImproperlyConfigured
 from django.utils.deprecation import MiddlewareMixin
 
+import api
+
 # Adapted from https://github.com/dghubble/django-unslashed/blob/master/unslashed/middleware.py
 
 class RemoveSlashMiddleware(MiddlewareMixin):
@@ -22,13 +24,16 @@ class RemoveSlashMiddleware(MiddlewareMixin):
             #If the url with a / would 404 and without a slash wouldn't
             if (not urlresolvers.is_valid_path(old_url, urlconf)) and urlresolvers.is_valid_path(new_url, urlconf):
                 if settings.DEBUG and request.method == 'POST':
-                            raise RuntimeError((""
-                            "You called this URL via POST, but the URL ends in a "
-                            "slash and you have REMOVE_SLASH set. Django can't "
-                            "redirect to the non-slash URL while maintaining POST "
-                            "data. Change your form to point to %s (without a "
-                            "trailing slash), or set REMOVE_SLASH=False in your "
-                            "Django settings.") % (new_url))
+                    if (old_url.startswith("/api/")):
+                        return api.error("You made a POST request to a URL ending with a slash. Please repeat your request without the slash.")
+                    else:
+                        raise RuntimeError((""
+                        "You called this URL via POST, but the URL ends in a "
+                        "slash and you have REMOVE_SLASH set. Django can't "
+                        "redirect to the non-slash URL while maintaining POST "
+                        "data. Change your form to point to %s (without a "
+                        "trailing slash), or set REMOVE_SLASH=False in your "
+                        "Django settings.") % (new_url))
 
                 query_data = re.match(r'^[^?]*(\?.*)?$', request.build_absolute_uri()).group(1) or "" #The ? and everything after
 
