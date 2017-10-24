@@ -22,6 +22,7 @@ from . import views
 from user_profile import api as user_api
 from account import api as account_api
 from program import api as program_api
+from comment import api as comment_api
 
 api_urls = [
     url(r'^user/', include([
@@ -33,7 +34,14 @@ api_urls = [
     ])),
     url(r'^program/', include([
         url(r'^new$', program_api.new_program, name="new-program-api"),
-        url(r'^([-\w]{6})$', program_api.program, name="program-api"),
+        url(r'^([-\w]{6})', include([
+            url(r'^$', program_api.program, name="program-api"),
+            url(r'/comments', include([
+                # url(r'', comment_api.program_comments, name="progrom-comments-api"),
+                url(r'/new$', comment_api.new_comment, name="new-comment-api"),
+                # url(r'', comment_api.comment, name="comment-api"),
+            ])),
+        ])),
     ])),
 ]
 
