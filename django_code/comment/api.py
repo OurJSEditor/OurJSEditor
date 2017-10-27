@@ -1,18 +1,11 @@
 # -*- coding: utf-8 -*-
 from __future__ import unicode_literals
 import json
+import datetime
 
 from models import Comment
 from program.models import Program
 from ourjseditor import api
-
-"""
-    /program/PRO_ID/comments (GET)
-    /program/PRO_ID/comment/new (POST)
-    /program/PRO_ID/comment/COM_ID (GET, PATCH, DELETE)
-    /comment/COM_ID (GET, PATCH, DELETE)
-"""
-
 
 # /program/PRO_ID/comment/new
 @api.standardAPIErrors("POST")
@@ -25,7 +18,7 @@ def new_comment(request, program_id):
     if (parent_comment is None):
         depth = 0
     else:
-        parent_comment = Comment.objects.get(parent_comment)
+        parent_comment = Comment.objects.get(comment_id=parent_comment)
         depth = parent_comment.depth + 1
 
     comment = Comment.objects.create(
@@ -45,40 +38,45 @@ def new_comment(request, program_id):
 # /api/comment/COMMENT_ID
 @api.standardAPIErrors("GET", "PATCH", "DELETE")
 def comment(request, *args):
+    if (len(args) == 1):
+        comment_id = args[0]
+
+        requested_comment = Comment.objects.get(comment_id=comment_id)
+    elif (len(args) == 2):
+        program_id = args[0]
+        comment_id = args[1]
+
+        requested_comment = Comment.objects.get(program_id=program_id, comment_id=comment_id)
+
     if (request.method == "GET"):
-        if (len(args) == 1):
-            comment_id = args[0]
+        return api.succeed(requested_comment.to_dict())
 
-            requested_comment = Comment.objects.get(comment_id=comment_id)
-        elif (len(args) == 2):
-            program_id = args[0]
-            comment_id = args[1]
+    # Comment editing!
+    elif (request.method == "PATCH"):
+        data = json.loads(request.body)
 
-            requested_comment = Comment.objects.get(program_id=program_id, comment_id=comment_id)
+        if request.user != requested_comment.user:
+            return api.error("Not authorized.", status=401)
 
-        edited = requested_comment.edited
-        if (edited is not None):
-            edited = edited.replace(microsecond=0).isoformat() + "Z",
+        requested_comment.content = data["content"]
+        requested_comment.edited = datetime.datetime.now()
 
-        parent = requested_comment.parent
-        if (parent is not None):
-            parent = {"id": parent.comment_id}
+        requested_comment.save()
 
-        return api.succeed({
-            "id": requested_comment.comment_id,
-            "parent": parent,
-            "program": {
-                "id": requested_comment.program.program_id,
-            },
-            "depth": requested_comment.depth,
-            "replyCount": requested_comment.reply_count,
-            "created": requested_comment.created.replace(microsecond=0).isoformat() + "Z",
-            "edited": edited,
-            "content": requested_comment.content,
-            "original_content": requested_comment.original_content,
-        })
-    
+        return api.succeed({})
 
+    elif (request.method == "DELETE"):
+        if request.user != requested_comment.user:
+            return api.error("Not authorized.", status=401)
 
+        requested_comment.delete()
+
+        return api.succeed({})
+
+# /program/PRO_ID/comments
+@api.standardAPIErrors("GET")
 def program_comments(request, program_id):
-    return api.succeed()
+    comments = list(Comment.objects.select_related("user__profile").filter(program_id="hZrjLv"))
+    return api.succeed({
+        "comments": map(lambda c: c.to_dict(), comments)
+    })

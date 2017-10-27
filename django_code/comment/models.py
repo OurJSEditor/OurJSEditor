@@ -36,3 +36,31 @@ class Comment(models.Model):
 
     content = models.TextField(blank=True) #Can be edited
     original_content = models.TextField(blank=True) #Can't be edited. For API and mod access
+
+    def to_dict(self):
+        edited = self.edited
+        if (edited is not None):
+            edited = edited.replace(microsecond=0).isoformat() + "Z",
+
+        parent = self.parent
+        if (parent is not None):
+            parent = {"id": self.parent_id}
+
+        return {
+            "id": self.comment_id,
+            "parent": parent,
+            "program": {
+                "id": self.program_id,
+            },
+            "author": {
+                "id": self.user.profile.profile_id,
+                "username": self.user.username,
+                "displayName": self.user.profile.display_name,
+            },
+            "depth": self.depth,
+            "replyCount": self.reply_count,
+            "created": self.created.replace(microsecond=0).isoformat() + "Z",
+            "edited": edited,
+            "content": self.content,
+            "original_content": self.original_content,
+        }
