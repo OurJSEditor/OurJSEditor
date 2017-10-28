@@ -34,7 +34,7 @@ def new_comment(request, program_id):
     )
 
     response = api.succeed({"id": comment.comment_id}, status=201)
-    response["Location"] = "/program/{0}#comment_{1}".format(comment.program.program_id, comment.comment_id)
+    response["Location"] = "/program/{0}#comment-{1}".format(comment.program.program_id, comment.comment_id)
     return response
 
 # /api/program/PRO_ID/comment/COMMENT_ID
@@ -79,7 +79,7 @@ def comment(request, *args):
 # /program/PRO_ID/comments
 @api.standardAPIErrors("GET")
 def program_comments(request, program_id):
-    comments = list(Comment.objects.select_related("user__profile").filter(program_id="hZrjLv"))
+    comments = list(Comment.objects.select_related("user__profile").filter(program_id=program_id))
     return api.succeed({
         "comments": map(lambda c: c.to_dict(), comments)
     })
