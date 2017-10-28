@@ -21,6 +21,9 @@ def new_comment(request, program_id):
         parent_comment = Comment.objects.get(comment_id=parent_comment)
         depth = parent_comment.depth + 1
 
+    if (depth > 1):
+        return api.error("Comments have gone too deep!")
+
     comment = Comment.objects.create(
         user = request.user,
         program = Program.objects.get(program_id = program_id),
