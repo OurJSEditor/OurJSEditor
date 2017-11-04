@@ -180,3 +180,37 @@ input, textarea {
     width: 100%;
     margin-bottom: 5px;
 }
+
+#comment-wrap {
+    margin-top: 20px;
+    margin-bottom: 20px;
+}
+
+.comment {
+    margin: 15px;
+    background: #FFFFFF;
+    font-size: 15px;
+}
+
+.comment tr {
+    border: 1px #cecece solid;
+}
+
+.comment table {
+    border-collapse: collapse;
+    width: 100%;
+}
+
+.comment-content {
+    padding: 15px;
+}
+
+.comment-author {
+    text-align: right;
+    background: #f0f0f0;
+    padding: 10px 15px;
+}
+
+.comment-author a {
+    color: black;
+}

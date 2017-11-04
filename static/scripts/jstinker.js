@@ -95,6 +95,41 @@ function runProgram (event) {
     document.getElementById("preview").contentWindow.postMessage(html, "*");
 }
 
+var dateToString = function (d) {
+    d = new Date(d);
+    var currentYear = (new Date()).getFullYear();
+    var months = ["Jan", "Feb", "Mar", "Apr", "May", "Jun", "Jul", "Aug", "Sep", "Oct", "Nov", "Dec"];
+    return months[d.getMonth()] + " " + d.getDate() + (currentYear === d.getFullYear() ? "" : ", " + d.getFullYear());
+}
+
+var displayComments = function (comments) {
+    var base = document.getElementById("comment-wrap");
+    for (var i = 0; i < comments.length; i++) {
+        var com = document.createElement("div");
+        var t = document.createElement("table");
+        var content = document.createElement("td");
+        var author = document.createElement("td");
+        var link = document.createElement("a");
+
+        com.classList.add("comment");
+        com.setAttribute("id", "comment-" + comments[i].id);
+        link.setAttribute("href", "/user/" + comments[i].author.username);
+        author.classList.add("comment-author");
+
+        content.classList.add("comment-content");
+        author.innerText = "Posted " + dateToString(comments[i].created) + " by ";
+        link.innerText = comments[i].author.displayName;
+        content.innerText = comments[i].content;
+
+        base.appendChild(com).appendChild(t).appendChild(document.createElement("tr")).appendChild(content);
+        t.appendChild(document.createElement("tr")).appendChild(author).appendChild(link);
+    }
+
+    if (comments.length === 0) {
+        base.innerText = "No one's posted any comments yet :("
+    }
+}
+
 document.addEventListener("DOMContentLoaded", function() {
 
     // TIDYUP Button
@@ -141,6 +176,16 @@ document.addEventListener("DOMContentLoaded", function() {
             titleInput.focus();
         });
     }
+
+    var req = new XMLHttpRequest();
+    req.open("GET", "/api/program/" + programData.id + "/comments");
+    req.addEventListener("load", function () {
+        var data = JSON.parse(this.response);
+        if (data && data.success) {
+            displayComments(data.comments);
+        }
+    });
+    req.send();
 });
 
 //Run program on window load. That way Ace is definitely loaded.
