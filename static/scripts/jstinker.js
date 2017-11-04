@@ -128,6 +128,8 @@ var displayComments = function (comments) {
     if (comments.length === 0) {
         base.innerText = "No one's posted any comments yet :("
     }
+
+    document.getElementById(window.location.hash.slice(1)).scrollIntoView();
 }
 
 document.addEventListener("DOMContentLoaded", function() {
