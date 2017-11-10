@@ -93,6 +93,7 @@
 
         var htmlEditor = ace.edit("html-editor");
         htmlEditor.setTheme("ace/theme/textmate");
+        htmlEditor.$blockScrolling = Infinity;
         htmlEditor.getSession().setMode("ace/mode/html");
         htmlEditor.setOptions({
             enableBasicAutocompletion: true
@@ -100,6 +101,7 @@
 
         var cssEditor = ace.edit("css-editor");
         cssEditor.setTheme("ace/theme/textmate");
+        cssEditor.$blockScrolling = Infinity;
         cssEditor.getSession().setMode("ace/mode/css");
         cssEditor.setOptions({
             enableBasicAutocompletion: true
@@ -107,6 +109,7 @@
 
         var jsEditor = ace.edit("js-editor");
         jsEditor.setTheme("ace/theme/textmate");
+        jsEditor.$blockScrolling = Infinity;
         jsEditor.getSession().setMode("ace/mode/javascript");
         jsEditor.setOptions({
             enableBasicAutocompletion: true
