@@ -62,5 +62,5 @@ class Comment(models.Model):
             "created": self.created.replace(microsecond=0).isoformat() + "Z",
             "edited": edited,
             "content": self.content,
-            "original_content": self.original_content,
+            "originalContent": self.original_content,
         }

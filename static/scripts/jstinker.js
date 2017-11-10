@@ -103,6 +103,8 @@ var dateToString = function (d) {
 }
 
 var displayComments = function (comments) {
+    programData.comments = comments;
+
     var base = document.getElementById("comment-wrap");
     for (var i = 0; i < comments.length; i++) {
         var com = document.createElement("div");
