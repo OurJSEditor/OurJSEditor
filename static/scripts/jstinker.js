@@ -131,7 +131,10 @@ var displayComments = function (comments) {
         base.innerText = "No one's posted any comments yet :("
     }
 
-    document.getElementById(window.location.hash.slice(1)).scrollIntoView();
+    var scrollComment = document.getElementById(window.location.hash.slice(1));
+    if (scrollComment) {
+        scrollComment.scrollIntoView();
+    }
 }
 
 document.addEventListener("DOMContentLoaded", function() {
