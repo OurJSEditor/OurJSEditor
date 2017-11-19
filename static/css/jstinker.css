@@ -205,12 +205,15 @@ input, textarea {
     padding: 15px;
 }
 
-.comment-author {
-    text-align: right;
+.comment .lower-row td {
     background: #f0f0f0;
     padding: 10px 15px;
 }
 
-.comment-author a {
+.comment .comment-author {
+    text-align: right;
+}
+
+.comment .lower-row a {
     color: black;
 }

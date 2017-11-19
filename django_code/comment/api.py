@@ -83,7 +83,7 @@ def comment(request, *args):
 # /program/PRO_ID/comments
 @api.standardAPIErrors("GET")
 def program_comments(request, program_id):
-    comments = list(Comment.objects.select_related("user__profile").filter(program_id=program_id))
+    comments = list(Comment.objects.select_related("user__profile").filter(program_id=program_id, depth=0))
     return api.succeed({
         "comments": map(lambda c: c.to_dict(), comments)
     })

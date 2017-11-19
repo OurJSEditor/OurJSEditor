@@ -111,7 +111,11 @@ var displayComments = function (comments) {
         var t = document.createElement("table");
         var content = document.createElement("td");
         var author = document.createElement("td");
+        var upperRow = document.createElement("tr");
+        var lowerRow = document.createElement("tr");
         var link = document.createElement("a");
+        var replies = document.createElement("td");
+        var dropDown = document.createElement("a");
 
         com.classList.add("comment");
         com.setAttribute("id", "comment-" + comments[i].id);
@@ -119,12 +123,28 @@ var displayComments = function (comments) {
         author.classList.add("comment-author");
 
         content.classList.add("comment-content");
+        content.setAttribute("colspan", 2);
         author.innerText = "Posted " + dateToString(comments[i].created) + " by ";
         link.innerText = comments[i].author.displayName;
         content.innerText = comments[i].content;
 
-        base.appendChild(com).appendChild(t).appendChild(document.createElement("tr")).appendChild(content);
-        t.appendChild(document.createElement("tr")).appendChild(author).appendChild(link);
+        dropDown.innerText = "Comment" + (comments[i].replyCount === 1 ? "" : "s (" + comments[i].replyCount + ")");
+        dropDown.setAttribute("href", "#");
+        dropDown.addEventListener("click", function (e) {
+            e.preventDefault();
+
+            
+        })
+        replies.appendChild(dropDown);
+
+        lowerRow.classList.add("lower-row");
+
+        upperRow.appendChild(content);
+        lowerRow.appendChild(replies);
+        lowerRow.appendChild(author).appendChild(link);
+
+        base.appendChild(com).appendChild(t).appendChild(upperRow);
+        t.appendChild(lowerRow);
     }
 
     if (comments.length === 0) {
