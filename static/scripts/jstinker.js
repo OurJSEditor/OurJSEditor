@@ -102,49 +102,75 @@ var dateToString = function (d) {
     return months[d.getMonth()] + " " + d.getDate() + (currentYear === d.getFullYear() ? "" : ", " + d.getFullYear());
 }
 
+var displayComment = function (comment) {
+    var com = document.createElement("div");
+    var t = document.createElement("table");
+    var content = document.createElement("td");
+    var author = document.createElement("td");
+    var upperRow = document.createElement("tr");
+    var lowerRow = document.createElement("tr");
+    var link = document.createElement("a");
+    var replies = document.createElement("td");
+
+    com.classList.add("comment");
+    com.setAttribute("id", "comment-" + comment.id);
+    link.setAttribute("href", "/user/" + comment.author.username);
+    author.classList.add("comment-author");
+
+    content.classList.add("comment-content");
+    content.setAttribute("colspan", 2);
+    author.innerText = "Posted " + dateToString(comment.created) + " by ";
+    link.innerText = comment.author.displayName;
+    content.innerText = comment.content;
+
+    lowerRow.classList.add("lower-row");
+
+    comment.unfolded = null;
+    if (comment.depth === 0) {
+        comment.unfolded = false;
+
+        var dropDown = document.createElement("a");
+        dropDown.innerText = "Comment" + (comment.replyCount === 1 ? "" : "s (" + comment.replyCount + ")");
+        dropDown.setAttribute("href", "#");
+        dropDown.addEventListener("click", function (e) {
+            e.preventDefault();
+            if (comment.unfolded) return;
+
+            var req = new XMLHttpRequest();
+            req.open("GET", "/api/program/" + programData.id + "/comment/" + comment.id + "/comments");
+            req.addEventListener("load", function () {
+                var data = JSON.parse(this.response);
+                if (data && data.success) {
+                    for (var i = data.comments.length-1; i >= 0; i--) {
+                        programData.comments.push(data.comments[i]);
+                        //Inserts after the parent comment
+                        comment.element.parentElement.insertBefore(displayComment(data.comments[i]), comment.element.nextSibling);
+                    }
+                    comment.unfolded = true;
+                }
+            });
+            req.send();
+        });
+        replies.appendChild(dropDown);
+    }else {
+        com.classList.add("comment-comment");
+    }
+
+    upperRow.appendChild(content);
+    lowerRow.appendChild(replies);
+    lowerRow.appendChild(author).appendChild(link);
+    com.appendChild(t).appendChild(upperRow);
+    t.appendChild(lowerRow);
+    comment.element = com;
+    return com;
+};
+
 var displayComments = function (comments) {
     programData.comments = comments;
 
     var base = document.getElementById("comment-wrap");
     for (var i = 0; i < comments.length; i++) {
-        var com = document.createElement("div");
-        var t = document.createElement("table");
-        var content = document.createElement("td");
-        var author = document.createElement("td");
-        var upperRow = document.createElement("tr");
-        var lowerRow = document.createElement("tr");
-        var link = document.createElement("a");
-        var replies = document.createElement("td");
-        var dropDown = document.createElement("a");
-
-        com.classList.add("comment");
-        com.setAttribute("id", "comment-" + comments[i].id);
-        link.setAttribute("href", "/user/" + comments[i].author.username);
-        author.classList.add("comment-author");
-
-        content.classList.add("comment-content");
-        content.setAttribute("colspan", 2);
-        author.innerText = "Posted " + dateToString(comments[i].created) + " by ";
-        link.innerText = comments[i].author.displayName;
-        content.innerText = comments[i].content;
-
-        dropDown.innerText = "Comment" + (comments[i].replyCount === 1 ? "" : "s (" + comments[i].replyCount + ")");
-        dropDown.setAttribute("href", "#");
-        dropDown.addEventListener("click", function (e) {
-            e.preventDefault();
-
-            
-        })
-        replies.appendChild(dropDown);
-
-        lowerRow.classList.add("lower-row");
-
-        upperRow.appendChild(content);
-        lowerRow.appendChild(replies);
-        lowerRow.appendChild(author).appendChild(link);
-
-        base.appendChild(com).appendChild(t).appendChild(upperRow);
-        t.appendChild(lowerRow);
+        base.appendChild(displayComment(comments[i]));
     }
 
     if (comments.length === 0) {

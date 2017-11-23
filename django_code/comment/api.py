@@ -80,6 +80,27 @@ def comment(request, *args):
 
         return api.succeed({})
 
+# Endpoint for what KA calls replies, i.e. comments on comments, i.e. comments with a depth > 0
+# Note: POST requests for these are still made to /api/program/PRO_ID/comments, just with "parent": "COMMENT_ID"
+# /api/program/PRO_ID/comment/COMMENT_ID/comments
+# /api/comment/COMMENT_ID/comments
+@api.standardAPIErrors("GET")
+def comment_comments(request, *args):
+    if (len(args) == 1):
+        comment_id = args[0]
+
+        comments = Comment.objects.select_related("user__profile").filter(parent__comment_id=comment_id)
+    elif (len(args) == 2):
+        program_id = args[0]
+        comment_id = args[1]
+
+        comments = Comment.objects.select_related("user__profile").filter(program_id=program_id, parent__comment_id=comment_id)
+
+    comments = list(comments)
+    return api.succeed({
+        "comments": map(lambda c: c.to_dict(), comments)
+    })
+
 # /program/PRO_ID/comments
 @api.standardAPIErrors("GET")
 def program_comments(request, program_id):

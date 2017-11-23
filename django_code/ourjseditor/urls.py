@@ -39,11 +39,17 @@ api_urls = [
             url(r'^/comments$', comment_api.program_comments, name="progrom-comments-api"),
             url(r'^/comment/', include([
                 url(r'^new$', comment_api.new_comment, name="new-comment-api"),
-                url(r'^([-\w]{10})$', comment_api.comment, name="comment-api"),
+                url(r'^([-\w]{10})', include([
+                    url(r'^$', comment_api.comment, name="comment-api"),
+                    url(r'^/comments$', comment_api.comment_comments, name="comment-comments-api"),
+                ])),
             ])),
         ])),
     ])),
-    url(r'^comment/([-\w]{10})$', comment_api.comment, name="comment-api"),
+    url(r'^comment/([-\w]{10})', include([
+        url(r'^$', comment_api.comment, name="comment-api"),
+        url(r'^/comments$', comment_api.comment_comments, name="comment-comments-api"),
+    ])),
 ]
 
 urlpatterns = [

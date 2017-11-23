@@ -217,3 +217,7 @@ input, textarea {
 .comment .lower-row a {
     color: black;
 }
+
+.comment-comment {
+    margin-left: 40px;
+}
