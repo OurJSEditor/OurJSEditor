@@ -18,7 +18,10 @@ def new_comment(request, program_id):
     if (parent_comment is None):
         depth = 0
     else:
-        parent_comment = Comment.objects.get(comment_id=parent_comment)
+        try:
+            parent_comment = Comment.objects.get(comment_id=parent_comment, program_id=program_id)
+        except Comment.DoesNotExist:
+            return api.error("Invalid comment parent")
         depth = parent_comment.depth + 1
 
     if (depth > 1):
