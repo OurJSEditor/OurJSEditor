@@ -102,6 +102,51 @@ var dateToString = function (d) {
     return months[d.getMonth()] + " " + d.getDate() + (currentYear === d.getFullYear() ? "" : ", " + d.getFullYear());
 }
 
+var createCommentTextbox = function (parent) {
+    var com = document.createElement("div");
+    var t = document.createElement("table");
+    var textbox = document.createElement("textarea");
+    var row = document.createElement("tr");
+    var content = document.createElement("td");
+    var buttons = document.createElement("td");
+    var submit = document.createElement("input");
+
+    submit.setAttribute("type", "submit");
+    submit.value = "Post Comment";
+
+    submit.addEventListener("click", function () {
+        var req = new XMLHttpRequest();
+        req.open("POST", "/api/program/" + programData.id + "/comment/new");
+        req.setRequestHeader("X-CSRFToken", csrf_token)
+        req.setRequestHeader("Content-Type", "application/json");
+        req.addEventListener("load", function () {
+            var data = JSON.parse(this.response);
+            if (data && data.success) {
+                textbox.value = "";
+            }
+        });
+        req.send(JSON.stringify({
+            parent: parent,
+            content: textbox.value,
+        }));
+    });
+
+    buttons.appendChild(submit);
+
+    com.classList.add("comment", "comment-adding");
+    if (parent) {
+        com.classList.add("comment-comment");
+    }
+
+    textbox.classList.add("comment-content")
+
+    content.appendChild(textbox);
+    com.appendChild(t).appendChild(row);
+    row.appendChild(content);
+    row.appendChild(buttons);
+    return com;
+};
+
 var displayComment = function (comment) {
     var com = document.createElement("div");
     var t = document.createElement("table");
@@ -141,8 +186,9 @@ var displayComment = function (comment) {
             req.addEventListener("load", function () {
                 var data = JSON.parse(this.response);
                 if (data && data.success) {
+                    comment.element.parentElement.insertBefore(createCommentTextbox(comment.id), comment.element.nextSibling)
+                    programData.comments.concat(data.comments);
                     for (var i = data.comments.length-1; i >= 0; i--) {
-                        programData.comments.push(data.comments[i]);
                         //Inserts after the parent comment
                         comment.element.parentElement.insertBefore(displayComment(data.comments[i]), comment.element.nextSibling);
                     }
@@ -174,8 +220,10 @@ var displayComments = function (comments) {
     }
 
     if (comments.length === 0) {
-        base.innerText = "No one's posted any comments yet :("
+        base.appendChild(document.createTextNode("No one's posted any comments yet :("))
     }
+
+    base.appendChild(createCommentTextbox(null));
 
     var scrollComment = document.getElementById(window.location.hash.slice(1));
     if (scrollComment) {

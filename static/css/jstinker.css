@@ -189,6 +189,9 @@ input, textarea {
 .comment {
     margin: 15px;
     background: #FFFFFF;
+}
+
+.comment, .comment-content {
     font-size: 15px;
 }
 
@@ -220,4 +223,21 @@ input, textarea {
 
 .comment-comment {
     margin-left: 40px;
+}
+
+.comment-adding td:first-child {
+    padding-right: 30px;
+}
+
+.comment-adding td:last-child {
+    width: 50px;
+    padding-right: 20px;
+}
+
+.comment-adding textarea {
+    padding: 5px;
+    margin: 5px;
+    margin-bottom: 0;
+    resize: vertical;
+    box-sizing: border-box !important;
 }
