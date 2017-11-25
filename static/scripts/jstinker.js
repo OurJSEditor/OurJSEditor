@@ -142,7 +142,16 @@ var createCommentTextbox = function (parent) {
                     "id": data.id,
                 }
 
-                programData.comments.push(commentObj);
+                if (parent) {
+                    for (var i = 0; i < programData.comments.length; i++) {
+                        if (programData.comments[i].id === parent.id) {
+                            programData.comments[i].comments.push(commentObj);
+                        }
+                    }
+                }else {
+                    programData.comments.push(commentObj);
+                }
+
                 document.getElementById("comment-wrap").insertBefore(displayComment(commentObj), textbox.parentElement.parentElement.parentElement.parentElement);
 
                 textbox.value = "";
@@ -212,7 +221,7 @@ var displayComment = function (comment) {
                 var data = JSON.parse(this.response);
                 if (data && data.success) {
                     comment.element.parentElement.insertBefore(createCommentTextbox(comment.id), comment.element.nextSibling)
-                    programData.comments.concat(data.comments);
+                    comment.comments = data.comments;
                     for (var i = data.comments.length-1; i >= 0; i--) {
                         //Inserts after the parent comment
                         comment.element.parentElement.insertBefore(displayComment(data.comments[i]), comment.element.nextSibling);
