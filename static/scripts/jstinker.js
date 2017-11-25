@@ -146,6 +146,10 @@ var createCommentTextbox = function (parent) {
                     for (var i = 0; i < programData.comments.length; i++) {
                         if (programData.comments[i].id === parent.id) {
                             programData.comments[i].comments.push(commentObj);
+                            programData.comments[i].replyCount ++;
+                            var el = programData.comments[i].element.getElementsByClassName("show-hide-comments")[0];
+                            el.innerText = el.innerText.replace(/\(\d+\)/, "(" + programData.comments[i].replyCount + ")")
+                            break;
                         }
                     }
                 }else {
@@ -181,6 +185,17 @@ var createCommentTextbox = function (parent) {
     return com;
 };
 
+//comment is a comment object
+var unfoldComment = function (comment) {
+    comment.element.parentElement.insertBefore(createCommentTextbox(comment.id), comment.element.nextSibling)
+    for (var i = comment.comments.length-1; i >= 0; i--) {
+        comment.element.parentElement.insertBefore(displayComment(comment.comments[i]), comment.element.nextSibling);
+    }
+    comment.unfolded = true;
+    var el = comment.element.getElementsByClassName("show-hide-comments")[0];
+    el.innerText = el.innerText.replace(/^Show/, "Hide");
+};
+
 var displayComment = function (comment) {
     var com = document.createElement("div");
     var t = document.createElement("table");
@@ -209,27 +224,40 @@ var displayComment = function (comment) {
         comment.unfolded = false;
 
         var dropDown = document.createElement("a");
-        dropDown.innerText = "Comment" + (comment.replyCount === 1 ? "" : "s (" + comment.replyCount + ")");
+        dropDown.classList.add("show-hide-comments");
+        dropDown.innerText = "Show Comment" + (comment.replyCount === 1 ? " (" : "s (") + comment.replyCount + ")";
         dropDown.setAttribute("href", "#");
         dropDown.addEventListener("click", function (e) {
             e.preventDefault();
-            if (comment.unfolded) return;
 
-            var req = new XMLHttpRequest();
-            req.open("GET", "/api/program/" + programData.id + "/comment/" + comment.id + "/comments");
-            req.addEventListener("load", function () {
-                var data = JSON.parse(this.response);
-                if (data && data.success) {
-                    comment.element.parentElement.insertBefore(createCommentTextbox(comment.id), comment.element.nextSibling)
-                    comment.comments = data.comments;
-                    for (var i = data.comments.length-1; i >= 0; i--) {
-                        //Inserts after the parent comment
-                        comment.element.parentElement.insertBefore(displayComment(data.comments[i]), comment.element.nextSibling);
-                    }
-                    comment.unfolded = true;
+            // If we're unfolded, fold back up
+            if (comment.unfolded) {
+                while (comment.element.nextElementSibling.classList.contains("comment-comment")) {
+                    comment.element.parentElement.removeChild(comment.element.nextElementSibling);
                 }
-            });
-            req.send();
+                comment.unfolded = false;
+                var el = comment.element.getElementsByClassName("show-hide-comments")[0];
+                el.innerText = el.innerText.replace(/^Hide/, "Show");
+            //If we've already loaded comments
+            }else if (comment.comments) {
+                unfoldComment(comment);
+            }else {
+                var req = new XMLHttpRequest();
+                req.open("GET", "/api/program/" + programData.id + "/comment/" + comment.id + "/comments");
+                req.addEventListener("load", function () {
+                    var data = JSON.parse(this.response);
+                    if (data && data.success) {
+                        comment.comments = data.comments;
+                        comment.replyCount = data.comments.length; //Reset local value to the correct number
+                        var el = comment.element.getElementsByClassName("show-hide-comments")[0];
+                        el.innerText = el.innerText.replace(/\(\d+\)/, "(" + comment.replyCount + ")")
+
+
+                        unfoldComment(comment);
+                    }
+                });
+                req.send();
+            }
         });
         replies.appendChild(dropDown);
     }else {
