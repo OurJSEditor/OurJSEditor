@@ -122,7 +122,32 @@ var createCommentTextbox = function (parent) {
         req.addEventListener("load", function () {
             var data = JSON.parse(this.response);
             if (data && data.success) {
+                if (parent) {
+                    parent = {
+                        "id": parent,
+                    }
+                }
+                var commentObj = {
+                    "content": textbox.value,
+                    "replyCount": 0,
+                    "depth": parent ? 1 : 0,
+                    "program": {
+                        "id": programData.id,
+                    },
+                    "originalContent": textbox.value,
+                    "parent": parent,
+                    "author": userData,
+                    "edited": null,
+                    "created": (new Date()).toISOString().replace(/\.\d\d\dZ/, "Z"),
+                    "id": data.id,
+                }
+
+                programData.comments.push(commentObj);
+                document.getElementById("comment-wrap").insertBefore(displayComment(commentObj), textbox.parentElement.parentElement.parentElement.parentElement);
+
                 textbox.value = "";
+            }else if (data && !data.success) {
+                alert('Failed with error: ' + data.error);
             }
         });
         req.send(JSON.stringify({
