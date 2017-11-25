@@ -254,4 +254,5 @@ input, textarea {
     margin-bottom: 0;
     resize: vertical;
     box-sizing: border-box !important;
+    font-family: inherit;
 }
