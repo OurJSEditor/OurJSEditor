@@ -109,12 +109,13 @@ var createCommentTextbox = function (parent) {
     var row = document.createElement("tr");
     var content = document.createElement("td");
     var buttons = document.createElement("td");
-    var submit = document.createElement("input");
+    var submit = document.createElement("a");
 
-    submit.setAttribute("type", "submit");
-    submit.value = "Post Comment";
+    submit.innerText = "Post";
 
-    submit.addEventListener("click", function () {
+    submit.addEventListener("click", function (e) {
+        e.preventDefault();
+
         var req = new XMLHttpRequest();
         req.open("POST", "/api/program/" + programData.id + "/comment/new");
         req.setRequestHeader("X-CSRFToken", csrf_token)
