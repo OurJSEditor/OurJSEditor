@@ -9,6 +9,7 @@ from ourjseditor import api
 
 # /program/PRO_ID/comment/new
 @api.standardAPIErrors("POST")
+@api.login_required
 def new_comment(request, program_id):
     data = json.loads(request.body)
 
