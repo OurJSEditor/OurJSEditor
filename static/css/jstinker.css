@@ -219,6 +219,7 @@ input, textarea {
 
 .comment .lower-row a {
     color: black;
+    text-decoration: underline;
 }
 
 .comment-comment {
@@ -244,7 +245,7 @@ input, textarea {
     font-size: 15px;
 }
 
-.comment-adding a:hover {
+.comment a:hover {
     cursor: pointer;
 }
 
@@ -255,4 +256,28 @@ input, textarea {
     resize: vertical;
     box-sizing: border-box !important;
     font-family: inherit;
+}
+
+.comment-delete-button {
+    min-width: 50px;
+    text-align: center;
+    position: relative;
+    display: inline-block;
+}
+
+.comment-delete-confirm {
+    background: white;
+    border: 1px solid black;
+    position: absolute;
+    box-sizing: border-box;
+    min-width: 150px;
+    padding: 5px;
+    text-align: center;
+    z-index: 2;
+    /*150/2 - 25*/
+    left: -50px;
+}
+
+.comment-delete-confirm:hover {
+    cursor: default;
 }

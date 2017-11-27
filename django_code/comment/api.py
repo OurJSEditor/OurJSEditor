@@ -80,6 +80,11 @@ def comment(request, *args):
         if request.user != requested_comment.user:
             return api.error("Not authorized.", status=401)
 
+        parent = requested_comment.parent
+        if (parent is not None):
+            parent.reply_count -= 1;
+            parent.save();
+
         requested_comment.delete()
 
         return api.succeed({})

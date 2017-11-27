@@ -205,7 +205,7 @@ var displayComment = function (comment) {
     var upperRow = document.createElement("tr");
     var lowerRow = document.createElement("tr");
     var link = document.createElement("a");
-    var replies = document.createElement("td");
+    var lowerRowLeft = document.createElement("td");
 
     com.classList.add("comment");
     com.setAttribute("id", "comment-" + comment.id);
@@ -220,14 +220,12 @@ var displayComment = function (comment) {
 
     lowerRow.classList.add("lower-row");
 
-    comment.unfolded = null;
     if (comment.depth === 0) {
         comment.unfolded = false;
 
         var dropDown = document.createElement("a");
         dropDown.classList.add("show-hide-comments");
         dropDown.innerText = "Show Comment" + (comment.replyCount === 1 ? " (" : "s (") + comment.replyCount + ")";
-        dropDown.setAttribute("href", "#");
         dropDown.addEventListener("click", function (e) {
             e.preventDefault();
 
@@ -253,24 +251,90 @@ var displayComment = function (comment) {
                         var el = comment.element.getElementsByClassName("show-hide-comments")[0];
                         el.innerText = el.innerText.replace(/\(\d+\)/, "(" + comment.replyCount + ")")
 
-
                         unfoldComment(comment);
                     }
                 });
                 req.send();
             }
         });
-        replies.appendChild(dropDown);
+        lowerRowLeft.appendChild(dropDown);
+        var spacer = document.createElement("span");
+        spacer.style.width = "10px";
+        spacer.style.display = "inline-block";
+        lowerRowLeft.appendChild(spacer);
     }else {
         com.classList.add("comment-comment");
     }
 
+    if (comment.author.id === userData.id) {
+        var deleteButton = document.createElement("a");
+        var deleteText = document.createElement("span");
+        deleteText.innerText = "Delete";
+        deleteButton.appendChild(deleteText);
+        deleteButton.classList.add("comment-delete-button");
+        deleteButton.addEventListener("click", function () {
+            var commentDeleteConfirm = document.createElement("div");
+
+            var commentDeleteCancel = document.createElement("a");
+            commentDeleteCancel.innerText = "Cancel";
+            commentDeleteCancel.addEventListener("click", function (e) {
+                e.stopPropagation();
+                commentDeleteConfirm.parentElement.removeChild(commentDeleteConfirm);
+            });
+            commentDeleteConfirm.appendChild(commentDeleteCancel);
+
+            var spacer = document.createElement("span");
+            spacer.style.width = "20px";
+            spacer.style.display = "inline-block";
+            commentDeleteConfirm.appendChild(spacer);
+
+            var commentDeleteDelete = document.createElement("a");
+            commentDeleteDelete.innerText = "Delete";
+            commentDeleteDelete.addEventListener("click", function (e) {
+                e.stopPropagation();
+                var req = new XMLHttpRequest();
+                req.open("DELETE", "/api/program/" + programData.id + "/comment/" + comment.id);
+                req.addEventListener("load", function () {
+                    var data = JSON.parse(this.response);
+                    if (data && data.success) {
+
+                        //If it has a parent we need to decrement the number of replies the parent has
+                        if (comment.parent) {
+                            for (var i = 0; i < programData.comments.length; i++) {
+                                if (programData.comments[i].id === comment.parent.id) {
+                                    programData.comments[i].replyCount --;
+                                    var el = programData.comments[i].element.getElementsByClassName("show-hide-comments")[0];
+                                    el.innerText = el.innerText.replace(/\(\d+\)/, "(" + programData.comments[i].replyCount + ")")
+                                    break;
+                                }
+                            }
+                        }
+
+                        com.parentElement.removeChild(com);
+                    }else if (data && !data.success) {
+                        alert("Failed with error: " + data.error);
+                    }
+                });
+                req.setRequestHeader("X-CSRFToken", csrf_token)
+                req.send();
+            });
+            commentDeleteConfirm.appendChild(commentDeleteDelete);
+
+            commentDeleteConfirm.classList.add("comment-delete-confirm");
+            deleteButton.appendChild(commentDeleteConfirm);
+        });
+        lowerRowLeft.appendChild(deleteButton);
+    }
+
     upperRow.appendChild(content);
-    lowerRow.appendChild(replies);
+    lowerRow.appendChild(lowerRowLeft);
     lowerRow.appendChild(author).appendChild(link);
     com.appendChild(t).appendChild(upperRow);
     t.appendChild(lowerRow);
+
     comment.element = com;
+    comment.unfolded = null;
+
     return com;
 };
 
