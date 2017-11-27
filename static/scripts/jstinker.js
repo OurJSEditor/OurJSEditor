@@ -95,6 +95,269 @@ function runProgram (event) {
     document.getElementById("preview").contentWindow.postMessage(html, "*");
 }
 
+var dateToString = function (d) {
+    d = new Date(d);
+    var currentYear = (new Date()).getFullYear();
+    var months = ["Jan", "Feb", "Mar", "Apr", "May", "Jun", "Jul", "Aug", "Sep", "Oct", "Nov", "Dec"];
+    return months[d.getMonth()] + " " + d.getDate() + (currentYear === d.getFullYear() ? "" : ", " + d.getFullYear());
+}
+
+var createCommentTextbox = function (parent) {
+    var com = document.createElement("div");
+    var t = document.createElement("table");
+    var textbox = document.createElement("textarea");
+    var row = document.createElement("tr");
+    var content = document.createElement("td");
+    var buttons = document.createElement("td");
+    var submit = document.createElement("a");
+
+    submit.innerText = "Post";
+
+    submit.addEventListener("click", function (e) {
+        e.preventDefault();
+
+        var req = new XMLHttpRequest();
+        req.open("POST", "/api/program/" + programData.id + "/comment/new");
+        req.setRequestHeader("X-CSRFToken", csrf_token)
+        req.setRequestHeader("Content-Type", "application/json");
+        req.addEventListener("load", function () {
+            var data = JSON.parse(this.response);
+            if (data && data.success) {
+                if (parent) {
+                    parent = {
+                        "id": parent,
+                    }
+                }
+                var commentObj = {
+                    "content": textbox.value,
+                    "replyCount": 0,
+                    "depth": parent ? 1 : 0,
+                    "program": {
+                        "id": programData.id,
+                    },
+                    "originalContent": textbox.value,
+                    "parent": parent,
+                    "author": userData,
+                    "edited": null,
+                    "created": (new Date()).toISOString().replace(/\.\d\d\dZ/, "Z"),
+                    "id": data.id,
+                }
+
+                if (parent) {
+                    for (var i = 0; i < programData.comments.length; i++) {
+                        if (programData.comments[i].id === parent.id) {
+                            programData.comments[i].comments.push(commentObj);
+                            programData.comments[i].replyCount ++;
+                            var el = programData.comments[i].element.getElementsByClassName("show-hide-comments")[0];
+                            el.innerText = el.innerText.replace(/\(\d+\)/, "(" + programData.comments[i].replyCount + ")")
+                            break;
+                        }
+                    }
+                }else {
+                    programData.comments.push(commentObj);
+                }
+
+                document.getElementById("comment-wrap").insertBefore(displayComment(commentObj), textbox.parentElement.parentElement.parentElement.parentElement);
+
+                textbox.value = "";
+            }else if (data && !data.success) {
+                alert('Failed with error: ' + data.error);
+            }
+        });
+        req.send(JSON.stringify({
+            parent: parent,
+            content: textbox.value,
+        }));
+    });
+
+    buttons.appendChild(submit);
+
+    com.classList.add("comment", "comment-adding");
+    if (parent) {
+        com.classList.add("comment-comment");
+    }
+
+    textbox.classList.add("comment-content")
+
+    content.appendChild(textbox);
+    com.appendChild(t).appendChild(row);
+    row.appendChild(content);
+    row.appendChild(buttons);
+    return com;
+};
+
+//comment is a comment object
+var unfoldComment = function (comment) {
+    comment.element.parentElement.insertBefore(createCommentTextbox(comment.id), comment.element.nextSibling)
+    for (var i = comment.comments.length-1; i >= 0; i--) {
+        comment.element.parentElement.insertBefore(displayComment(comment.comments[i]), comment.element.nextSibling);
+    }
+    comment.unfolded = true;
+    var el = comment.element.getElementsByClassName("show-hide-comments")[0];
+    el.innerText = el.innerText.replace(/^Show/, "Hide");
+};
+
+var displayComment = function (comment) {
+    var com = document.createElement("div");
+    var t = document.createElement("table");
+    var content = document.createElement("td");
+    var author = document.createElement("td");
+    var upperRow = document.createElement("tr");
+    var lowerRow = document.createElement("tr");
+    var link = document.createElement("a");
+    var lowerRowLeft = document.createElement("td");
+
+    com.classList.add("comment");
+    com.setAttribute("id", "comment-" + comment.id);
+    link.setAttribute("href", "/user/" + comment.author.username);
+    author.classList.add("comment-author");
+
+    content.classList.add("comment-content");
+    content.setAttribute("colspan", 2);
+    author.innerText = "Posted " + dateToString(comment.created) + " by ";
+    link.innerText = comment.author.displayName;
+    content.innerText = comment.content;
+
+    lowerRow.classList.add("lower-row");
+
+    if (comment.depth === 0) {
+        comment.unfolded = false;
+
+        var dropDown = document.createElement("a");
+        dropDown.classList.add("show-hide-comments");
+        dropDown.innerText = "Show Comment" + (comment.replyCount === 1 ? " (" : "s (") + comment.replyCount + ")";
+        dropDown.addEventListener("click", function (e) {
+            e.preventDefault();
+
+            // If we're unfolded, fold back up
+            if (comment.unfolded) {
+                while (comment.element.nextElementSibling.classList.contains("comment-comment")) {
+                    comment.element.parentElement.removeChild(comment.element.nextElementSibling);
+                }
+                comment.unfolded = false;
+                var el = comment.element.getElementsByClassName("show-hide-comments")[0];
+                el.innerText = el.innerText.replace(/^Hide/, "Show");
+            //If we've already loaded comments
+            }else if (comment.comments) {
+                unfoldComment(comment);
+            }else {
+                var req = new XMLHttpRequest();
+                req.open("GET", "/api/program/" + programData.id + "/comment/" + comment.id + "/comments");
+                req.addEventListener("load", function () {
+                    var data = JSON.parse(this.response);
+                    if (data && data.success) {
+                        comment.comments = data.comments;
+                        comment.replyCount = data.comments.length; //Reset local value to the correct number
+                        var el = comment.element.getElementsByClassName("show-hide-comments")[0];
+                        el.innerText = el.innerText.replace(/\(\d+\)/, "(" + comment.replyCount + ")")
+
+                        unfoldComment(comment);
+                    }
+                });
+                req.send();
+            }
+        });
+        lowerRowLeft.appendChild(dropDown);
+        var spacer = document.createElement("span");
+        spacer.style.width = "10px";
+        spacer.style.display = "inline-block";
+        lowerRowLeft.appendChild(spacer);
+    }else {
+        com.classList.add("comment-comment");
+    }
+
+    if (comment.author.id === userData.id) {
+        var deleteButton = document.createElement("a");
+        var deleteText = document.createElement("span");
+        deleteText.innerText = "Delete";
+        deleteButton.appendChild(deleteText);
+        deleteButton.classList.add("comment-delete-button");
+        deleteButton.addEventListener("click", function () {
+            var commentDeleteConfirm = document.createElement("div");
+
+            var commentDeleteCancel = document.createElement("a");
+            commentDeleteCancel.innerText = "Cancel";
+            commentDeleteCancel.addEventListener("click", function (e) {
+                e.stopPropagation();
+                commentDeleteConfirm.parentElement.removeChild(commentDeleteConfirm);
+            });
+            commentDeleteConfirm.appendChild(commentDeleteCancel);
+
+            var spacer = document.createElement("span");
+            spacer.style.width = "20px";
+            spacer.style.display = "inline-block";
+            commentDeleteConfirm.appendChild(spacer);
+
+            var commentDeleteDelete = document.createElement("a");
+            commentDeleteDelete.innerText = "Delete";
+            commentDeleteDelete.addEventListener("click", function (e) {
+                e.stopPropagation();
+                var req = new XMLHttpRequest();
+                req.open("DELETE", "/api/program/" + programData.id + "/comment/" + comment.id);
+                req.addEventListener("load", function () {
+                    var data = JSON.parse(this.response);
+                    if (data && data.success) {
+
+                        //If it has a parent we need to decrement the number of replies the parent has
+                        if (comment.parent) {
+                            for (var i = 0; i < programData.comments.length; i++) {
+                                if (programData.comments[i].id === comment.parent.id) {
+                                    programData.comments[i].replyCount --;
+                                    var el = programData.comments[i].element.getElementsByClassName("show-hide-comments")[0];
+                                    el.innerText = el.innerText.replace(/\(\d+\)/, "(" + programData.comments[i].replyCount + ")")
+                                    break;
+                                }
+                            }
+                        }
+
+                        com.parentElement.removeChild(com);
+                    }else if (data && !data.success) {
+                        alert("Failed with error: " + data.error);
+                    }
+                });
+                req.setRequestHeader("X-CSRFToken", csrf_token)
+                req.send();
+            });
+            commentDeleteConfirm.appendChild(commentDeleteDelete);
+
+            commentDeleteConfirm.classList.add("comment-delete-confirm");
+            deleteButton.appendChild(commentDeleteConfirm);
+        });
+        lowerRowLeft.appendChild(deleteButton);
+    }
+
+    upperRow.appendChild(content);
+    lowerRow.appendChild(lowerRowLeft);
+    lowerRow.appendChild(author).appendChild(link);
+    com.appendChild(t).appendChild(upperRow);
+    t.appendChild(lowerRow);
+
+    comment.element = com;
+    comment.unfolded = null;
+
+    return com;
+};
+
+var displayComments = function (comments) {
+    programData.comments = comments;
+
+    var base = document.getElementById("comment-wrap");
+    for (var i = 0; i < comments.length; i++) {
+        base.appendChild(displayComment(comments[i]));
+    }
+
+    if (comments.length === 0) {
+        base.appendChild(document.createTextNode("No one's posted any comments yet :("))
+    }
+
+    base.appendChild(createCommentTextbox(null));
+
+    var scrollComment = document.getElementById(window.location.hash.slice(1));
+    if (scrollComment) {
+        scrollComment.scrollIntoView();
+    }
+}
+
 document.addEventListener("DOMContentLoaded", function() {
 
     // TIDYUP Button
@@ -141,6 +404,16 @@ document.addEventListener("DOMContentLoaded", function() {
             titleInput.focus();
         });
     }
+
+    var req = new XMLHttpRequest();
+    req.open("GET", "/api/program/" + programData.id + "/comments");
+    req.addEventListener("load", function () {
+        var data = JSON.parse(this.response);
+        if (data && data.success) {
+            displayComments(data.comments);
+        }
+    });
+    req.send();
 });
 
 //Run program on window load. That way Ace is definitely loaded.

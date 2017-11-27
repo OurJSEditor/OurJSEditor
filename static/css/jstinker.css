@@ -180,3 +180,104 @@ input, textarea {
     width: 100%;
     margin-bottom: 5px;
 }
+
+#comment-wrap {
+    margin-top: 20px;
+    margin-bottom: 20px;
+}
+
+.comment {
+    margin: 15px;
+    background: #FFFFFF;
+}
+
+.comment, .comment-content {
+    font-size: 15px;
+}
+
+.comment tr {
+    border: 1px #cecece solid;
+}
+
+.comment table {
+    border-collapse: collapse;
+    width: 100%;
+}
+
+.comment-content {
+    padding: 15px;
+}
+
+.comment .lower-row td {
+    background: #f0f0f0;
+    padding: 10px 15px;
+}
+
+.comment .comment-author {
+    text-align: right;
+}
+
+.comment .lower-row a {
+    color: black;
+    text-decoration: underline;
+}
+
+.comment-comment {
+    margin-left: 40px;
+}
+
+.comment-adding td:first-child {
+    padding-right: 30px;
+}
+
+.comment-adding td:last-child {
+    width: 50px;
+    padding-right: 20px;
+}
+
+.comment-adding a {
+    color: white;
+    display: inline-block;
+    padding: 10px 15px;
+    background: rgb(72, 126, 179);
+    text-decoration: none;
+    text-align: center;
+    font-size: 15px;
+}
+
+.comment a:hover {
+    cursor: pointer;
+}
+
+.comment-adding textarea {
+    padding: 5px;
+    margin: 5px;
+    margin-bottom: 0;
+    resize: vertical;
+    box-sizing: border-box !important;
+    font-family: inherit;
+}
+
+.comment-delete-button {
+    min-width: 50px;
+    text-align: center;
+    position: relative;
+    display: inline-block;
+}
+
+.comment-delete-confirm {
+    background: white;
+    border: 1px solid black;
+    position: absolute;
+    box-sizing: border-box;
+    min-width: 150px;
+    padding: 5px;
+    text-align: center;
+    z-index: 2;
+    /*150/2 - 25*/
+    left: -50px;
+}
+
+.comment-delete-confirm:hover {
+    cursor: default;
+}

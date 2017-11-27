@@ -1,0 +1,11 @@
+    <div id="top-banner">
+        <!-- Load user data -->
+        <script>
+            userData = {
+                "username": "{{ request.user.username|escapejs }}",
+                "id": "{{ request.user.profile.profile_id|escapejs }}",
+                "displayName": "{{ request.user.profile.display_name|escapejs }}",
+            };
+        </script>
+        <!-- TODO: Create top banner -->
+    </div>
