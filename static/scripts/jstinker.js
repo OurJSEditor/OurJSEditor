@@ -308,6 +308,10 @@ var displayComment = function (comment) {
                                     break;
                                 }
                             }
+                        }else {
+                            while (comment.element.nextElementSibling.classList.contains("comment-comment")) {
+                                comment.element.parentElement.removeChild(comment.element.nextElementSibling);
+                            }
                         }
 
                         com.parentElement.removeChild(com);
