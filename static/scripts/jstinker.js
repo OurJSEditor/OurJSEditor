@@ -301,16 +301,31 @@ var displayComment = function (comment) {
                         //If it has a parent we need to decrement the number of replies the parent has
                         if (comment.parent) {
                             for (var i = 0; i < programData.comments.length; i++) {
-                                if (programData.comments[i].id === comment.parent.id) {
-                                    programData.comments[i].replyCount --;
-                                    var el = programData.comments[i].element.getElementsByClassName("show-hide-comments")[0];
-                                    el.innerText = el.innerText.replace(/\(\d+\)/, "(" + programData.comments[i].replyCount + ")")
+                                var parentComment = programData.comments[i];
+                                if (parentComment.id === comment.parent.id) {
+                                    parentComment.replyCount --;
+
+                                    for (var j = 0; j < parentComment.comments.length; j++) {
+                                        if (parentComment.comments[j].id === comment.id) {
+                                            parentComment.comments.splice(j, 1);
+                                        }
+                                    }
+
+                                    var el = parentComment.element.getElementsByClassName("show-hide-comments")[0];
+                                    el.innerText = el.innerText.replace(/\(\d+\)/, "(" + parentComment.replyCount + ")")
                                     break;
                                 }
                             }
                         }else {
                             while (comment.element.nextElementSibling.classList.contains("comment-comment")) {
                                 comment.element.parentElement.removeChild(comment.element.nextElementSibling);
+                            }
+
+                            for (var i = 0; i < programData.comments.length; i++) {
+                                if (programData.comments[i].id === comment.id) {
+                                    programData.comments.splice(i, 1);
+                                    break;
+                                }
                             }
                         }
 
