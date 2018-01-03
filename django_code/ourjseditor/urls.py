@@ -23,6 +23,7 @@ from user_profile import api as user_api
 from account import api as account_api
 from program import api as program_api
 from comment import api as comment_api
+from vote import api as vote_api
 
 api_urls = [
     url(r'^user/', include([
@@ -44,6 +45,7 @@ api_urls = [
                     url(r'^/comments$', comment_api.comment_comments, name="comment-comments-api"),
                 ])),
             ])),
+            url(r'^/vote$', vote_api.program_vote, name="program-vote-api"),
         ])),
     ])),
     url(r'^comment/([-\w]{10})', include([
