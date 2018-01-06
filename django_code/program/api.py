@@ -54,11 +54,11 @@ def program(request, program_id):
 
         requested_program.save()
 
-        return api.succeed({})
+        return api.succeed()
     elif (request.method == "DELETE"):
         if request.user != requested_program.user:
             return api.error("Not authorized.", status=401)
 
         requested_program.delete()
 
-        return api.succeed({})
+        return api.succeed()
