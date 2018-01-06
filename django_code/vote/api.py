@@ -4,14 +4,14 @@ import json
 import urlparse
 
 from ourjseditor import api
-from models import Vote
+from models import Vote, vote_types
 
 @api.standardAPIErrors("POST","DELETE")
 @api.login_required
 def program_vote(request, program_id):
     vote_type = urlparse.parse_qs(request.META["QUERY_STRING"])["type"][0]
 
-    if (vote_type not in ["entertaining", "pretty", "informative"]):
+    if (vote_type not in vote_types):
         return api.error("Invalid vote type.")
     try:
         # Look for a vote of the same type cast by the user before
@@ -22,7 +22,7 @@ def program_vote(request, program_id):
             orig_vote.delete()
             return api.succeed()
         #If the specific vote already exists, and you're postin it again
-        else if (request.method == "POST") :
+        elif (request.method == "POST"):
             # 403 Forbidden, is used here beacuse there is no authentication that would allow the request
             return api.error("Already voted.", status=403)
     except Vote.DoesNotExist:
@@ -30,5 +30,5 @@ def program_vote(request, program_id):
         if (request.method == "POST"):
             Vote.objects.create(user_id=request.user.id, vote_type=vote_type, voted_object_id=program_id)
             return api.succeed({}, status=201) #Return with 201, created
-        else if (request.method == "DELETE"):
+        elif (request.method == "DELETE"):
             return api.error("Vote not found.", 404)

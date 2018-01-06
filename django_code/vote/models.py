@@ -3,6 +3,8 @@ from __future__ import unicode_literals
 
 from django.db import models
 
+vote_types = ["entertaining", "pretty", "informative"]
+
 # Create your models here.
 class Vote(models.Model):
     voted_object_id = models.CharField(max_length=10)

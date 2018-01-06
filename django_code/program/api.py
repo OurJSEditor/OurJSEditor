@@ -3,6 +3,7 @@ from ourjseditor import api
 import json
 
 from models import Program
+from vote.models import vote_types
 
 @api.standardAPIErrors("POST")
 @api.login_required
@@ -36,6 +37,7 @@ def program(request, program_id):
             "js": requested_program.js,
             "html": requested_program.html
         }
+        program_data["votes"] = dict([(t, Vote.objects.filter(vote_type=t, voted_object_id=program_id).count()) for t in vote_types])
         return api.succeed(program_data)
     elif (request.method == "PATCH"):
         data = json.loads(request.body)
