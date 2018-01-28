@@ -4,6 +4,7 @@ from __future__ import unicode_literals
 from django.shortcuts import render
 from django.http import HttpResponse
 from program.models import Program
+from vote.models import Vote, vote_types
 
 import json
 import os
@@ -37,5 +38,7 @@ def program (request, program_id):
 
         data_dict["title"] = current_program.title
         data_dict["id"] = program_id
+
+        data_dict["votes"] = dict([(t, Vote.objects.filter(vote_type=t, voted_object_id=program_id).count()) for t in vote_types])
 
     return render(request, "program/index.html", {"data_dict": json.dumps(data_dict)})
