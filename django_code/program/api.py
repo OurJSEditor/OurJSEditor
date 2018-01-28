@@ -3,7 +3,7 @@ from ourjseditor import api
 import json
 
 from models import Program
-from vote.models import vote_types
+from vote.models import vote_types, Vote
 
 @api.standardAPIErrors("POST")
 @api.login_required
@@ -24,7 +24,7 @@ def new_program(request):
     response["Location"] = "/program/" + program.program_id
     return response
 
-# @api.standardAPIErrors("GET","PATCH","DELETE")
+@api.standardAPIErrors("GET","PATCH","DELETE")
 def program(request, program_id):
     requested_program = Program.objects.get(program_id=program_id)
     if (request.method == "GET"):
@@ -35,9 +35,9 @@ def program(request, program_id):
             "title": requested_program.title,
             "css": requested_program.css,
             "js": requested_program.js,
-            "html": requested_program.html
+            "html": requested_program.html,
+            "votes": dict([(t, Vote.objects.filter(vote_type=t, voted_object_id=program_id).count()) for t in vote_types])
         }
-        program_data["votes"] = dict([(t, Vote.objects.filter(vote_type=t, voted_object_id=program_id).count()) for t in vote_types])
         return api.succeed(program_data)
     elif (request.method == "PATCH"):
         data = json.loads(request.body)
