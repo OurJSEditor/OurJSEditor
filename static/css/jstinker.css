@@ -42,7 +42,7 @@ body {
 #sidebar {
     padding: 0;
     margin: 0;
-    font-size: 11px;
+    font-size: 15px;
     width: 217px;
     position: absolute;
     top: 0;
@@ -50,6 +50,18 @@ body {
     background-color: #fff;
     color: #444;
     height: 100%;
+}
+
+.vote-button:hover {
+    cursor: pointer;
+    -webkit-user-select: none;
+       -moz-user-select: none;
+        -ms-user-select: none;
+            user-select: none;
+}
+
+.vote-button.voted {
+    color: rgb(65, 118, 169);
 }
 
 .navbar-default {
@@ -107,10 +119,6 @@ body {
 
 .panel-body {
     padding: 15px;
-}
-
-.author-ref {
-    font-size: 15px;
 }
 
 #program-title {
