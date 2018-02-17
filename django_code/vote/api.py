@@ -21,7 +21,7 @@ def program_vote(request, program_id):
         if (request.method == "DELETE"):
             orig_vote.delete()
             return api.succeed()
-        #If the specific vote already exists, and you're postin it again
+        #If the specific vote already exists, and you're posting it again
         elif (request.method == "POST"):
             # 403 Forbidden, is used here beacuse there is no authentication that would allow the request
             return api.error("Already voted.", status=403)
