@@ -456,7 +456,7 @@ document.addEventListener("DOMContentLoaded", function() {
     }
 
     if (!runningLocal && !programData.new) {
-        var voteTypes = ["informative", "pretty", "entertaining"];
+        var voteTypes = ["informative", "artistic", "entertaining"];
 
         voteTypes.forEach(function (s) {
             document.getElementById(s + "-vote-count").innerHTML = programData.votes[s];
