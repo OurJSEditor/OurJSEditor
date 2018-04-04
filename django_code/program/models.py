@@ -22,3 +22,6 @@ class Program(models.Model):
     html= models.TextField(blank=True)
     js = models.TextField(blank=True)
     css = models.TextField(blank=True)
+    entertaining_votes = models.IntegerField(default=0)
+    artistic_votes = models.IntegerField(default=0)
+    informative_votes = models.IntegerField(default=0)

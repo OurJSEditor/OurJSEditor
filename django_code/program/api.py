@@ -3,7 +3,7 @@ from ourjseditor import api
 import json
 
 from models import Program
-from vote.models import vote_types, Vote
+from vote.models import vote_types
 
 @api.standardAPIErrors("POST")
 @api.login_required
@@ -36,7 +36,7 @@ def program(request, program_id):
             "css": requested_program.css,
             "js": requested_program.js,
             "html": requested_program.html,
-            "votes": dict([(t, Vote.objects.filter(vote_type=t, voted_object_id=program_id).count()) for t in vote_types])
+            "votes": dict([(t, getattr(requested_program, t + "_votes")) for t in vote_types])
         }
         return api.succeed(program_data)
     elif (request.method == "PATCH"):
