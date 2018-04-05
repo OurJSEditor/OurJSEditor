@@ -4,6 +4,7 @@ from django.contrib.auth.models import User
 from django.http import HttpResponse
 
 from program.models import Program
+from vote.models import vote_types
 from ourjseditor.funcs import check_username
 
 # Create your views here.
@@ -17,7 +18,9 @@ def index(request, username):
             'user': user,
             'currentUser': request.user,
             'editing': False,
-            'user_programs': Program.objects.filter(user=user).order_by("-created")
+            'user_programs': sorted(  #Sorts based off of sum of votes in all three categories
+                Program.objects.filter(user=user), reverse=True,
+                key=lambda program: sum([getattr(program, t + "_votes") for t in vote_types]))
         })
     except User.DoesNotExist:
         return render(request, 'user_profile/doesNotExist.html', {'username': username}, status=404)
