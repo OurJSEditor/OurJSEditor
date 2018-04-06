@@ -75,6 +75,10 @@
                     <td>
                         <a class="program-link" href="/program/{{ program.program_id }}">{{ program.title }}</a>
                     </td>
+
+                    <td class="vote-stat">Entertaining:  {{ program.entertaining_votes }}</td>
+                    <td class="vote-stat">Artistic:  {{ program.artistic_votes }}</td>
+                    <td class="vote-stat">Informative:  {{ program.informative_votes }}</td>
                 </tr>
             {% empty %}
                 <tr>

@@ -377,6 +377,37 @@ var displayComments = function (comments) {
     }
 }
 
+var vote = function () {
+    var el = this;
+    var voteType = el.id.substring(0, el.id.indexOf("-"));
+
+    el.classList.toggle("voted");
+    programData.hasVoted[voteType] = !programData.hasVoted[voteType];
+
+    var req = new XMLHttpRequest();
+    req.open(programData.hasVoted[voteType] ? "POST" : "DELETE", "/api/program/" + programData.id + "/vote?type=" + voteType);
+    req.setRequestHeader("X-CSRFToken", csrf_token);
+    req.addEventListener("load", function () {
+        var d = JSON.parse(this.response);
+        if (!d.success) {
+            alert("Failed with error:\n\n" + d.error);
+
+            //Oops, didn't actually vote:
+            programData.hasVoted[voteType] = !programData.hasVoted[voteType];
+            el.classList.toggle("voted");
+        }else {
+            if (programData.hasVoted[voteType]) {
+                programData.votes[voteType]++;
+            }else {
+                programData.votes[voteType]--;
+            }
+            document.getElementById(voteType + "-vote-count").innerHTML = programData.votes[voteType];
+        }
+    });
+    req.send();
+};
+
+
 document.addEventListener("DOMContentLoaded", function() {
 
     // TIDYUP Button
@@ -422,6 +453,27 @@ document.addEventListener("DOMContentLoaded", function() {
             titleLabel.parentNode.removeChild(titleLabel);
             titleInput.focus();
         });
+    }
+
+    if (!runningLocal && !programData.new) {
+        var voteTypes = ["informative", "artistic", "entertaining"];
+
+        voteTypes.forEach(function (s) {
+            document.getElementById(s + "-vote-count").innerHTML = programData.votes[s];
+        });
+
+        voteTypes.forEach(function (s) {
+            var el = document.getElementById(s + "-vote-button");
+
+            if (programData.hasVoted[s]) {
+                el.classList.add("voted")
+            }
+
+            el.addEventListener("click", vote);
+        });
+    }else {
+        var t = document.getElementById("vote-table");
+        t.parentNode.removeChild(t);
     }
 
     var req = new XMLHttpRequest();

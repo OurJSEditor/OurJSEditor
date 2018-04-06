@@ -1,0 +1,31 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title id="title-tag">Programs &mdash; OurJSEditor</title>
+    <link rel="stylesheet" type="text/css" href="/static/css/user-profile.css">
+</head>
+<body>
+    <table class="main-table programs">
+        {% for program in programs %}
+            <tr>
+                <td>
+                    <a class="program-link" href="/program/{{ program.program_id }}">{{ program.title }}</a>
+                </td>
+
+                <td class="user-name">{{ program.user.profile.display_name }}</td>
+
+                <td class="vote-stat">Entertaining:  {{ program.entertaining_votes }}</td>
+                <td class="vote-stat">Artistic:  {{ program.artistic_votes }}</td>
+                <td class="vote-stat">Informative:  {{ program.informative_votes }}</td>
+            </tr>
+        {% empty %}
+            <tr>
+                <td>
+                    What?! No Programs.<br>Lame. <a href="/program/new">[New Program]</a>
+                </td>
+            </tr>
+        {% endfor %}
+    </table>
+</body>
+</html>
