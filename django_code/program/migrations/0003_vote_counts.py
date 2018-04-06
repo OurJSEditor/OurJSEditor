@@ -22,6 +22,7 @@ class Migration(migrations.Migration):
 
     dependencies = [
         ('program', '0002_program_created'),
+        ('vote', '0001_initial')
     ]
 
     operations = [
