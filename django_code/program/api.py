@@ -3,6 +3,7 @@ from ourjseditor import api
 import json
 
 from models import Program
+from views import key_func_mapping
 from vote.models import vote_types
 
 @api.standardAPIErrors("POST")
@@ -54,3 +55,27 @@ def program(request, program_id):
         requested_program.delete()
 
         return api.succeed({})
+
+@api.standardAPIErrors("GET")
+def program_list(request, sort):
+    if (not sort):
+        sort = "new" # Default sort. sort is actually passed in as None, so we can't use an argument default
+
+    if (sort not in key_func_mapping):
+        return api.error("Invalid sort type: \"{}\"".format(sort))
+
+    key_func = key_func_mapping[sort]
+    if (type(key_func) is unicode):
+        key_func = lambda program: getattr(program, key_func_mapping[sort])
+
+    programs = sorted(Program.objects.all(), reverse=True, key=key_func)
+
+    program_dicts = []
+    for program in programs:
+        program = program.to_dict()
+        del(program["css"])
+        del(program["html"])
+        del(program["js"])
+        program_dicts.append(program)
+
+    return api.succeed({"sort": sort, "programs": program_dicts})

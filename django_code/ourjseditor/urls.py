@@ -33,9 +33,9 @@ api_urls = [
         url(r'^username-valid/(.+)$', user_api.username_valid, name='username-valid'),
         url(r'^(\w+)$', user_api.user, name='user-api'),
     ])),
-    url(r'^program/', include([
-        url(r'^new$', program_api.new_program, name="new-program-api"),
-        url(r'^([-\w]{6})', include([
+    url(r'^program', include([
+        url(r'^/new$', program_api.new_program, name="new-program-api"),
+        url(r'^/([-\w]{6})', include([
             url(r'^$', program_api.program, name="program-api"),
             url(r'^/comments$', comment_api.program_comments, name="progrom-comments-api"),
             url(r'^/comment/', include([
@@ -47,6 +47,7 @@ api_urls = [
             ])),
             url(r'^/vote$', vote_api.program_vote, name="program-vote-api"),
         ])),
+        url(r'^(?:s|s/(\w+))$', program_api.program_list, name="program-list-api"),
     ])),
     url(r'^comment/([-\w]{10})', include([
         url(r'^$', comment_api.comment, name="comment-api"),
