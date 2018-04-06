@@ -7,6 +7,8 @@ from django.contrib.auth.models import User
 
 import datetime
 
+from vote.models import vote_types
+
 def generate_id():
     from ourjseditor.funcs import get_id
     return get_id();
@@ -25,3 +27,19 @@ class Program(models.Model):
     entertaining_votes = models.IntegerField(default=0)
     artistic_votes = models.IntegerField(default=0)
     informative_votes = models.IntegerField(default=0)
+
+    def to_dict(self):
+        return {
+            "id": self.program_id,
+            "author": {
+                "id": self.user.profile.profile_id,
+                "displayName": self.user.profile.display_name,
+                "username": self.user.username,
+            },
+            "created": self.created.replace(microsecond=0).isoformat() + "Z",
+            "js": self.js,
+            "html": self.html,
+            "css": self.css,
+            "title": self.title,
+            "votes": dict([(t, getattr(self, t + "_votes")) for t in vote_types])
+        }

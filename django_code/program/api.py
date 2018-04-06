@@ -28,17 +28,7 @@ def new_program(request):
 def program(request, program_id):
     requested_program = Program.objects.get(program_id=program_id)
     if (request.method == "GET"):
-        program_data = {
-            "author": { "id": requested_program.user.profile.profile_id },
-            "created": requested_program.created.replace(microsecond=0).isoformat() + "Z",
-            "id": requested_program.program_id,
-            "title": requested_program.title,
-            "css": requested_program.css,
-            "js": requested_program.js,
-            "html": requested_program.html,
-            "votes": dict([(t, getattr(requested_program, t + "_votes")) for t in vote_types])
-        }
-        return api.succeed(program_data)
+        return api.succeed(requested_program.to_dict())
     elif (request.method == "PATCH"):
         data = json.loads(request.body)
 

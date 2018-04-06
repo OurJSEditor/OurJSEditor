@@ -32,21 +32,8 @@ def program (request, program_id):
         except Program.DoesNotExist:
             return HttpResponse("404: No program found with that id", status=404)
 
-        data_dict["js"] = current_program.js
-        data_dict["css"] = current_program.css
-        data_dict["html"] = current_program.html
-        data_dict["created"] = current_program.created.replace(microsecond=0).isoformat() + "Z"
+        data_dict = current_program.to_dict()
         data_dict["canEditProgram"] = (current_program.user == request.user)
-        data_dict["author"] = {
-            "username": current_program.user.username,
-            "displayName": current_program.user.profile.display_name,
-            "id": current_program.user.profile.profile_id
-        }
-
-        data_dict["title"] = current_program.title
-        data_dict["id"] = program_id
-
-        data_dict["votes"] = dict([(t, getattr(current_program, t + "_votes")) for t in vote_types])
         data_dict["hasVoted"] = dict([(t, bool(Vote.objects.filter(vote_type=t, voted_object_id=program_id, user_id=request.user.id).count())) for t in vote_types])
 
     return render(request, "program/index.html", {"data_dict": json.dumps(data_dict)})
