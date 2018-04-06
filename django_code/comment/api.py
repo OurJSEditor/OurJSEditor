@@ -74,7 +74,7 @@ def comment(request, *args):
 
         requested_comment.save()
 
-        return api.succeed({})
+        return api.succeed()
 
     elif (request.method == "DELETE"):
         if request.user != requested_comment.user:
@@ -87,7 +87,7 @@ def comment(request, *args):
 
         requested_comment.delete()
 
-        return api.succeed({})
+        return api.succeed()
 
 # Endpoint for what KA calls replies, i.e. comments on comments, i.e. comments with a depth > 0
 # Note: POST requests for these are still made to /api/program/PRO_ID/comments, just with "parent": "COMMENT_ID"
