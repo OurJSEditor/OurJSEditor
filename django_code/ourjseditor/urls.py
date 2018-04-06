@@ -57,7 +57,7 @@ api_urls = [
 urlpatterns = [
     url(r'^admin/', admin.site.urls),
     url(r'^api/', include(api_urls)),
-    url(r'^program/', include('program.urls')),
+    url(r'^program', include('program.urls')),
     url(r'^user/', include('account.urls')),
     url(r'^user/', include('user_profile.urls')),
     url(r'^$', views.index, name='index'),

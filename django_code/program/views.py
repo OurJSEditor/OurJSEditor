@@ -1,13 +1,20 @@
 # -*- coding: utf-8 -*-
 from __future__ import unicode_literals
 
-from django.shortcuts import render
+from django.shortcuts import render, redirect
 from django.http import HttpResponse
 from program.models import Program
 from vote.models import Vote, vote_types
 
 import json
 import os
+
+key_func_mapping = {
+    "new": "created",
+    "top": lambda program: sum([getattr(program, t + "_votes") for t in vote_types])
+}
+for t in vote_types:
+    key_func_mapping[t] = t + "_votes"
 
 # Create your views here.
 def program (request, program_id):
@@ -43,3 +50,18 @@ def program (request, program_id):
         data_dict["hasVoted"] = dict([(t, bool(Vote.objects.filter(vote_type=t, voted_object_id=program_id, user_id=request.user.id).count())) for t in vote_types])
 
     return render(request, "program/index.html", {"data_dict": json.dumps(data_dict)})
+
+def program_list (request, sort):
+    if (not sort):
+        sort = "new" # Default sort. sort is actually passed in as None, so we can't use an argument default
+
+    if (sort not in key_func_mapping):
+        return redirect("/programs")
+
+    key_func = key_func_mapping[sort]
+    if (type(key_func) is unicode):
+        key_func = lambda program: getattr(program, key_func_mapping[sort])
+
+    programs = sorted(Program.objects.all(), reverse=True, key=key_func)
+
+    return render(request, "program/list.html", {"programs": programs})
