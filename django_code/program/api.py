@@ -68,7 +68,7 @@ def program_list(request, sort):
     if (type(key_func) is unicode):
         key_func = lambda program: getattr(program, key_func_mapping[sort])
 
-    programs = sorted(Program.objects.all(), reverse=True, key=key_func)
+    programs = sorted(Program.objects.all(), reverse=True, key=key_func)[:20]
 
     program_dicts = []
     for program in programs:
