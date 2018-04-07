@@ -1,3 +1,5 @@
+var jsEditor, htmlEditor, cssEditor;
+
 var titleLabel;
 var titleInput = document.createElement("input");
 titleInput.setAttribute("maxlength", "45");
@@ -466,7 +468,7 @@ document.addEventListener("DOMContentLoaded", function() {
 
     ace.require("ace/ext/language_tools");
 
-    var htmlEditor = ace.edit("html-editor");
+    htmlEditor = ace.edit("html-editor");
     htmlEditor.setTheme("ace/theme/textmate");
     htmlEditor.$blockScrolling = Infinity;
     htmlEditor.getSession().setMode("ace/mode/html");
@@ -474,7 +476,7 @@ document.addEventListener("DOMContentLoaded", function() {
         enableBasicAutocompletion: true
     });
 
-    var cssEditor = ace.edit("css-editor");
+    cssEditor = ace.edit("css-editor");
     cssEditor.setTheme("ace/theme/textmate");
     cssEditor.$blockScrolling = Infinity;
     cssEditor.getSession().setMode("ace/mode/css");
@@ -482,7 +484,7 @@ document.addEventListener("DOMContentLoaded", function() {
         enableBasicAutocompletion: true
     });
 
-    var jsEditor = ace.edit("js-editor");
+    jsEditor = ace.edit("js-editor");
     jsEditor.setTheme("ace/theme/textmate");
     jsEditor.$blockScrolling = Infinity;
     jsEditor.getSession().setMode("ace/mode/javascript");
