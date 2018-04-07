@@ -125,11 +125,6 @@ function createCommentTextbox (parent) {
         req.addEventListener("load", function () {
             var data = JSON.parse(this.response);
             if (data && data.success) {
-                if (parent) {
-                    parent = {
-                        "id": parent,
-                    }
-                }
                 var commentObj = {
                     "content": textbox.value,
                     "replyCount": 0,
@@ -138,7 +133,7 @@ function createCommentTextbox (parent) {
                         "id": programData.id,
                     },
                     "originalContent": textbox.value,
-                    "parent": parent,
+                    "parent": parent ? {"id": parent} : null,
                     "author": userData,
                     "edited": null,
                     "created": (new Date()).toISOString().replace(/\.\d\d\dZ/, "Z"),
@@ -147,7 +142,7 @@ function createCommentTextbox (parent) {
 
                 if (parent) {
                     for (var i = 0; i < programData.comments.length; i++) {
-                        if (programData.comments[i].id === parent.id) {
+                        if (programData.comments[i].id === parent) {
                             programData.comments[i].comments.push(commentObj);
                             programData.comments[i].replyCount ++;
                             var el = programData.comments[i].element.getElementsByClassName("show-hide-comments")[0];
@@ -242,7 +237,7 @@ function displayComment (comment) {
 
             // If we're unfolded, fold back up
             if (comment.unfolded) {
-                while (comment.element.nextElementSibling.classList.contains("comment-comment")) {
+                while (comment.element.nextElementSibling && comment.element.nextElementSibling.classList.contains("comment-comment")) {
                     comment.element.parentElement.removeChild(comment.element.nextElementSibling);
                 }
                 comment.unfolded = false;
@@ -328,7 +323,7 @@ function displayComment (comment) {
                                 }
                             }
                         }else {
-                            while (comment.element.nextElementSibling.classList.contains("comment-comment")) {
+                            while (comment.element.nextElementSibling && comment.element.nextElementSibling.classList.contains("comment-comment")) {
                                 comment.element.parentElement.removeChild(comment.element.nextElementSibling);
                             }
 
