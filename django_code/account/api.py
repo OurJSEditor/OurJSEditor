@@ -26,7 +26,7 @@ def login(request):
         return api.succeed({"username": user.username})
     else:
         # At this point, error should be handled by Javascript
-        return api.error("Username or password incorrect.", )
+        return api.error("Username or password incorrect.", status=401)
 
 @api.standardAPIErrors("POST")
 def forgot_password(request):

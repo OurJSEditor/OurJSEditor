@@ -20,13 +20,13 @@
         var req = new XMLHttpRequest();
         req.addEventListener("load", function () {
             console.log(this);
-            if (this.status !== 200) {
-                loginT.innerHTML = "Something went wrong.<br>";
-                console.log(this);
+            if (this.status === 401) {
+                loginT.innerHTML = "Your username or password was incorrect.<br>";
             }else if (JSON.parse(this.response).success) {
                 location.href = "/user/" + JSON.parse(this.response).username;
             }else {
-                loginT.innerHTML = "Your username or password was incorrect.<br>";
+                loginT.innerHTML = "Something went wrong.<br>";
+                console.log(this);
             }
         });
         req.open("POST", "/api/user/login");
