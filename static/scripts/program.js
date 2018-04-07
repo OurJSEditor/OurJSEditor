@@ -95,14 +95,14 @@ function runProgram (event) {
     document.getElementById("preview").contentWindow.postMessage(html, "*");
 }
 
-var dateToString = function (d) {
+function dateToString (d) {
     d = new Date(d);
     var currentYear = (new Date()).getFullYear();
     var months = ["Jan", "Feb", "Mar", "Apr", "May", "Jun", "Jul", "Aug", "Sep", "Oct", "Nov", "Dec"];
     return months[d.getMonth()] + " " + d.getDate() + (currentYear === d.getFullYear() ? "" : ", " + d.getFullYear());
 }
 
-var createCommentTextbox = function (parent) {
+function createCommentTextbox (parent) {
     var com = document.createElement("div");
     var t = document.createElement("table");
     var textbox = document.createElement("textarea");
@@ -196,7 +196,7 @@ var createCommentTextbox = function (parent) {
 };
 
 //comment is a comment object
-var unfoldComment = function (comment) {
+function unfoldComment (comment) {
     comment.element.parentElement.insertBefore(createCommentTextbox(comment.id), comment.element.nextSibling)
     for (var i = comment.comments.length-1; i >= 0; i--) {
         comment.element.parentElement.insertBefore(displayComment(comment.comments[i]), comment.element.nextSibling);
@@ -206,7 +206,7 @@ var unfoldComment = function (comment) {
     el.innerText = el.innerText.replace(/^Show/, "Hide");
 };
 
-var displayComment = function (comment) {
+function displayComment (comment) {
     var com = document.createElement("div");
     var t = document.createElement("table");
     var content = document.createElement("td");
@@ -366,7 +366,7 @@ var displayComment = function (comment) {
     return com;
 };
 
-var displayComments = function (comments) {
+function displayComments (comments) {
     programData.comments = comments;
 
     var base = document.getElementById("comment-wrap");
@@ -387,7 +387,7 @@ var displayComments = function (comments) {
     }
 }
 
-var vote = function () {
+function vote () {
     var el = this;
     var voteType = el.id.substring(0, el.id.indexOf("-"));
 
@@ -417,7 +417,7 @@ var vote = function () {
     req.send();
 };
 
-var save = function (event) {
+function save (event) {
     event.preventDefault();
 
     if (runningLocal) return;
