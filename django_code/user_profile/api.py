@@ -25,7 +25,8 @@ def user(request, id):
             "id": requested_user.profile.profile_id,
             "displayName": requested_user.profile.display_name,
             "bio": requested_user.profile.bio,
-            "programs": list(Program.objects.filter(user=requested_user).values_list("program_id", flat=True))
+            "programs": list(Program.objects.filter(user=requested_user).values_list("program_id", flat=True)),
+            "joined": requested_user.date_joined.replace(microsecond=0).isoformat() + "Z"
         }
         return api.succeed(user_data)
     elif request.method == "PATCH":
