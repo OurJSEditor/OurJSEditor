@@ -157,7 +157,16 @@ var createCommentTextbox = function (parent) {
                     programData.comments.push(commentObj);
                 }
 
-                document.getElementById("comment-wrap").insertBefore(displayComment(commentObj), textbox.parentElement.parentElement.parentElement.parentElement);
+
+                var textBoxWrapper = textbox.parentElement.parentElement.parentElement.parentElement;
+
+                //If we're adding a comment on a comment, and not a top-level comment
+                if (textBoxWrapper.classList.contains("comment-comment")) {
+                    //Insert the new comment before the textbox
+                    document.getElementById("comment-wrap").insertBefore(displayComment(commentObj), textBoxWrapper);
+                }else {
+                    document.getElementById("comment-wrap").insertBefore(displayComment(commentObj), textBoxWrapper.nextSibling);
+                }
 
                 textbox.value = "";
             }else if (data && !data.success) {
@@ -361,6 +370,9 @@ var displayComments = function (comments) {
     programData.comments = comments;
 
     var base = document.getElementById("comment-wrap");
+
+    base.appendChild(createCommentTextbox(null));
+
     for (var i = 0; i < comments.length; i++) {
         base.appendChild(displayComment(comments[i]));
     }
@@ -368,8 +380,6 @@ var displayComments = function (comments) {
     if (comments.length === 0) {
         base.appendChild(document.createTextNode("No one's posted any comments yet :("))
     }
-
-    base.appendChild(createCommentTextbox(null));
 
     var scrollComment = document.getElementById(window.location.hash.slice(1));
     if (scrollComment) {
