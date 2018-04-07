@@ -1,3 +1,5 @@
+var jsEditor, htmlEditor, cssEditor;
+
 var titleLabel;
 var titleInput = document.createElement("input");
 titleInput.setAttribute("maxlength", "45");
