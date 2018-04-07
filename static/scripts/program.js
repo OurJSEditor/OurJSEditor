@@ -562,20 +562,24 @@ document.addEventListener("DOMContentLoaded", function() {
 
             el.addEventListener("click", vote);
         });
+
+        //Only bring in comments if it's not a new program
+        var req = new XMLHttpRequest();
+        req.open("GET", "/api/program/" + programData.id + "/comments");
+        req.addEventListener("load", function () {
+            var data = JSON.parse(this.response);
+            if (data && data.success) {
+                displayComments(data.comments);
+            }
+        });
+        req.send();
     }else {
         var t = document.getElementById("vote-table");
         t.parentNode.removeChild(t);
-    }
 
-    var req = new XMLHttpRequest();
-    req.open("GET", "/api/program/" + programData.id + "/comments");
-    req.addEventListener("load", function () {
-        var data = JSON.parse(this.response);
-        if (data && data.success) {
-            displayComments(data.comments);
-        }
-    });
-    req.send();
+        var c = document.getElementById("comment-wrap");
+        c.parentNode.removeChild(c);
+    }
 });
 
 //Run program on window load. That way Ace is definitely loaded.
