@@ -152,8 +152,11 @@ function createCommentTextbox (parent) {
                     }
                 }else {
                     programData.comments.push(commentObj);
-                }
 
+                    if (programData.comments.length === 1) {
+                        document.getElementById("no-comments-message").style.display = "none";
+                    }
+                }
 
                 var textBoxWrapper = textbox.parentElement.parentElement.parentElement.parentElement;
 
@@ -333,6 +336,10 @@ function displayComment (comment) {
                                     break;
                                 }
                             }
+
+                            if (programData.comments.length === 0) {
+                                document.getElementById("no-comments-message").style.display = "block";
+                            }
                         }
 
                         com.parentElement.removeChild(com);
@@ -374,8 +381,15 @@ function displayComments (comments) {
         base.appendChild(displayComment(comments[i]));
     }
 
-    if (comments.length === 0) {
-        base.appendChild(document.createTextNode("No one's posted any comments yet :("))
+
+    var noCommentsMessage = document.createElement("div");
+    noCommentsMessage.setAttribute("id", "no-comments-message");
+    noCommentsMessage.classList.add("comment-content");
+    noCommentsMessage.appendChild(document.createTextNode("No one's posted any comments yet :("));
+    base.appendChild(noCommentsMessage);
+
+    if (comments.length !== 0) {
+        noCommentsMessage.style.display = "none";
     }
 
     var scrollComment = document.getElementById(window.location.hash.slice(1));
