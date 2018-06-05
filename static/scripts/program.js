@@ -114,6 +114,7 @@ function createCommentTextbox (parent) {
     var submit = document.createElement("a");
 
     submit.innerText = "Post";
+    submit.classList.add("comment-submit");
 
     submit.addEventListener("click", function (e) {
         e.preventDefault();
@@ -267,21 +268,119 @@ function displayComment (comment) {
             }
         });
         lowerRowLeft.appendChild(dropDown);
-        var spacer = document.createElement("span");
-        spacer.style.width = "10px";
-        spacer.style.display = "inline-block";
-        lowerRowLeft.appendChild(spacer);
     }else {
         com.classList.add("comment-comment");
     }
 
     if (comment.author.id === userData.id) {
+        //Edit button
+        var editButton = document.createElement("a");
+        editButton.addEventListener("click", function () {
+            //Need to find actual content
+            var el = editButton.parentElement.parentElement.parentElement.parentElement;
+            var commentObj;
+
+            for (var i = 0; i < programData.comments.length; i++) {
+                if (programData.comments[i].element === el) {
+                    commentObj = programData.comments[i];
+                    break;
+                }
+                for (var j = 0; programData.comments[i].comments && j < programData.comments[i].comments.length; j++) {
+                    if (programData.comments[i].comments[j].element === el) {
+                        commentObj = programData.comments[i].comments[j];
+                        break;
+                    }
+                }
+            }
+
+            //Remove old content
+            var contentEl = el.getElementsByClassName("comment-content")[0];
+            contentEl.classList.remove("comment-content");
+            var oldContent = contentEl.removeChild(contentEl.firstChild);
+
+            /* -- Create new content -- */
+            //Textbox
+            var textbox = document.createElement("textarea");
+            textbox.value = commentObj.content;
+            textbox.classList.add("comment-content");
+
+            var textboxWrapper = document.createElement("div");
+            textboxWrapper.classList.add("textbox-wrapper");
+
+            //Create submit button
+            var submit = document.createElement("a");
+            submit.innerText = "Save";
+            submit.classList.add("comment-submit");
+            submit.addEventListener("click", function () {
+                var req = new XMLHttpRequest();
+                req.open("PATCH", "/api/program/" + programData.id + "/comment/" + commentObj.id);
+                req.addEventListener("load", function () {
+                    var d = JSON.parse(this.responseText);
+                    if (d.success) {
+                        //Remove textbox and buttons
+                        el.classList.remove("comment-editing");
+                        contentEl.removeChild(textboxWrapper);
+                        contentEl.removeChild(buttonWrapper);
+
+                        //Add back old content
+                        contentEl.classList.add("comment-content");
+                        contentEl.appendChild(oldContent);
+
+                        //Add new text
+                        contentEl.innerText = textbox.value;
+
+                        //Save it into ProgramData
+                        commentObj.content = textbox.value;
+                    }else {
+                        alert("Failed with error: " + d.error);
+                    }
+                });
+                req.setRequestHeader("X-CSRFToken", csrf_token)
+                req.send(JSON.stringify({
+                    "content": textbox.value
+                }));
+            });
+
+            //Create cancel button:
+            var cancel = document.createElement("a");
+            cancel.innerText = "Cancel";
+            cancel.classList.add("comment-cancel");
+            cancel.addEventListener("click", function () {
+                //Remove new conent
+                el.classList.remove("comment-editing");
+                contentEl.removeChild(textboxWrapper);
+                contentEl.removeChild(buttonWrapper);
+
+                //Add back old content
+                contentEl.classList.add("comment-content");
+                contentEl.appendChild(oldContent);
+            });
+
+            //Add buttons
+            var buttonWrapper = document.createElement("div");
+            buttonWrapper.classList.add("buttons-wrapper");
+            buttonWrapper.appendChild(submit);
+            buttonWrapper.appendChild(cancel);
+
+            //Add new content
+            el.classList.add("comment-editing");
+            contentEl.appendChild(textboxWrapper).appendChild(textbox);
+            contentEl.appendChild(buttonWrapper);
+        });
+        editButton.classList.add("comment-edit-button");
+        editButton.innerText = "Edit";
+        lowerRowLeft.appendChild(editButton);
+
+        //Delete button
         var deleteButton = document.createElement("a");
         var deleteText = document.createElement("span");
         deleteText.innerText = "Delete";
         deleteButton.appendChild(deleteText);
         deleteButton.classList.add("comment-delete-button");
         deleteButton.addEventListener("click", function () {
+            //Return if there's already a comfirm thing open under this.
+            if (deleteButton.getElementsByClassName("comment-delete-confirm").length) return;
+
             var commentDeleteConfirm = document.createElement("div");
 
             var commentDeleteCancel = document.createElement("a");

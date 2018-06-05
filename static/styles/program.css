@@ -218,7 +218,7 @@ input, textarea {
 
 .comment .lower-row td {
     background: #f0f0f0;
-    padding: 10px 15px;
+    padding: 10px;
 }
 
 .comment .comment-author {
@@ -228,14 +228,11 @@ input, textarea {
 .comment .lower-row a {
     color: black;
     text-decoration: underline;
+    margin: 0 5px;
 }
 
 .comment-comment {
     margin-left: 40px;
-}
-
-.comment-adding td:first-child {
-    padding-right: 30px;
 }
 
 .comment-adding td:last-child {
@@ -243,27 +240,55 @@ input, textarea {
     padding-right: 20px;
 }
 
-.comment-adding a {
-    color: white;
+a.comment-submit {
     display: inline-block;
     padding: 10px 15px;
+    margin-left: 25px;
+    margin-top: 15px;
+    margin-bottom: 10px;
+    width: 35px;
+    color: white;
     background: rgb(72, 126, 179);
     text-decoration: none;
     text-align: center;
     font-size: 15px;
 }
 
+a.comment-cancel {
+    text-decoration: underline;
+    margin-left: 35px;
+    color: black;
+}
+
+.comment-editing .textbox-wrapper {
+    width: 100%;
+    float: left;
+    min-height: 100px;
+}
+
+.comment-editing .buttons-wrapper {
+    float: left;
+    margin-right: -111px;
+    width: 111px;
+    position: relative;
+}
+
+.comment-editing tr:first-child td[colspan="2"] {
+    padding-right: 111px;
+}
+
 .comment a:hover {
     cursor: pointer;
 }
 
-.comment-adding textarea {
+.comment-adding textarea, .comment-editing textarea {
     padding: 5px;
     margin: 5px;
     margin-bottom: 0;
     resize: vertical;
     box-sizing: border-box !important;
     font-family: inherit;
+    min-height: 90px;
 }
 
 .comment-delete-button {
