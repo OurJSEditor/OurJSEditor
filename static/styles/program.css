@@ -111,10 +111,12 @@ body {
     display: block;
     text-decoration: none;
     line-height: 20px;
+    font-size: 14px;
 }
 
 .navbar-default .navbar-nav>li>a:hover {
     color: #cecece;
+    cursor: pointer;
 }
 
 .panel-body {
