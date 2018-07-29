@@ -69,3 +69,7 @@ def reset_password(request):
 
         except Profile.DoesNotExist:
             return render(request, 'account/resetPassword.html', {"error": "Invalid user."})
+
+def logout(request):
+    auth.logout(request);
+    return redirect("/");

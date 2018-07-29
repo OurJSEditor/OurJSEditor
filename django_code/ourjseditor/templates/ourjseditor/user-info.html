@@ -1,0 +1,72 @@
+<div id="user-info">
+    <style>
+        #user-info {
+            position: absolute;
+            right: 0;
+            top: 0;
+            min-width: 150px;
+            text-align: center;
+        }
+
+        #user-info-button {
+            color: white;
+            background: rgb(65, 118, 169);
+            padding: 15px;
+            line-height: 20px;
+            font-size: 14px;
+            text-decoration: none;
+            display: block;
+        }
+
+        #user-info-button:hover {
+            cursor: pointer;
+            color: #cecece;
+        }
+
+        #user-links {
+            right: 0px;
+            display: block;
+            background-color: white;
+            text-align: left;
+        }
+
+        #user-links .link {
+            display: block;
+            width: 100%;
+            color: black;
+            text-decoration: none;
+            padding: 10px;
+            font-size: 14px;
+            border: 1px solid black;
+            border-top: none;
+        }
+    </style>
+
+    <a id="user-info-button">{{ request.user.profile.display_name }}</a>
+
+    <div id="user-links" style="display: none">
+        <a class="link" href="/user/{{ request.user.username }}">@{{ request.user.username }}</a>
+        <a class="link" href="/">Home</a>
+        <a class="link" href="/user/logout">Log Out</a>
+    </div>
+
+    <script>
+        userData = {
+            "username": "{{ request.user.username|escapejs }}",
+            "id": "{{ request.user.profile.profile_id|escapejs }}",
+            "displayName": "{{ request.user.profile.display_name|escapejs }}",
+        };
+
+        var userLinksOpen = false;
+
+        document.getElementById("user-info-button").addEventListener("click", function () {
+            var userLinks = document.getElementById("user-links");
+            if (userLinksOpen) {
+                userLinks.style.display = "none";
+            }else {
+                userLinks.style.display = "block";
+            }
+            userLinksOpen = !userLinksOpen;
+        });
+    </script>
+</div>

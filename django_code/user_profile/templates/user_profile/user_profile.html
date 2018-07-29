@@ -12,6 +12,7 @@
     {% endif %}
 </head>
 <body>
+    {% include "../ourjseditor/user-info.html" %}
     <table class="main-table profile">
         {% if editing %}
             <form method="POST" id="profileForm" onsubmit="return checkForm()">
