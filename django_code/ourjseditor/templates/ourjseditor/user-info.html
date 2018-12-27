@@ -53,7 +53,7 @@
             <a class="link" href="/user/logout">Log Out</a>
         {% else %}
             <a class="link" href="/">Home</a>
-            <a class="link" href="/user/login">Log In</a>
+            <a class="link" href="/user/login?next={{ request.path|urlencode }}">Log In</a>
         {% endif %}
     </div>
 
