@@ -632,6 +632,20 @@ document.addEventListener("DOMContentLoaded", function() {
     document.getElementById("btnSave").addEventListener("click", save);
     document.getElementById("btnDelete").addEventListener("click", deleteConfirm);
 
+    window.addEventListener("beforeunload", function (e) {
+        var hasChanged =
+                programData.js !== jsEditor.getValue() ||
+                programData.css !== cssEditor.getValue() ||
+                programData.html !== htmlEditor.getValue();
+
+        if (hasChanged) {
+            e.preventDefault();
+            e.returnValue = 'You have unsaved code changes.';
+        }else {
+            return undefined;
+        }
+    });
+
     if (!runningLocal) {
         if (!programData.new) {
             document.getElementById("program-author").innerText = programData.author.displayName;
