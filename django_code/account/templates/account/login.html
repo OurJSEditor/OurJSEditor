@@ -97,9 +97,9 @@
     <form action="javascript:attemptLogin()" id="login-form" name="login-form">
         <b>Login:</b>
         <br>
-        <input type="text" name="username" placeholder="Username" maxlength="45">
+        <input type="text" name="username" autocomplete="username" placeholder="Username" maxlength="45" required>
         <br>
-        <input type="password" name="password" placeholder="Password">
+        <input type="password" name="password" autocomplete="current-password" placeholder="Password" required>
         <br>
         <input class="btn" type="submit" value="Login">
     </form>
@@ -108,16 +108,16 @@
         <b>Create Account:</b>
         {% csrf_token %}
         <br>
-        <input type="text" name="displayName" placeholder="Name" maxlength="45">
+        <input type="text" name="displayName" autocomplete="given-name" placeholder="Name" maxlength="45">
         <br>
-        <input type="email" name="email" placeholder="Email">
+        <input type="email" name="email" autocomplete="email" placeholder="Email">
         <br>
-        <input type="text" name="username" placeholder="Username" onkeyup="checkUsername()" id="username" maxlength="45">
+        <input type="text" name="username" autocomplete="username" onkeyup="checkUsername()" id="username" placeholder="Username*" maxlength="45" required>
         <b id="available"></b>
         <br>
-        <input type="password" name="password" placeholder="Password">
+        <input type="password" name="password" autocomplete="new-password" placeholder="Password*" required>
         <br>
-        <input type="password" name="passwordConfirm" placeholder="Repeat Password">
+        <input type="password" name="passwordConfirm" autocomplete="new-password" placeholder="Repeat Password*" required>
         <br>
         <input class="btn" type="submit" value="Create Account">
     </form>
