@@ -207,10 +207,49 @@ function unfoldComment (comment) {
     el.innerText = el.innerText.replace(/^Show/, "Hide");
 };
 
+function initMd () {
+    window.md = new Remarkable({
+        html: false, breaks: true, linkify: true, typographer: true,
+        highlight: function (str, lang) {
+            if (lang && hljs.getLanguage(lang)) {
+                return hljs.highlight(lang, str).value;
+            }
+            return hljs.highlightAuto(str).value;
+        }
+    });
+    md.block.ruler.disable([ 'table', 'footnote' ]);
+    md.inline.ruler.disable([ 'footnote_ref' ]);
+    //Images are parsed as inline links, so we can't turn off parsing,
+    //but we can overwrite the renderer so they never get displayed. Not ideal
+    md.renderer.rules.image = function () {
+        return "";
+    };
+
+    var lenientLinkValidator = md.inline.validateLink;
+
+    //We only want to allow masked links if they're to the same orgin, which we do by forbidding anything with a protocol.
+    //Adapted from https://github.com/jonschlinkert/remarkable/blob/fa88dcac16832ab26f068c30f0c070c3fec0d9da/lib/parser_inline.js#L146
+    function strictLinkValidator (url) {
+        var str = url.trim().toLowerCase();
+        //If it includes a protocol, stop it.
+        return !(/^[a-z][a-z0-9+.-]*:/.test(str));
+    };
+
+    //Definitly hacky, but we add a rule before parsing non-masked links that lossens the requirements of the validator
+    md.core.ruler.before("linkify", "lenientLinkValidation", function () {
+        md.inline.validateLink = lenientLinkValidator;
+    }, {});
+    //And then before parsing masked links, make it strict again
+    md.inline.ruler.before("links", "strictLinkValidation", function () {
+        md.inline.validateLink = strictLinkValidator;
+    }, {});
+}
+
 function displayComment (comment) {
     var com = document.createElement("div");
     var t = document.createElement("table");
-    var content = document.createElement("td");
+    var contentCell = document.createElement("td");
+    var content = document.createElement("div");
     var author = document.createElement("td");
     var upperRow = document.createElement("tr");
     var lowerRow = document.createElement("tr");
@@ -222,11 +261,11 @@ function displayComment (comment) {
     link.setAttribute("href", "/user/" + comment.author.username);
     author.classList.add("comment-author");
 
+    contentCell.setAttribute("colspan", 2);
     content.classList.add("comment-content");
-    content.setAttribute("colspan", 2);
     author.innerText = "Posted " + dateToString(comment.created) + " by ";
     link.innerText = comment.author.displayName;
-    content.innerText = comment.content;
+    content.innerHTML = md.render(comment.content);
 
     lowerRow.classList.add("lower-row");
 
@@ -276,17 +315,15 @@ function displayComment (comment) {
         //Edit button
         var editButton = document.createElement("a");
         editButton.addEventListener("click", function () {
-            //Need to find actual content
-            var el = editButton.parentElement.parentElement.parentElement.parentElement;
             var commentObj;
 
             for (var i = 0; i < programData.comments.length; i++) {
-                if (programData.comments[i].element === el) {
+                if (programData.comments[i].element === com) {
                     commentObj = programData.comments[i];
                     break;
                 }
                 for (var j = 0; programData.comments[i].comments && j < programData.comments[i].comments.length; j++) {
-                    if (programData.comments[i].comments[j].element === el) {
+                    if (programData.comments[i].comments[j].element === com) {
                         commentObj = programData.comments[i].comments[j];
                         break;
                     }
@@ -294,9 +331,8 @@ function displayComment (comment) {
             }
 
             //Remove old content
-            var contentEl = el.getElementsByClassName("comment-content")[0];
-            contentEl.classList.remove("comment-content");
-            var oldContent = contentEl.removeChild(contentEl.firstChild);
+            var contentEl = com.getElementsByClassName("comment-content")[0];
+            contentEl.parentNode.removeChild(contentEl);
 
             /* -- Create new content -- */
             //Textbox
@@ -318,16 +354,15 @@ function displayComment (comment) {
                     var d = JSON.parse(this.responseText);
                     if (d.success) {
                         //Remove textbox and buttons
-                        el.classList.remove("comment-editing");
-                        contentEl.removeChild(textboxWrapper);
-                        contentEl.removeChild(buttonWrapper);
+                        com.classList.remove("comment-editing");
+                        contentCell.removeChild(textboxWrapper);
+                        contentCell.removeChild(buttonWrapper);
 
-                        //Add back old content
-                        contentEl.classList.add("comment-content");
-                        contentEl.appendChild(oldContent);
+                        //Over write the content of the old element
+                        contentEl.innerHTML = md.render(textbox.value);
 
-                        //Add new text
-                        contentEl.innerText = textbox.value;
+                        //Insert the content element again
+                        contentCell.appendChild(contentEl);
 
                         //Save it into ProgramData
                         commentObj.content = textbox.value;
@@ -346,14 +381,13 @@ function displayComment (comment) {
             cancel.innerText = "Cancel";
             cancel.classList.add("comment-cancel");
             cancel.addEventListener("click", function () {
-                //Remove new conent
-                el.classList.remove("comment-editing");
-                contentEl.removeChild(textboxWrapper);
-                contentEl.removeChild(buttonWrapper);
+                //Remove new content
+                com.classList.remove("comment-editing");
+                contentCell.removeChild(textboxWrapper);
+                contentCell.removeChild(buttonWrapper);
 
                 //Add back old content
-                contentEl.classList.add("comment-content");
-                contentEl.appendChild(oldContent);
+                contentCell.appendChild(contentEl);
             });
 
             //Add buttons
@@ -363,9 +397,9 @@ function displayComment (comment) {
             buttonWrapper.appendChild(cancel);
 
             //Add new content
-            el.classList.add("comment-editing");
-            contentEl.appendChild(textboxWrapper).appendChild(textbox);
-            contentEl.appendChild(buttonWrapper);
+            com.classList.add("comment-editing");
+            contentCell.appendChild(textboxWrapper).appendChild(textbox);
+            contentCell.appendChild(buttonWrapper);
         });
         editButton.classList.add("comment-edit-button");
         editButton.innerText = "Edit";
@@ -457,7 +491,7 @@ function displayComment (comment) {
         lowerRowLeft.appendChild(deleteButton);
     }
 
-    upperRow.appendChild(content);
+    upperRow.appendChild(contentCell).appendChild(content);
     lowerRow.appendChild(lowerRowLeft);
     lowerRow.appendChild(author).appendChild(link);
     com.appendChild(t).appendChild(upperRow);
@@ -577,6 +611,7 @@ document.addEventListener("DOMContentLoaded", function() {
     ace.require("ace/ext/language_tools");
 
     htmlEditor = ace.edit("html-editor");
+    console.log(htmlEditor);
     htmlEditor.setTheme("ace/theme/textmate");
     htmlEditor.$blockScrolling = Infinity;
     htmlEditor.getSession().setMode("ace/mode/html");
@@ -632,6 +667,7 @@ document.addEventListener("DOMContentLoaded", function() {
     document.getElementById("btnSave").addEventListener("click", save);
     document.getElementById("btnDelete").addEventListener("click", deleteConfirm);
 
+    //Before unload listener
     window.addEventListener("beforeunload", function (e) {
         var hasChanged =
                 programData.js !== jsEditor.getValue() ||
@@ -696,17 +732,6 @@ document.addEventListener("DOMContentLoaded", function() {
 
             el.addEventListener("click", vote);
         });
-
-        //Only bring in comments if it's not a new program
-        var req = new XMLHttpRequest();
-        req.open("GET", "/api/program/" + programData.id + "/comments");
-        req.addEventListener("load", function () {
-            var data = JSON.parse(this.response);
-            if (data && data.success) {
-                displayComments(data.comments);
-            }
-        });
-        req.send();
     }else {
         var t = document.getElementById("vote-table");
         t.parentNode.removeChild(t);
@@ -716,7 +741,22 @@ document.addEventListener("DOMContentLoaded", function() {
     }
 });
 
-//Run program on window load. That way Ace is definitely loaded.
 window.addEventListener("load", function () {
+    initMd();
+
+    //Only bring in comments if it's not a new program
+    if (!runningLocal && !programData.new) {
+        var req = new XMLHttpRequest();
+        req.open("GET", "/api/program/" + programData.id + "/comments");
+        req.addEventListener("load", function () {
+            var data = JSON.parse(this.response);
+            if (data && data.success) {
+                displayComments(data.comments);
+            }
+        });
+        req.send();
+    }
+
+    //Run program on window load. That way Ace is definitely loaded.
     runProgram();
 });

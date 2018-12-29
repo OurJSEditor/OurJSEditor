@@ -215,7 +215,7 @@ input, textarea {
 }
 
 .comment-content {
-    padding: 15px;
+    padding: 0 15px;
 }
 
 .comment .lower-row td {
@@ -315,4 +315,24 @@ a.comment-cancel {
 
 .comment-delete-confirm:hover {
     cursor: default;
+}
+
+.comment-content code,
+.comment-content pre {
+    background-color: #F6F6F6;
+    border-radius: 3px;
+    padding: 4px
+}
+
+.comment-content blockquote {
+    padding: 10px 15px;
+    margin: 0 5px;
+    border-left: 5px solid #F6F6F6;
+}
+
+.comment-content blockquote *:last-child {
+    margin-bottom: 0;
+}
+.comment-content blockquote *:first-child {
+    margin-top: 0;
 }
