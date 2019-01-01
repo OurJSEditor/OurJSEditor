@@ -52,3 +52,17 @@ def program_list (request, sort):
     programs = sorted(Program.objects.all(), reverse=True, key=key_func)[:20]
 
     return render(request, "program/list.html", {"programs": programs})
+
+content_types = {
+    "html": "text/plain", # Don't want text/html, because that would be served as a webpage
+    "css": "text/css",
+    "js": "application/javascript"
+}
+
+def program_file (request, program_id, file_type):
+    try:
+        program = Program.objects.get(program_id=program_id)
+    except Program.DoesNotExist:
+        return HttpResponse("404: No program found with that id", status=404)
+
+    return HttpResponse(getattr(program, file_type), content_type=content_types[file_type])
