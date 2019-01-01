@@ -611,7 +611,6 @@ document.addEventListener("DOMContentLoaded", function() {
     ace.require("ace/ext/language_tools");
 
     htmlEditor = ace.edit("html-editor");
-    console.log(htmlEditor);
     htmlEditor.setTheme("ace/theme/textmate");
     htmlEditor.$blockScrolling = Infinity;
     htmlEditor.getSession().setMode("ace/mode/html");
