@@ -60,12 +60,16 @@
     </div>
 
     <script>
+        {% load notifications %}
+        {% notifs_as_json user as notifs %}
+
         userData = {
             {% if request.user.is_authenticated %}
                 "loggedIn": true,
                 "username": "{{ request.user.username|escapejs }}",
                 "id": "{{ request.user.profile.profile_id|escapejs }}",
                 "displayName": "{{ request.user.profile.display_name|escapejs }}",
+                "notifications": JSON.parse('{{ notifs|escapejs }}')
             {% else %}
                 "loggedIn": false,
             {% endif %}
