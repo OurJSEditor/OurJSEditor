@@ -52,7 +52,7 @@ def new_comment(request, program_id):
             link = link,
             description = "<strong>{0}</strong> left a comment on your program, <strong>{1}</strong>".format(
                 request.user.profile.display_name, program.title),
-            preview = comment.content[:100]
+            source_comment = comment
         )
     else:
         #Create a list of everyone in the comment thread and spam them all
@@ -67,7 +67,7 @@ def new_comment(request, program_id):
                 target_user_id = user, link = link,
                 description = "<strong>{0}</strong> on <strong>{1}</strong>".format(
                     request.user.profile.display_name, program.title),
-                preview = comment.content[:100]
+                source_comment = comment
             )
 
         #Notify the original comment creator seperately
@@ -75,7 +75,7 @@ def new_comment(request, program_id):
             target_user = parent_comment.user, link = link,
             description = "<strong>{0}</strong> replied to your comment on <strong>{1}</strong>".format(
                 request.user.profile.display_name, program.title),
-            preview = comment.content[:100]
+            source_comment = comment
         )
 
     response = api.succeed({"id": comment.comment_id}, status=201)
