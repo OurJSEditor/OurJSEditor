@@ -2,6 +2,7 @@
 from __future__ import unicode_literals
 import json
 import datetime
+from django.template.defaultfilters import escape
 
 from models import Comment
 from program.models import Program
@@ -51,7 +52,7 @@ def new_comment(request, program_id):
             target_user = program.user,
             link = link,
             description = "<strong>{0}</strong> left a comment on your program, <strong>{1}</strong>".format(
-                request.user.profile.display_name, program.title),
+                escape(request.user.profile.display_name), escape(program.title)),
             source_comment = comment
         )
     else:

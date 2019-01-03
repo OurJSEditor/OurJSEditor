@@ -31,12 +31,14 @@
             <div class="notif-buttons-wrap">
                 <button class="user-info-button notif-button" id="notif-all-read">Mark All Read</button><button class="user-info-button notif-button" id="notif-panel-close-button">Close</button>
             </div>
+
+            <div id="notifs-wrap">
+            </div>
         </div>
     </span>
 
     <script>
         {% load notifications %}
-        {% notifs_as_json user as notifs %}
 
         userData = {
             {% if request.user.is_authenticated %}
@@ -44,7 +46,7 @@
                 "username": "{{ request.user.username|escapejs }}",
                 "id": "{{ request.user.profile.profile_id|escapejs }}",
                 "displayName": "{{ request.user.profile.display_name|escapejs }}",
-                "notifications": JSON.parse('{{ notifs|escapejs }}')
+                "notifications": JSON.parse('{% notifs_as_json request.user %}')
             {% else %}
                 "loggedIn": false,
             {% endif %}
@@ -65,6 +67,39 @@
             document.getElementById("notif-panel-close-button").addEventListener("click", function () {
                 notifPanel.classList.toggle("closed");
             });
+
+            var notifs = userData.notifications;
+            var notifsWrap = document.getElementById("notifs-wrap");
+            for (var i = 0; i < notifs.length; i++) {
+                var notifEl = document.createElement("a");
+                notifEl.setAttribute("href", notifs[i].link);
+                notifEl.classList.add("notif");
+
+                var readIndicator = document.createElement("span");
+                readIndicator.classList.add("read-indicator");
+                if (notifs[i].read) {
+                    readIndicator.classList.add("read");
+                }
+                readIndicator.addEventListener("click", function () {
+
+                });
+
+                var notifInfo = document.createElement("span");
+                notifInfo.classList.add("notif-info-wrap");
+
+                var description = document.createElement("div");
+                description.classList.add("notif-description");
+                description.innerHTML = notifs[i].description;
+
+                var preview = document.createElement("div");
+                preview.classList.add("notif-preview")
+                preview.innerText = notifs[i].preview;
+
+                notifEl.appendChild(readIndicator);
+                notifInfo.appendChild(description);
+                notifInfo.appendChild(preview);
+                notifsWrap.appendChild(notifEl).appendChild(notifInfo);
+            }
         });
     </script>
 </div>

@@ -67,6 +67,7 @@
     animation-duration: 0.1s;
     top: 0;
     height: 100%;
+    width: 400px;
     overflow: scroll;
     background: white;
     border-left: 2px solid #999999;
@@ -96,6 +97,48 @@
 }
 
 #notif-panel .notif-button:hover {
-    background: #EEE;
+    background: #eeeeee;
     cursor: pointer;
+}
+
+.notif {
+    padding: 10px;
+    display: block;
+    color: black;
+}
+
+.notif:hover {
+    background: #eeeeee;
+}
+
+.notif-preview {
+    font-style: italic;
+    color: #3c3c3c;
+    font-size: 14px;
+}
+
+.notif-description {
+    font-size: 16px;
+}
+
+.read-indicator {
+    display: inline-block;
+    margin: 5px;
+    margin-left: 0;
+    width: 10px;
+    height: 10px;
+    background: #41a4ff;
+    border: none;
+    border-radius: 10px;
+    vertical-align: top;
+}
+
+.read-indicator.read {
+    background: none;
+    border: solid 1px #cecece;
+}
+
+.notif-info-wrap {
+    display: inline-block;
+    max-width: 350px;
 }
