@@ -1,63 +1,38 @@
 <link rel="icon" href="/favicon.ico">
 
+<script>
+    var link = document.createElement("link");
+    link.setAttribute("rel", "stylesheet");
+    link.setAttribute("type", "text/css");
+    link.setAttribute("href", "/static/styles/user-info.css");
+    document.head.appendChild(link);
+</script>
+
 <div id="user-info">
-    <style>
-        #user-info {
-            position: absolute;
-            right: 0;
-            top: 0;
-            min-width: 150px;
-            text-align: center;
-        }
+    <span class="user-info-element">
+        <button id="user-links-button" class="user-info-button">{{ request.user.profile.display_name|default:"Not Logged In" }}</button>
 
-        #user-info-button {
-            color: white;
-            background: rgb(65, 118, 169);
-            padding: 15px;
-            line-height: 20px;
-            font-size: 14px;
-            text-decoration: none;
-            display: block;
-        }
+        <div id="user-links" style="display: none">
+            {% if request.user.is_authenticated %}
+                <a class="link" href="/user/{{ request.user.username }}">@{{ request.user.username }}</a>
+                <a class="link" href="/">Home</a>
+                <a class="link" href="/user/logout">Log Out</a>
+            {% else %}
+                <a class="link" href="/">Home</a>
+                <a class="link" href="/user/login?next={{ request.path|urlencode }}">Log In</a>
+            {% endif %}
+        </div>
+    </span><!--
 
-        #user-info-button:hover {
-            cursor: pointer;
-            color: #cecece;
-        }
+    --><span class="user-info-element">
+        <button id="notif-panel-button" class="user-info-button">Notifs (<span id="notif-count">0</span>)</button>
 
-        #user-links {
-            right: 0px;
-            display: block;
-            background-color: white;
-            text-align: left;
-        }
-
-        #user-links .link {
-            display: block;
-            color: black;
-            text-decoration: none;
-            padding: 10px;
-            font-size: 14px;
-            border-bottom: 1px solid black;
-        }
-
-        #user-links .link:hover {
-            color: #505050;
-        }
-    </style>
-
-    <a id="user-info-button">{{ request.user.profile.display_name|default:"Not Logged In" }}</a>
-
-    <div id="user-links" style="display: none">
-        {% if request.user.is_authenticated %}
-            <a class="link" href="/user/{{ request.user.username }}">@{{ request.user.username }}</a>
-            <a class="link" href="/">Home</a>
-            <a class="link" href="/user/logout">Log Out</a>
-        {% else %}
-            <a class="link" href="/">Home</a>
-            <a class="link" href="/user/login?next={{ request.path|urlencode }}">Log In</a>
-        {% endif %}
-    </div>
+        <div id="notif-panel" class="closed">
+            <div class="notif-buttons-wrap">
+                <button class="user-info-button notif-button" id="notif-all-read">Mark All Read</button><button class="user-info-button notif-button" id="notif-panel-close-button">Close</button>
+            </div>
+        </div>
+    </span>
 
     <script>
         {% load notifications %}
@@ -75,16 +50,21 @@
             {% endif %}
         };
 
-        var userLinksOpen = false;
-
-        document.getElementById("user-info-button").addEventListener("click", function () {
+        document.addEventListener("DOMContentLoaded", function () {
+            var userLinksOpen = false;
             var userLinks = document.getElementById("user-links");
-            if (userLinksOpen) {
-                userLinks.style.display = "none";
-            }else {
-                userLinks.style.display = "block";
-            }
-            userLinksOpen = !userLinksOpen;
+            document.getElementById("user-links-button").addEventListener("click", function () {
+                userLinks.style.display = userLinksOpen ? "none" : "block";
+                userLinksOpen = !userLinksOpen;
+            });
+
+            var notifPanel = document.getElementById("notif-panel");
+            document.getElementById("notif-panel-button").addEventListener("click", function () {
+                notifPanel.classList.toggle("closed");
+            });
+            document.getElementById("notif-panel-close-button").addEventListener("click", function () {
+                notifPanel.classList.toggle("closed");
+            });
         });
     </script>
 </div>
