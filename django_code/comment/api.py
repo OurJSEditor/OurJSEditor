@@ -66,8 +66,8 @@ def new_comment(request, program_id):
         for user in to_notify:
             Notif.objects.create(
                 target_user_id = user, link = link,
-                description = "<strong>{0}</strong> on <strong>{1}</strong>".format(
-                    request.user.profile.display_name, program.title),
+                description = "<strong>{0}</strong> commented on a thread on <strong>{1}</strong>".format(
+                    escape(request.user.profile.display_name), escape(program.title)),
                 source_comment = comment
             )
 
@@ -75,7 +75,7 @@ def new_comment(request, program_id):
         Notif.objects.create(
             target_user = parent_comment.user, link = link,
             description = "<strong>{0}</strong> replied to your comment on <strong>{1}</strong>".format(
-                request.user.profile.display_name, program.title),
+                escape(request.user.profile.display_name), escape(program.title)),
             source_comment = comment
         )
 
