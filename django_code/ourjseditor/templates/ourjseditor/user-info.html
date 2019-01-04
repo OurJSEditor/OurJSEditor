@@ -73,6 +73,25 @@
                 notifPanel.classList.toggle("closed");
             });
 
+            document.getElementById("notif-all-read").addEventListener("click", function () {
+                var notifs = userData.notifications;
+                for (var i = 0; i < notifs.length; i++) {
+                    if (!notifs[i].isRead) {
+                        notifs[i].isRead = true;
+
+                        var req = new XMLHttpRequest();
+                        req.open("PATCH", "/api/notif/" + notifs[i].id);
+                        req.setRequestHeader("X-CSRFToken", csrf_token);
+                        req.send(JSON.stringify({ isRead: true }));
+                    }
+                }
+
+                var notifEls = document.querySelectorAll(".read-indicator:not(.read)");
+                for (var i = 0; i < notifEls.length; i++) {
+                    notifEls[i].classList.add("read");
+                }
+            });
+
             var notifs = userData.notifications;
             var notifsWrap = document.getElementById("notifs-wrap");
             for (var i = 0; i < notifs.length; i++) {
