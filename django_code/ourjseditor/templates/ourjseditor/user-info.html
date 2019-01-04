@@ -76,8 +76,7 @@
             var notifs = userData.notifications;
             var notifsWrap = document.getElementById("notifs-wrap");
             for (var i = 0; i < notifs.length; i++) {
-                var notifEl = document.createElement("a");
-                notifEl.setAttribute("href", notifs[i].link);
+                var notifEl = document.createElement("div");
                 notifEl.classList.add("notif");
 
                 var readIndicator = document.createElement("span");
@@ -86,7 +85,7 @@
                     readIndicator.classList.add("read");
                 }
 
-                readIndicator.dataset.notifId = notifs[i].id
+                readIndicator.dataset.notifId = notifs[i].id;
 
                 readIndicator.addEventListener("click", function (e) {
                     e.preventDefault();
@@ -112,7 +111,8 @@
                     req.send(JSON.stringify({ isRead: notifs[j].isRead }));
                 }, false);
 
-                var notifInfo = document.createElement("span");
+                var notifInfo = document.createElement("a");
+                notifInfo.setAttribute("href", notifs[i].link);
                 notifInfo.classList.add("notif-info-wrap");
 
                 var description = document.createElement("div");

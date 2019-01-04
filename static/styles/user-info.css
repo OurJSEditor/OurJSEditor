@@ -102,36 +102,31 @@
     cursor: pointer;
 }
 
-.notif {
-    padding: 10px;
-    display: block;
-    color: black;
-}
-
 .notif:hover {
     background: #eeeeee;
 }
 
 .notif-preview {
+    padding-right: 10px;
     font-style: italic;
     color: #3c3c3c;
     font-size: 14px;
 }
 
 .notif-description {
+    padding-right: 10px;
     font-size: 16px;
 }
 
 .read-indicator {
     display: inline-block;
-    margin: 5px;
-    margin-left: 0;
-    width: 10px;
-    height: 10px;
+    margin: 17px 10px;
+    padding: 5px;
     background: #41a4ff;
     border: 1px solid transparent;
     border-radius: 10px;
     vertical-align: top;
+    cursor: pointer;
 }
 
 .read-indicator.read {
@@ -141,7 +136,10 @@
 
 .notif-info-wrap {
     display: inline-block;
-    max-width: 330px;
+    width: 353px;
+    color: black;
+    text-decoration: none;
+    padding: 10px 0;
 }
 
 .notif-end-msg {
