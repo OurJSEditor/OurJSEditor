@@ -1,4 +1,5 @@
 #user-info {
+    display: block !important;
     position: absolute;
     right: 0;
     top: 0;
@@ -128,17 +129,23 @@
     width: 10px;
     height: 10px;
     background: #41a4ff;
-    border: none;
+    border: 1px solid transparent;
     border-radius: 10px;
     vertical-align: top;
 }
 
 .read-indicator.read {
     background: none;
-    border: solid 1px #cecece;
+    border-color: #cecece;
 }
 
 .notif-info-wrap {
     display: inline-block;
-    max-width: 350px;
+    max-width: 330px;
+}
+
+.notif-end-msg {
+    text-align: center;
+    padding: 20px;
+    color: #888888;
 }

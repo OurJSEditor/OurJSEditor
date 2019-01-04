@@ -8,7 +8,7 @@
     document.head.appendChild(link);
 </script>
 
-<div id="user-info">
+<div id="user-info" style="display: none">
     <span class="user-info-element">
         <button id="user-links-button" class="user-info-button">{{ request.user.profile.display_name|default:"Not Logged In" }}</button>
 
@@ -33,6 +33,11 @@
             </div>
 
             <div id="notifs-wrap">
+            </div>
+
+            <div class="notif-end-msg">
+                There are no comments below this.<br>
+                Read comments over a month old may be deleted periodically.
             </div>
         </div>
     </span>
@@ -77,12 +82,35 @@
 
                 var readIndicator = document.createElement("span");
                 readIndicator.classList.add("read-indicator");
-                if (notifs[i].read) {
+                if (notifs[i].isRead) {
                     readIndicator.classList.add("read");
                 }
-                readIndicator.addEventListener("click", function () {
 
-                });
+                readIndicator.dataset.notifId = notifs[i].id
+
+                readIndicator.addEventListener("click", function (e) {
+                    e.preventDefault();
+                    e.stopPropagation();
+
+                    var readIndicator = this;
+                    var notifId = readIndicator.dataset.notifId;
+
+                    for (var j = 0; j < notifs.length; j++) {
+                        if (notifs[j].id === notifId) {
+                            break;
+                        }
+                    }
+
+                    notifs[j].isRead = !notifs[j].isRead;
+
+                    var req = new XMLHttpRequest();
+                    req.open("PATCH", "/api/notif/" + notifs[j].id);
+                    req.setRequestHeader("X-CSRFToken", csrf_token);
+                    req.addEventListener("load", function () {
+                        readIndicator.classList.toggle("read");
+                    });
+                    req.send(JSON.stringify({ isRead: notifs[j].isRead }));
+                }, false);
 
                 var notifInfo = document.createElement("span");
                 notifInfo.classList.add("notif-info-wrap");

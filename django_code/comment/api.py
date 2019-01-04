@@ -45,7 +45,7 @@ def new_comment(request, program_id):
         original_content = data["content"],
     )
 
-    link = "/program/{0}#comment-{1}".format(comment.program.program_id, (parent_comment or comment).comment_id);
+    link = "/program/{0}#comment-{1}".format(comment.program.program_id, comment.comment_id);
 
     if (depth == 0):
         Notif.objects.create(
