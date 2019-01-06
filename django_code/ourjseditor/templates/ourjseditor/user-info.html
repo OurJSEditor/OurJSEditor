@@ -59,6 +59,19 @@
 
         var csrf_token = "{{ csrf_token }}"
 
+        function updateUnreadCount () {
+            var countEl = document.getElementById("notif-count");
+            var count = userData.notifications.filter(function (n) {
+                return n.isRead === false;
+            }).length;
+            countEl.innerText = count;
+            userData.notifCount = count;
+
+            var titleString = count ? "(" + count + ") " : "";
+            titleString += programData.title + " \u2014 OurJSEditor";
+            document.getElementById("title-tag").innerText = titleString;
+        }
+
         function setNotifRead (notifElId, state) {
             var notifEl = document.getElementById(notifElId);
             var readIndicator = notifEl.querySelector(".read-indicator");
@@ -74,6 +87,8 @@
 
             if (notifs[j].isRead !== newValue) {
                 notifs[j].isRead = newValue;
+
+                updateUnreadCount();
 
                 var req = new XMLHttpRequest();
                 req.open("PATCH", "/api/notif/" + notifs[j].id);
@@ -109,6 +124,8 @@
                     }
                 }
             });
+
+            updateUnreadCount();
 
             var notifs = userData.notifications;
             var notifsWrap = document.getElementById("notifs-wrap");
