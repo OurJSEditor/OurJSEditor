@@ -542,7 +542,7 @@ function hashUpdated() {
     var scrollComment = document.getElementById(scrollCommentId);
     if (scrollComment && scrollCommentId) {
         scrollComment.scrollIntoView();
-    }else {
+    }else if (scrollCommentId.search(/^comment-\w{10}$/) > -1) {
         var req = new XMLHttpRequest();
         req.open("GET", "/api/comment/" + scrollCommentId.slice(8));
         req.addEventListener("load", function () {
