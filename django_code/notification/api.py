@@ -25,3 +25,20 @@ def notif(request, notif_id):
         notif.save()
 
         return api.succeed()
+
+# /notifs
+@api.standardAPIErrors("GET")
+@api.login_required
+def notif_list(request):
+    notifs = Notif.objects.filter(target_user=request.user).order_by("-created")
+    notifs = map(lambda n: n.to_dict(), notifs)
+
+    return api.succeed({ "notifs": notifs })
+
+# /notifs/count
+@api.standardAPIErrors("GET")
+@api.login_required
+def notif_count(request):
+    return api.succeed({
+        "notifCount": Notif.objects.filter(target_user=request.user, is_read=False).count()
+    })

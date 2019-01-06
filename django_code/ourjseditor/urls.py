@@ -54,8 +54,12 @@ api_urls = [
         url(r'^$', comment_api.comment, name="comment-api"),
         url(r'^/comments$', comment_api.comment_comments, name="comment-comments-api"),
     ])),
-    url(r'notif/([-\w]{10})', include([
-        url(r'^$', notif_api.notif, name="notif-api"),
+    url(r'notif', include([
+        url(r'^/([-\w]{10})$', notif_api.notif, name="notif-api"),
+        url(r'^s', include([
+            url(r'^$', notif_api.notif_list, name="notif-list"),
+            url(r'^/count$', notif_api.notif_count, name="notif-count"),
+        ])),
     ])),
 ]
 
