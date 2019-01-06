@@ -534,6 +534,10 @@ function displayComments (comments) {
         noCommentsMessage.style.display = "none";
     }
 
+    hashUpdated();
+}
+
+function hashUpdated() {
     var scrollCommentId = window.location.hash.slice(1);
     var scrollComment = document.getElementById(scrollCommentId);
     if (scrollComment && scrollCommentId) {
@@ -555,7 +559,7 @@ function displayComments (comments) {
         });
         req.send();
     }
-}
+};
 
 function vote () {
     var el = this;
@@ -781,6 +785,8 @@ window.addEventListener("load", function () {
         });
         req.send();
     }
+
+    window.addEventListener("hashchange", hashUpdated);
 
     //Run program on window load. That way Ace is definitely loaded.
     runProgram();

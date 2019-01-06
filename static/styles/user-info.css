@@ -144,6 +144,7 @@
 
 .notif-end-msg {
     text-align: center;
+    font-size: 12px;
     padding: 20px;
     color: #888888;
 }

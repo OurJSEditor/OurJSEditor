@@ -36,8 +36,8 @@
             </div>
 
             <div class="notif-end-msg">
-                There are no comments below this.<br>
-                Read comments over a month old may be deleted periodically.
+                There are no more notifications below this.<br>
+                Read notifications over a month old may be deleted periodically.
             </div>
         </div>
     </span>
@@ -45,7 +45,7 @@
     <script>
         {% load notifications %}
 
-        userData = {
+        var userData = {
             {% if request.user.is_authenticated %}
                 "loggedIn": true,
                 "username": "{{ request.user.username|escapejs }}",
@@ -56,6 +56,34 @@
                 "loggedIn": false,
             {% endif %}
         };
+
+        var csrf_token = "{{ csrf_token }}"
+
+        function setNotifRead (notifElId, state) {
+            var notifEl = document.getElementById(notifElId);
+            var readIndicator = notifEl.querySelector(".read-indicator");
+            var notifs = userData.notifications;
+
+            for (var j = 0; j < notifs.length; j++) {
+                if (notifs[j].id === notifEl.id.slice(6)) {
+                    break;
+                }
+            }
+
+            var newValue = (state === "toggle") ? !notifs[j].isRead : state;
+
+            if (notifs[j].isRead !== newValue) {
+                notifs[j].isRead = newValue;
+
+                var req = new XMLHttpRequest();
+                req.open("PATCH", "/api/notif/" + notifs[j].id);
+                req.setRequestHeader("X-CSRFToken", csrf_token);
+                req.addEventListener("load", function () {
+                    readIndicator.classList.toggle("read", (state === "toggle") ? undefined : state);
+                });
+                req.send(JSON.stringify({ isRead: notifs[j].isRead }));
+            }
+        }
 
         document.addEventListener("DOMContentLoaded", function () {
             var userLinksOpen = false;
@@ -77,18 +105,8 @@
                 var notifs = userData.notifications;
                 for (var i = 0; i < notifs.length; i++) {
                     if (!notifs[i].isRead) {
-                        notifs[i].isRead = true;
-
-                        var req = new XMLHttpRequest();
-                        req.open("PATCH", "/api/notif/" + notifs[i].id);
-                        req.setRequestHeader("X-CSRFToken", csrf_token);
-                        req.send(JSON.stringify({ isRead: true }));
+                        setNotifRead("notif-" + notifs[i].id, true);
                     }
-                }
-
-                var notifEls = document.querySelectorAll(".read-indicator:not(.read)");
-                for (var i = 0; i < notifEls.length; i++) {
-                    notifEls[i].classList.add("read");
                 }
             });
 
@@ -97,6 +115,7 @@
             for (var i = 0; i < notifs.length; i++) {
                 var notifEl = document.createElement("div");
                 notifEl.classList.add("notif");
+                notifEl.setAttribute("id", "notif-" + notifs[i].id)
 
                 var readIndicator = document.createElement("span");
                 readIndicator.classList.add("read-indicator");
@@ -104,35 +123,16 @@
                     readIndicator.classList.add("read");
                 }
 
-                readIndicator.dataset.notifId = notifs[i].id;
-
                 readIndicator.addEventListener("click", function (e) {
-                    e.preventDefault();
-                    e.stopPropagation();
-
-                    var readIndicator = this;
-                    var notifId = readIndicator.dataset.notifId;
-
-                    for (var j = 0; j < notifs.length; j++) {
-                        if (notifs[j].id === notifId) {
-                            break;
-                        }
-                    }
-
-                    notifs[j].isRead = !notifs[j].isRead;
-
-                    var req = new XMLHttpRequest();
-                    req.open("PATCH", "/api/notif/" + notifs[j].id);
-                    req.setRequestHeader("X-CSRFToken", csrf_token);
-                    req.addEventListener("load", function () {
-                        readIndicator.classList.toggle("read");
-                    });
-                    req.send(JSON.stringify({ isRead: notifs[j].isRead }));
-                }, false);
+                    setNotifRead(this.parentNode.id, "toggle");
+                });
 
                 var notifInfo = document.createElement("a");
                 notifInfo.setAttribute("href", notifs[i].link);
                 notifInfo.classList.add("notif-info-wrap");
+                notifInfo.addEventListener("click", function () {
+                    setNotifRead(this.parentNode.id, true);
+                });
 
                 var description = document.createElement("div");
                 description.classList.add("notif-description");

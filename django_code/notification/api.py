@@ -14,7 +14,6 @@ def notif(request, notif_id):
     if (request.method == "PATCH"):
         data = json.loads(request.body)
         read = data["isRead"] #true or false
-        print(read)
 
         if request.user != notif.target_user:
             return api.error("Not authorized", status=401)
@@ -22,11 +21,7 @@ def notif(request, notif_id):
         if (read != True and read != False):
             return api.error("Invalid type for key \"isRead\"")
 
-        print(notif.is_read)
-
         notif.is_read = read
         notif.save()
-
-        print(notif.is_read)
 
         return api.succeed()
