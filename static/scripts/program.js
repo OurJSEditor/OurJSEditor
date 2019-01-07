@@ -196,15 +196,40 @@ function createCommentTextbox (parent) {
     return com;
 };
 
-//comment is a comment object
-function unfoldComment (comment) {
-    comment.element.parentElement.insertBefore(createCommentTextbox(comment.id), comment.element.nextSibling)
-    for (var i = comment.comments.length-1; i >= 0; i--) {
-        comment.element.parentElement.insertBefore(displayComment(comment.comments[i]), comment.element.nextSibling);
+//comment is a comment object; scrollTarget is the id of the comment that we're going to try to scroll to once things load
+function unfoldComment (comment, scrollTarget) {
+    //If we've already loaded
+    if (comment.comments) {
+        comment.element.parentElement.insertBefore(createCommentTextbox(comment.id), comment.element.nextSibling)
+        for (var i = comment.comments.length-1; i >= 0; i--) {
+            comment.element.parentElement.insertBefore(displayComment(comment.comments[i]), comment.element.nextSibling);
+        }
+        comment.unfolded = true;
+        var el = comment.element.getElementsByClassName("show-hide-comments")[0];
+        el.innerText = el.innerText.replace(/^Show/, "Hide");
+    }else {
+        var req = new XMLHttpRequest();
+        req.open("GET", "/api/program/" + programData.id + "/comment/" + comment.id + "/comments");
+        req.addEventListener("load", function () {
+            var data = JSON.parse(this.response);
+            if (data && data.success) {
+                comment.comments = data.comments;
+                comment.replyCount = data.comments.length; //Reset local value to the correct number
+                var el = comment.element.getElementsByClassName("show-hide-comments")[0];
+                el.innerText = el.innerText.replace(/\(\d+\)/, "(" + comment.replyCount + ")")
+
+                unfoldComment(comment);
+
+                if (scrollTarget) {
+                    var scrollComment = document.getElementById(scrollTarget);
+                    if (scrollComment) {
+                        scrollComment.scrollIntoView();
+                    }
+                }
+            }
+        });
+        req.send();
     }
-    comment.unfolded = true;
-    var el = comment.element.getElementsByClassName("show-hide-comments")[0];
-    el.innerText = el.innerText.replace(/^Show/, "Hide");
 };
 
 function initMd () {
@@ -286,24 +311,8 @@ function displayComment (comment) {
                 comment.unfolded = false;
                 var el = comment.element.getElementsByClassName("show-hide-comments")[0];
                 el.innerText = el.innerText.replace(/^Hide/, "Show");
-            //If we've already loaded comments
-            }else if (comment.comments) {
-                unfoldComment(comment);
             }else {
-                var req = new XMLHttpRequest();
-                req.open("GET", "/api/program/" + programData.id + "/comment/" + comment.id + "/comments");
-                req.addEventListener("load", function () {
-                    var data = JSON.parse(this.response);
-                    if (data && data.success) {
-                        comment.comments = data.comments;
-                        comment.replyCount = data.comments.length; //Reset local value to the correct number
-                        var el = comment.element.getElementsByClassName("show-hide-comments")[0];
-                        el.innerText = el.innerText.replace(/\(\d+\)/, "(" + comment.replyCount + ")")
-
-                        unfoldComment(comment);
-                    }
-                });
-                req.send();
+                unfoldComment(comment);
             }
         });
         lowerRowLeft.appendChild(dropDown);
@@ -525,11 +534,32 @@ function displayComments (comments) {
         noCommentsMessage.style.display = "none";
     }
 
-    var scrollComment = document.getElementById(window.location.hash.slice(1));
-    if (scrollComment) {
-        scrollComment.scrollIntoView();
-    }
+    hashUpdated();
 }
+
+function hashUpdated() {
+    var scrollCommentId = window.location.hash.slice(1);
+    var scrollComment = document.getElementById(scrollCommentId);
+    if (scrollComment && scrollCommentId) {
+        scrollComment.scrollIntoView();
+    }else if (scrollCommentId.search(/^comment-\w{10}$/) > -1) {
+        var req = new XMLHttpRequest();
+        req.open("GET", "/api/comment/" + scrollCommentId.slice(8));
+        req.addEventListener("load", function () {
+            if (this.status === 200) {
+                var data = JSON.parse(this.response);
+                for (var i = 0; i < programData.comments.length; i++) {
+                    if (programData.comments[i].id === data.parent.id) {
+                        break;
+                    }
+                }
+
+                unfoldComment(programData.comments[i], scrollCommentId);
+            }
+        });
+        req.send();
+    }
+};
 
 function vote () {
     var el = this;
@@ -755,6 +785,8 @@ window.addEventListener("load", function () {
         });
         req.send();
     }
+
+    window.addEventListener("hashchange", hashUpdated);
 
     //Run program on window load. That way Ace is definitely loaded.
     runProgram();

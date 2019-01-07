@@ -46,6 +46,7 @@ INSTALLED_APPS = [
     'program',
     'comment',
     'vote',
+    'notification'
 ]
 
 MIDDLEWARE = [

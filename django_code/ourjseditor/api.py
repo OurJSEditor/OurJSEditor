@@ -48,7 +48,7 @@ class standardAPIErrors(object):
                     return error("Missing or malformed JSON.")
                 #JSON errors
                 except KeyError as err:
-                    if request.method not in ["POST"]:
+                    if request.method not in ["POST", "PATCH"]:
                         raise
                     return error("Missing data for {}.".format(str(err)))
                 #Random stuff, like calling len() on a number or ["hi"] on something that's not a dict

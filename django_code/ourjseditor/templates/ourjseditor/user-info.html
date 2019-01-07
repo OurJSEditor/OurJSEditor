@@ -1,86 +1,169 @@
 <link rel="icon" href="/favicon.ico">
 
-<div id="user-info">
-    <style>
-        #user-info {
-            position: absolute;
-            right: 0;
-            top: 0;
-            min-width: 150px;
-            text-align: center;
-        }
+<script>
+    var link = document.createElement("link");
+    link.setAttribute("rel", "stylesheet");
+    link.setAttribute("type", "text/css");
+    link.setAttribute("href", "/static/styles/user-info.css");
+    document.head.appendChild(link);
+</script>
 
-        #user-info-button {
-            color: white;
-            background: rgb(65, 118, 169);
-            padding: 15px;
-            line-height: 20px;
-            font-size: 14px;
-            text-decoration: none;
-            display: block;
-        }
+<div id="user-info" style="display: none">
+    <span class="user-info-element">
+        <button id="user-links-button" class="user-info-button">{{ request.user.profile.display_name|default:"Not Logged In" }}</button>
 
-        #user-info-button:hover {
-            cursor: pointer;
-            color: #cecece;
-        }
+        <div id="user-links" style="display: none">
+            {% if request.user.is_authenticated %}
+                <a class="link" href="/user/{{ request.user.username }}">@{{ request.user.username }}</a>
+                <a class="link" href="/">Home</a>
+                <a class="link" href="/user/logout">Log Out</a>
+            {% else %}
+                <a class="link" href="/">Home</a>
+                <a class="link" href="/user/login?next={{ request.path|urlencode }}">Log In</a>
+            {% endif %}
+        </div>
+    </span><!--
 
-        #user-links {
-            right: 0px;
-            display: block;
-            background-color: white;
-            text-align: left;
-        }
+    --><span class="user-info-element">
+        <button id="notif-panel-button" class="user-info-button">Notifs (<span id="notif-count">0</span>)</button>
 
-        #user-links .link {
-            display: block;
-            color: black;
-            text-decoration: none;
-            padding: 10px;
-            font-size: 14px;
-            border-bottom: 1px solid black;
-        }
+        <div id="notif-panel" class="closed">
+            <div class="notif-buttons-wrap">
+                <button class="user-info-button notif-button" id="notif-all-read">Mark All Read</button><button class="user-info-button notif-button" id="notif-panel-close-button">Close</button>
+            </div>
 
-        #user-links .link:hover {
-            color: #505050;
-        }
-    </style>
+            <div id="notifs-wrap">
+            </div>
 
-    <a id="user-info-button">{{ request.user.profile.display_name|default:"Not Logged In" }}</a>
-
-    <div id="user-links" style="display: none">
-        {% if request.user.is_authenticated %}
-            <a class="link" href="/user/{{ request.user.username }}">@{{ request.user.username }}</a>
-            <a class="link" href="/">Home</a>
-            <a class="link" href="/user/logout">Log Out</a>
-        {% else %}
-            <a class="link" href="/">Home</a>
-            <a class="link" href="/user/login?next={{ request.path|urlencode }}">Log In</a>
-        {% endif %}
-    </div>
+            <div class="notif-end-msg">
+                There are no more notifications below this.<br>
+                Read notifications over a month old may be deleted periodically.
+            </div>
+        </div>
+    </span>
 
     <script>
-        userData = {
+        {% load notifications %}
+
+        var userData = {
             {% if request.user.is_authenticated %}
                 "loggedIn": true,
                 "username": "{{ request.user.username|escapejs }}",
                 "id": "{{ request.user.profile.profile_id|escapejs }}",
                 "displayName": "{{ request.user.profile.display_name|escapejs }}",
+                "notifications": JSON.parse('{% notifs_as_json request.user %}')
             {% else %}
                 "loggedIn": false,
             {% endif %}
         };
 
-        var userLinksOpen = false;
+        var csrf_token = "{{ csrf_token }}"
 
-        document.getElementById("user-info-button").addEventListener("click", function () {
-            var userLinks = document.getElementById("user-links");
-            if (userLinksOpen) {
-                userLinks.style.display = "none";
-            }else {
-                userLinks.style.display = "block";
+        function updateUnreadCount () {
+            var countEl = document.getElementById("notif-count");
+            var count = userData.notifications.filter(function (n) {
+                return n.isRead === false;
+            }).length;
+            countEl.innerText = count;
+            userData.notifCount = count;
+
+            var titleString = count ? "(" + count + ") " : "";
+            titleString += programData.title + " \u2014 OurJSEditor";
+            document.getElementById("title-tag").innerText = titleString;
+        }
+
+        function setNotifRead (notifElId, state) {
+            var notifEl = document.getElementById(notifElId);
+            var readIndicator = notifEl.querySelector(".read-indicator");
+            var notifs = userData.notifications;
+
+            for (var j = 0; j < notifs.length; j++) {
+                if (notifs[j].id === notifEl.id.slice(6)) {
+                    break;
+                }
             }
-            userLinksOpen = !userLinksOpen;
+
+            var newValue = (state === "toggle") ? !notifs[j].isRead : state;
+
+            if (notifs[j].isRead !== newValue) {
+                notifs[j].isRead = newValue;
+
+                updateUnreadCount();
+
+                var req = new XMLHttpRequest();
+                req.open("PATCH", "/api/notif/" + notifs[j].id);
+                req.setRequestHeader("X-CSRFToken", csrf_token);
+                req.addEventListener("load", function () {
+                    readIndicator.classList.toggle("read", (state === "toggle") ? undefined : state);
+                });
+                req.send(JSON.stringify({ isRead: notifs[j].isRead }));
+            }
+        }
+
+        document.addEventListener("DOMContentLoaded", function () {
+            var userLinksOpen = false;
+            var userLinks = document.getElementById("user-links");
+            document.getElementById("user-links-button").addEventListener("click", function () {
+                userLinks.style.display = userLinksOpen ? "none" : "block";
+                userLinksOpen = !userLinksOpen;
+            });
+
+            var notifPanel = document.getElementById("notif-panel");
+            document.getElementById("notif-panel-button").addEventListener("click", function () {
+                notifPanel.classList.toggle("closed");
+            });
+            document.getElementById("notif-panel-close-button").addEventListener("click", function () {
+                notifPanel.classList.toggle("closed");
+            });
+
+            document.getElementById("notif-all-read").addEventListener("click", function () {
+                var notifs = userData.notifications;
+                for (var i = 0; i < notifs.length; i++) {
+                    if (!notifs[i].isRead) {
+                        setNotifRead("notif-" + notifs[i].id, true);
+                    }
+                }
+            });
+
+            updateUnreadCount();
+
+            var notifs = userData.notifications;
+            var notifsWrap = document.getElementById("notifs-wrap");
+            for (var i = 0; i < notifs.length; i++) {
+                var notifEl = document.createElement("div");
+                notifEl.classList.add("notif");
+                notifEl.setAttribute("id", "notif-" + notifs[i].id)
+
+                var readIndicator = document.createElement("span");
+                readIndicator.classList.add("read-indicator");
+                if (notifs[i].isRead) {
+                    readIndicator.classList.add("read");
+                }
+
+                readIndicator.addEventListener("click", function (e) {
+                    setNotifRead(this.parentNode.id, "toggle");
+                });
+
+                var notifInfo = document.createElement("a");
+                notifInfo.setAttribute("href", notifs[i].link);
+                notifInfo.classList.add("notif-info-wrap");
+                notifInfo.addEventListener("click", function () {
+                    setNotifRead(this.parentNode.id, true);
+                });
+
+                var description = document.createElement("div");
+                description.classList.add("notif-description");
+                description.innerHTML = notifs[i].description;
+
+                var preview = document.createElement("div");
+                preview.classList.add("notif-preview")
+                preview.innerText = notifs[i].preview;
+
+                notifEl.appendChild(readIndicator);
+                notifInfo.appendChild(description);
+                notifInfo.appendChild(preview);
+                notifsWrap.appendChild(notifEl).appendChild(notifInfo);
+            }
         });
     </script>
 </div>

@@ -110,7 +110,6 @@
 
         try {
             var programData = JSON.parse('{{ data_dict|escapejs }}');
-            var csrf_token = "{{ csrf_token }}";
         }catch (e) {
             var runningLocal = true;
         }

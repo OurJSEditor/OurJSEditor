@@ -2,9 +2,11 @@
 from __future__ import unicode_literals
 import json
 import datetime
+from django.template.defaultfilters import escape
 
 from models import Comment
 from program.models import Program
+from notification.models import Notif
 from ourjseditor import api
 
 # /program/PRO_ID/comment/new
@@ -32,17 +34,53 @@ def new_comment(request, program_id):
         parent_comment.reply_count += 1
         parent_comment.save()
 
+    program = Program.objects.get(program_id = program_id);
+
     comment = Comment.objects.create(
         user = request.user,
-        program = Program.objects.get(program_id = program_id),
+        program = program,
         parent = parent_comment,
         depth = depth,
         content = data["content"],
         original_content = data["content"],
     )
 
+    link = "/program/{0}#comment-{1}".format(comment.program.program_id, comment.comment_id);
+
+    if (depth == 0):
+        Notif.objects.create(
+            target_user = program.user,
+            link = link,
+            description = "<strong>{0}</strong> left a comment on your program, <strong>{1}</strong>".format(
+                escape(request.user.profile.display_name), escape(program.title)),
+            source_comment = comment
+        )
+    else:
+        #Create a list of everyone in the comment thread and spam them all
+        to_notify = set(Comment.objects
+            .filter(parent=parent_comment)
+            .exclude(user=parent_comment.user) #Not the thread starter, they get a different message
+            .exclude(user=comment.user) #Not the user who posted this comment
+            .values_list("user", flat=True))
+
+        for user in to_notify:
+            Notif.objects.create(
+                target_user_id = user, link = link,
+                description = "<strong>{0}</strong> commented on a thread on <strong>{1}</strong>".format(
+                    escape(request.user.profile.display_name), escape(program.title)),
+                source_comment = comment
+            )
+
+        #Notify the original comment creator seperately
+        Notif.objects.create(
+            target_user = parent_comment.user, link = link,
+            description = "<strong>{0}</strong> replied to your comment on <strong>{1}</strong>".format(
+                escape(request.user.profile.display_name), escape(program.title)),
+            source_comment = comment
+        )
+
     response = api.succeed({"id": comment.comment_id}, status=201)
-    response["Location"] = "/program/{0}#comment-{1}".format(comment.program.program_id, comment.comment_id)
+    response["Location"] = link
     return response
 
 # /api/program/PRO_ID/comment/COMMENT_ID

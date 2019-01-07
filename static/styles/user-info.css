@@ -1,0 +1,150 @@
+#user-info {
+    display: block !important;
+    position: absolute;
+    right: 0;
+    top: 0;
+    max-width: 300px;
+    overflow: hidden;
+    text-align: center;
+}
+
+.user-info-element {
+    display: inline-block;
+    vertical-align: top;
+}
+
+.user-info-element:not(:first-child) {
+    border-left: solid 1px #487eb3;
+}
+
+.user-info-button {
+    color: white;
+    background: rgb(65, 118, 169);
+    padding: 15px;
+    margin: 0;
+    line-height: 20px;
+    font-size: 14px;
+    border: none;
+    outline: none;
+    display: inline-block;
+}
+
+.user-info-button:hover {
+    cursor: pointer;
+    color: #cecece;
+}
+
+#user-links, #user-links-button {
+    min-width: 80px;
+}
+
+#user-links {
+    right: 0px;
+    display: block;
+    background-color: white;
+    text-align: left;
+}
+
+#user-links .link {
+    display: block;
+    color: black;
+    text-decoration: none;
+    padding: 10px;
+    font-size: 14px;
+    border-bottom: 1px solid black;
+}
+
+#user-links .link:hover {
+    color: #505050;
+}
+
+@keyframes notif-panel-in {
+    from { right: -215px; }
+    to { right: -15px; }
+}
+
+#notif-panel {
+    position: fixed;
+    animation-duration: 0.1s;
+    top: 0;
+    height: 100%;
+    width: 400px;
+    overflow: scroll;
+    background: white;
+    border-left: 2px solid #999999;
+    text-align: left;
+}
+
+#notif-panel:not(.closed) {
+    right: -15px;
+    display: block;
+    animation-name: notif-panel-in;
+}
+
+#notif-panel.closed {
+    display: none;
+}
+
+.notif-buttons-wrap {
+    background: #f6f6f6;
+    width: 100%;
+    text-align: right;
+    border-bottom: solid 1px #cecece;
+}
+
+#notif-panel .notif-button {
+    background: inherit;
+    color: black;
+}
+
+#notif-panel .notif-button:hover {
+    background: #eeeeee;
+    cursor: pointer;
+}
+
+.notif:hover {
+    background: #eeeeee;
+}
+
+.notif-preview {
+    padding-right: 10px;
+    font-style: italic;
+    color: #3c3c3c;
+    font-size: 14px;
+}
+
+.notif-description {
+    padding-right: 10px;
+    font-size: 16px;
+}
+
+.read-indicator {
+    display: inline-block;
+    margin: 17px 10px;
+    padding: 5px;
+    background: #41a4ff;
+    border: 1px solid transparent;
+    border-radius: 10px;
+    vertical-align: top;
+    cursor: pointer;
+}
+
+.read-indicator.read {
+    background: none;
+    border-color: #cecece;
+}
+
+.notif-info-wrap {
+    display: inline-block;
+    width: 353px;
+    color: black;
+    text-decoration: none;
+    padding: 10px 0;
+}
+
+.notif-end-msg {
+    text-align: center;
+    font-size: 12px;
+    padding: 20px;
+    color: #888888;
+}
