@@ -1,15 +1,20 @@
 window.initEditorSettings = (function () {
 
 var DEFAULT_SETTINGS = {
-    fontFamily: "'Monaco', 'Menlo', 'Ubuntu Mono', 'Consolas', 'source-code-pro', monospace",
-    showInvisibles: false,
-    tabSize: 4,
-    theme: "ace/theme/textmate",
-    useSoftTabs: true,
     wrap: true,
+    useSoftTabs: true,
+    tabSize: 4,
+    showInvisibles: false,
+    highlightActiveLine: true, // TODO
+    highlightGutterLine: true, // TODO
+    displayIndentGuides: true, // TODO
     useWorker: false,
+    enableBasicAutocompletion: false,
+    enableLiveAutocompletion: true,
     behavioursEnabled: true,
     wrapBehavioursEnabled: false,
+    theme: "ace/theme/textmate",
+    fontFamily: "'Monaco', 'Menlo', 'Ubuntu Mono', 'Consolas', 'source-code-pro', monospace",
 };
 
 var POSSIBLE_OPTIONS = {
@@ -33,6 +38,15 @@ var POSSIBLE_OPTIONS = {
         values: {
             "No": false,
             "Yes" : true
+        }
+    },
+
+    useWorker: {
+        label: "Error checking",
+        type: "BOOL_SELECT",
+        values: {
+            "Off": false,
+            "On" : true
         }
     },
 
