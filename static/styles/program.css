@@ -52,6 +52,10 @@ body {
     height: 100%;
 }
 
+.sidebar-element {
+    margin-top: 20px;
+}
+
 .vote-button:hover {
     cursor: pointer;
     -webkit-user-select: none;
@@ -335,4 +339,45 @@ a.comment-cancel {
 }
 .comment-content blockquote *:first-child {
     margin-top: 0;
+}
+
+.editor-settings-container {
+    background: #f0f0f0;
+    margin: 0 -15px;
+    padding: 0 10px;
+}
+
+.editor-settings-container input {
+    width: unset;
+}
+
+.editor-settings-container input[type="text"] {
+    width: 100px;
+}
+
+.editor-settings-container input[type="radio"] {
+    margin-right: 8px;
+}
+
+.editor-settings-container table {
+    border-collapse: separate;
+    border-spacing: 5px;
+}
+
+#editor-settings-button {
+    display: block;
+    border: none;
+    padding: inherit;
+    font: inherit;
+    outline: none;
+}
+
+#editor-settings-button:hover {
+    cursor: pointer;
+}
+
+#editor-settings-arrow {
+    width: 15px;
+    margin-right: 6px;
+    display: inline-block;
 }

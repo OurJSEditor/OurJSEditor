@@ -637,32 +637,18 @@ function save (event) {
 }
 
 document.addEventListener("DOMContentLoaded", function() {
-
     ace.require("ace/ext/language_tools");
 
     htmlEditor = ace.edit("html-editor");
-    htmlEditor.setTheme("ace/theme/textmate");
-    htmlEditor.$blockScrolling = Infinity;
     htmlEditor.getSession().setMode("ace/mode/html");
-    htmlEditor.setOptions({
-        enableBasicAutocompletion: true
-    });
 
     cssEditor = ace.edit("css-editor");
-    cssEditor.setTheme("ace/theme/textmate");
-    cssEditor.$blockScrolling = Infinity;
     cssEditor.getSession().setMode("ace/mode/css");
-    cssEditor.setOptions({
-        enableBasicAutocompletion: true
-    });
 
     jsEditor = ace.edit("js-editor");
-    jsEditor.setTheme("ace/theme/textmate");
-    jsEditor.$blockScrolling = Infinity;
     jsEditor.getSession().setMode("ace/mode/javascript");
-    jsEditor.setOptions({
-        enableBasicAutocompletion: true
-    });
+
+    document.getElementById("editor-settings").appendChild(initEditorSettings(document.getElementById("editor-settings-button"), [jsEditor, cssEditor, htmlEditor]));
 
     // TIDYUP Button
     document.getElementById("btnTidyUp").addEventListener("click", function(event) {
