@@ -4,19 +4,21 @@
     <meta charset="UTF-8">
     <title id="title-tag">New program &mdash; OurJSEditor</title>
 
-    <!-- Beautify Web - HTML, CSS, JS -->
-    <script src="/static/scripts/beautify-web/beautify-html.js"></script>
-    <script src="/static/scripts/beautify-web/beautify-css.js"></script>
-    <script src="/static/scripts/beautify-web/beautify.js"></script>
     <!-- Ace Editor -->
     <script src="/static/scripts/ace/ace.js" type="text/javascript" charset="utf-8"></script>
     <script src="/static/scripts/ace/ext-language_tools.js" type="text/javascript" charset="utf-8"></script>
-    <!-- Together -->
-    <script src="https://togetherjs.com/togetherjs-min.js"></script>
     <!-- Markdown -->
     <script src="https://cdn.jsdelivr.net/npm/remarkable@1.7.1/dist/remarkable.min.js"></script>
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/highlightjs/cdn-release@9.13.1/build/styles/default.min.css">
     <script src="https://cdn.jsdelivr.net/gh/highlightjs/cdn-release@9.13.1/build/highlight.min.js"></script>
+    <!-- Beautify Web - HTML, CSS, JS -->
+    <script src="/static/scripts/beautify-web/beautify-html.js"></script>
+    <script src="/static/scripts/beautify-web/beautify-css.js"></script>
+    <script src="/static/scripts/beautify-web/beautify.js"></script>
+    <!-- Editor Settings -->
+    <script src="/static/scripts/editor-settings.js"></script>
+    <!-- Together -->
+    <script src="https://togetherjs.com/togetherjs-min.js"></script>
     <!-- Program Script -->
     <script src="/static/scripts/program.js"></script>
     <!-- Program Style -->
@@ -49,8 +51,8 @@
         <div class="panel-body">
             <div id="program-title">Name your program</div>
             <div class="author-ref">Created by <a id="program-author">You</a>.</div>
-            <div style="height: 20px"></div>
-            <table id="vote-table">
+
+            <table id="vote-table" class="sidebar-element">
                 <tr>
                     <td>Entertaining:</td>
                     <td id="entertaining-vote-count"  class="vote-count">0</td>
@@ -67,6 +69,10 @@
                     <td id="informative-vote-button" class="vote-button">&#x2b06;</td>
                 </tr>
             </table>
+
+            <div id="editor-settings" class="sidebar-element">
+                <button id="editor-settings-button"><span id="editor-settings-arrow">&#x25B6;</span>Editor Settings</button>
+            </div>
         </div>
     </div><!-- /sidebar -->
 
