@@ -19,8 +19,10 @@ def get_default_user():
 class Program(models.Model):
     program_id = models.CharField(primary_key=True, max_length=6, default=generate_id)
     user = models.ForeignKey(User, on_delete=models.CASCADE, default=get_default_user)
-    created = models.DateTimeField(auto_now_add=True, blank=False)
+    created = models.DateTimeField(auto_now_add=True)
     title = models.CharField(max_length=45, default="Program")
+    last_published_date = models.DateTimeField(blank=True, null=True)
+    published_messsage = models.CharField(max_length=250, blank=True)
     html= models.TextField(blank=True)
     js = models.TextField(blank=True)
     css = models.TextField(blank=True)
@@ -29,6 +31,11 @@ class Program(models.Model):
     informative_votes = models.IntegerField(default=0)
 
     def to_dict(self):
+        if self.last_published_date:
+            last_published_date = self.last_published_date.replace(microsecond=0).isoformat() + "Z"
+        else:
+            last_published_date = None
+
         return {
             "id": self.program_id,
             "author": {
@@ -36,6 +43,8 @@ class Program(models.Model):
                 "displayName": self.user.profile.display_name,
                 "username": self.user.username,
             },
+            "publishedMessage": self.published_messsage,
+            "lastPublishedDate": last_published_date,
             "created": self.created.replace(microsecond=0).isoformat() + "Z",
             "js": self.js,
             "html": self.html,

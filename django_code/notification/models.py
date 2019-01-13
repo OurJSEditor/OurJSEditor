@@ -6,6 +6,7 @@ from django.db import models
 from django.contrib.auth.models import User
 
 from comment.models import Comment
+from program.models import Program
 
 #10 character random id. May conflict with comments
 chars = "abcdefghijklmnopqrstuvwzyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789_-"
@@ -27,7 +28,8 @@ class Notif(models.Model):
     link = models.CharField(max_length=50)
     is_read = models.BooleanField(default=False)
     description = models.CharField(max_length=140) #50 for our message + 45 for a display name + 45 for a program title
-    source_comment = models.ForeignKey(Comment, blank=True, on_delete=models.CASCADE)
+    source_comment = models.ForeignKey(Comment, blank=True, null=True, on_delete=models.CASCADE)
+    source_program = models.ForeignKey(Program, blank=True, null=True, on_delete=models.CASCADE)
     created = models.DateTimeField(auto_now_add=True)
 
     def to_dict(self):
@@ -44,5 +46,11 @@ class Notif(models.Model):
                 "id": self.source_comment_id,
             }
             notif_dict["preview"] = self.source_comment.content[:100]
+
+        if self.source_program:
+            notif_dict["sourceProgram"] = {
+                "id": self.source_program_id,
+            }
+            notif_dict["preview"] = self.source_program.published_messsage[:100]
 
         return notif_dict

@@ -1,10 +1,14 @@
 from ourjseditor import api
 
 import json
+import datetime
+
+from django.template.defaultfilters import escape
 
 from models import Program
 from views import key_func_mapping
 from vote.models import vote_types
+from notification.models import Notif
 
 @api.standardAPIErrors("POST")
 @api.login_required
@@ -41,9 +45,27 @@ def program(request, program_id):
         if "title" in data and len(data["title"]) > 45:
             return api.error("Title length exceeds maximum characters.", status=400)
 
+        if "publishedMessage" in data and len(data["publishedMessage"]) > 250:
+                return api.error("Publish message can't exceed 250 characters")
+
         for prop in valid_props:
             if prop in data:
                 setattr(requested_program, prop, data[prop])
+
+        if "publishedMessage" in data:
+            requested_program.published_messsage = data["publishedMessage"];
+            requested_program.last_published_date = datetime.datetime.now()
+
+            # Create notification for subscribers
+            subscribers = requested_program.user.profile.profile_set.all()
+            for subscriber in subscribers:
+                Notif.objects.create(
+                    target_user = subscriber.user,
+                    link = "/program/" + requested_program.program_id,
+                    description = "<strong>{0}</strong> just released a new program, <strong>{1}</strong>".format(
+                        escape(request.user.profile.display_name), escape(requested_program.title)),
+                    source_program = requested_program
+                )
 
         requested_program.save()
 
