@@ -20,9 +20,6 @@
         {% endif %}
         <tbody>
             <tr>
-                <td rowspan="3" style="width: 200px;">
-                    <img class="profile-image" src="/static/images/logo.png">
-                </td>
                 <td class="name">
                     <div class="display-name">
                         {% if editing %}
@@ -60,6 +57,8 @@
                         <input type="submit" value="Update Your Profile" class="button profile-edit">
                     {% elif user.username == currentUser.username %}
                         <a href="/user/{{ user.username }}/edit" class="button profile-edit">Edit Your Profile</a>
+                    {% else %}
+                        <button id="subscribe-button" class="button{% if subscribed %} subscribed{% endif %}">Subscribe</button>
                     {% endif %}
                 </td>
             </tr>
@@ -94,4 +93,40 @@
             {% endfor %}
         </table>
     {% endif %}
+
+    <script>
+        var subscribeButton = document.getElementById("subscribe-button")
+        if (subscribeButton) {
+            var subscribed = subscribeButton.classList.contains("subscribed");
+
+            if (subscribed) {
+                subscribeButton.innerHTML = "Subscribed";
+            }
+
+            subscribeButton.addEventListener("click", function () {
+
+                subscribed = !subscribed;
+
+                var req = new XMLHttpRequest();
+                req.open("PATCH", "/api/user/{{ user.profile.profile_id }}/subscribed");
+                req.setRequestHeader("X-CSRFToken", csrf_token);
+                req.addEventListener("load", function () {
+                    if (this.status === 200) {
+                        subscribeButton.classList.toggle("subscribed");
+
+                        if (subscribed) {
+                            subscribeButton.innerHTML = "Subscribed";
+                        }else {
+                            subscribeButton.innerHTML = "Subscribe";
+                        }
+                    }else {
+                        subscribed = !subscribed;
+                        alert("Failed with error: " + JSON.parse(this.responseText).error);
+                    }
+                });
+                req.send(JSON.stringify({"subscribed": subscribed}));
+            })
+        }
+
+    </script>
 </body></html>
