@@ -63,3 +63,33 @@ def user(request, id):
         requested_user.delete()
 
         return api.succeed()
+
+@api.standardAPIErrors("GET", "PATCH")
+def subscribed(request, id):
+    try:
+        target_profile = Profile.objects.get(profile_id=id)
+    except Profile.DoesNotExist:
+        # If id doesn't match, we try username. If username doesn't, we throw an error caught by standardAPIErrors
+        target_profile = User.objects.select_related('profile').get(username=id).profile
+
+    is_subscribed = bool(request.user.is_authenticated and
+        request.user.profile.subscriptions.filter(profile_id=target_profile.profile_id))
+
+    if request.method == "GET":
+        return api.succeed({ "subscribed": is_subscribed })
+    elif request.method == "PATCH":
+        if not request.user.is_authenticated:
+            return api.error("Not logged in.", status=401)
+
+        data = json.loads(request.body)
+        subscribed = data["subscribed"]
+
+        if type(subscribed) is not bool:
+            return api.error("Data for key 'subscribed' must be a boolean.")
+
+        if not is_subscribed and data["subscribed"]:
+            request.user.profile.subscriptions.add(target_profile)
+        elif is_subscribed and not data["subscribed"]:
+            request.user.profile.subscriptions.remove(target_profile)
+
+        return api.succeed({ "subscribed": data["subscribed"] })

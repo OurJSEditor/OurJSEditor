@@ -32,7 +32,10 @@ api_urls = [
         url(r'^login$', account_api.login, name='login-api'), #account
         url(r'^forgot-password$', account_api.forgot_password, name='forgot-password-api'), #account
         url(r'^username-valid/(.+)$', user_api.username_valid, name='username-valid'),
-        url(r'^(\w+)$', user_api.user, name='user-api'),
+        url(r'^(\w+)', include([
+            url(r'^$', user_api.user, name='user-api'),
+            url(r'^/subscribed$', user_api.subscribed, name='user-subscribed-api')
+        ])),
     ])),
     url(r'^program', include([
         url(r'^/new$', program_api.new_program, name="new-program-api"),
