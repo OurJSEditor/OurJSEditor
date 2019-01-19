@@ -101,7 +101,7 @@ function dateToString (d) {
     d = new Date(d);
     var currentYear = (new Date()).getFullYear();
     var months = ["Jan", "Feb", "Mar", "Apr", "May", "Jun", "Jul", "Aug", "Sep", "Oct", "Nov", "Dec"];
-    return months[d.getMonth()] + " " + d.getDate() + (currentYear === d.getFullYear() ? "" : ", " + d.getFullYear());
+    return d.getTime() ? months[d.getMonth()] + " " + d.getDate() + (currentYear === d.getFullYear() ? "" : ", " + d.getFullYear()) : "Never";
 }
 
 function createCommentTextbox (parent) {
@@ -747,12 +747,23 @@ document.addEventListener("DOMContentLoaded", function() {
 
             el.addEventListener("click", vote);
         });
+
+        document.getElementById("created-date").innerHTML = dateToString(programData.created);
+        if (programData.lastPublished) {
+            document.getElementById("published-date").innerHTML = dateToString(programData.lastPublished);
+        }else {
+            var published = document.getElementById("published");
+            published.parentNode.removeChild(published);
+        }
     }else {
         var t = document.getElementById("vote-table");
         t.parentNode.removeChild(t);
 
         var c = document.getElementById("comment-wrap");
         c.parentNode.removeChild(c);
+
+        var t = document.getElementById("updated-date");
+        t.parentNode.removeChild(t);
     }
 });
 
