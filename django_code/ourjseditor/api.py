@@ -53,7 +53,7 @@ class standardAPIErrors(object):
                     return error("Missing data for {}.".format(str(err)))
                 #Random stuff, like calling len() on a number or ["hi"] on something that's not a dict
                 except TypeError:
-                    return error("I don't know, this gets catches all sorts of wierd stuff. Maybe your data's the wrong type (string/number/dict)?")
+                    return error("I don't know, this catches all sorts of wierd stuff. Maybe your data's the wrong type (string/number/object)?")
                 #When we try to .get() something and it doesn't exist
                 except ObjectDoesNotExist:
                     return error("The requested object could not be found (because it doesn't exist).", status=404)
