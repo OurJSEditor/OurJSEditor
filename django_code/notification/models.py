@@ -51,6 +51,6 @@ class Notif(models.Model):
             notif_dict["sourceProgram"] = {
                 "id": self.source_program_id,
             }
-            notif_dict["preview"] = self.source_program.published_messsage[:100]
+            notif_dict["preview"] = self.source_program.published_message[:100]
 
         return notif_dict

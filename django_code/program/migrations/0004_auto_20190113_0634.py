@@ -14,12 +14,12 @@ class Migration(migrations.Migration):
     operations = [
         migrations.AddField(
             model_name='program',
-            name='last_published_date',
+            name='last_published',
             field=models.DateTimeField(blank=True, null=True),
         ),
         migrations.AddField(
             model_name='program',
-            name='published_messsage',
-            field=models.CharField(blank=True, max_length=250),
+            name='published_message',
+            field=models.CharField(blank=True, max_length=100),
         ),
     ]

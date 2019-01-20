@@ -140,17 +140,16 @@ body {
 }
 
 /*Things hidden initially by CSS, then revealed by Javascript*/
-#btnSave, #btnDelete, #backCover, .confirm {
+#btnSave, #btnDelete, #btnPublish, #back-cover, .confirm {
     display: none;
 }
 
-#backCover {
-    /*display: none;*/
+#back-cover {
     position: absolute;
-    top:0;
-    bottom:0;
-    left:0;
-    right:0;
+    top: 0;
+    bottom: 0;
+    left: 0;
+    right: 0;
     background: #000000;
     opacity: 0.3;
     z-index: 100;
@@ -184,9 +183,10 @@ body {
 }
 .confirm-buttons a:active,  .confirm-buttons a:hover{
     color: #f0f0f0;
+    cursor: pointer;
 }
 
-#deleteConfirm .confirm-cancel {
+.confirm-cancel {
     font-weight: bold;
 }
 
