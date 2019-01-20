@@ -38,6 +38,7 @@
                 <li id="btnTidyUp"><a>TidyUp</a></li>
                 <li id="btnTogether"><a>Collaborate</a></li>
                 <li id="btnSave"><a>Save</a></li>
+                <li id="btnPublish"><a>Publish</a></li>
                 <li id="btnDelete"><a>Delete</a></li>
             </ul>
         </div><!-- /.navbar-collapse -->
@@ -70,6 +71,13 @@
                 </tr>
             </table>
 
+            <div id="updated-date" class="sidebar-element">
+                <div>Created <span id="created-date"></span></div>
+                <div id="published">
+                    Last Published <span id="published-date"></span>
+                </div>
+            </div>
+
             <div id="editor-settings" class="sidebar-element">
                 <button id="editor-settings-button"><span id="editor-settings-arrow">&#x25B6;</span>Editor Settings</button>
             </div>
@@ -101,13 +109,22 @@
 
     <div id="comment-wrap" class="editors"></div>
 
-    <div id="backCover"></div>
-    <div class="confirm" id="deleteConfirm">
-        <span class="confirm-info">Are you sure you want to delete this program?</span>
-        <br>
+    <div id="back-cover"></div>
+    <div class="confirm" id="delete-confirm">
+        <div class="confirm-info">Are you sure you want to delete this program?</div>
         <span class="confirm-buttons">
-            <a href='javascript:closeConfirm();' class='confirm-cancel'>Cancel</a>
-            <a href='javascript:deleteProgram();' class='confirm-confirm'>Delete</a>
+            <a id="delete-cancel-button" class="confirm-cancel">Cancel</a>
+            <a id="delete-confirm-button" class="confirm-confirm">Delete</a>
+        </span>
+    </div>
+
+    <div class="confirm" id="publish-confirm">
+        <div class="confirm-info">Are you sure you want to publish this program? (You can't undo this.)</div>
+        <div class="confirm-info" style="padding-top: 15px">Enter a message or short description for your subscribers:</div>
+        <textarea id="publish-message" class="confirm-prompt-area" maxlength="100"></textarea>
+        <span class="confirm-buttons">
+            <a id="publish-cancel-button" class="confirm-cancel">Cancel</a>
+            <a id="publish-confirm-button" class="confirm-confirm">Publish</a>
         </span>
     </div>
 

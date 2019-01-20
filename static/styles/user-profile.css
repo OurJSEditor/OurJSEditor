@@ -14,7 +14,7 @@ body {
     margin-left: 15%;
 }
 
-.programs td {
+.main-table.programs td {
     padding: 10px;
 }
 
@@ -23,11 +23,6 @@ body {
     border-bottom: 1px solid rgb(148, 148, 148);
     padding: 1px 5px 1px 2px;
     color: black;
-}
-
-.profile-image, .image-wrap {
-    width: 200px;
-    height: 200px;
 }
 
 .name {
@@ -68,6 +63,7 @@ body {
     border: none;
     transition: 0.2s;
     text-decoration: none;
+    outline: none;
 }
 
 .button:hover {
@@ -75,10 +71,19 @@ body {
     cursor: pointer;
 }
 
-.profile-edit {
+.profile-edit, #subscribe-button {
     padding: 3px 10px;
     width: initial;
 }
+
+#subscribe-button.subscribed {
+    background-color: #eaeaea;
+    color: black;
+}
+#subscribe-button.subscribed:hover {
+    background: #b3b2b2;
+}
+
 
 .edit-wrap {
     text-align: right;

@@ -44,17 +44,17 @@ function removeTitleInput () {
     programData.title = document.getElementById("program-title").innerText;
 }
 
-function deleteConfirm (event) {
+function openConfirm (event, confirmBoxId) {
     event.preventDefault();
-    document.getElementById("backCover").style.display = "block";
-    document.getElementById("deleteConfirm").style.display = "block";
-    document.getElementById("backCover").addEventListener("click", closeConfirm);
+    document.getElementById("back-cover").style.display = "block";
+    document.getElementById(confirmBoxId).style.display = "block";
 }
 
 function closeConfirm () {
-    document.getElementById("backCover").style.display = "none";
-    document.getElementById("deleteConfirm").style.display = "none";
-    document.getElementById("backCover").removeEventListener("click", closeConfirm);
+    document.getElementById("back-cover").style.display = "none";
+    document.getElementById("delete-confirm").style.display = "none";
+    document.getElementById("publish-confirm").style.display = "none";
+    // document.getElementById("backCover").removeEventListener("click", closeConfirm);
 }
 
 function deleteProgram () {
@@ -79,8 +79,32 @@ function deleteProgram () {
         }
     })
     req.open("DELETE", "/api/program/" + programData.id);
-    req.setRequestHeader("X-CSRFToken", csrf_token)
-    req.send()
+    req.setRequestHeader("X-CSRFToken", csrf_token);
+    req.send();
+}
+
+function publishProgram (e) {
+    var req = new XMLHttpRequest();
+    req.addEventListener("load", function () {
+        var d = JSON.parse(this.responseText);
+        if (d.success) {
+            //Re-hide confirm box
+            document.getElementById("publish-confirm").style.display = "none";
+            //Re-hide background
+            document.getElementById("back-cover").style.display = "none";
+            //Update published time in the sidebar
+            document.getElementById("published-date").innerHTML = dateToString(d.lastPublished);
+            //Update published time in programData
+            programData.lastPublished = d.lastPublished;
+        }else {
+            alert("Failed with error: " + d.error);
+        }
+    });
+    req.open("PATCH", "/api/program/" + programData.id);
+    req.setRequestHeader("X-CSRFToken", csrf_token);
+    req.send(JSON.stringify({
+        "publishedMessage": document.getElementById("publish-message").value
+    }));
 }
 
 function runProgram (event) {
@@ -101,7 +125,7 @@ function dateToString (d) {
     d = new Date(d);
     var currentYear = (new Date()).getFullYear();
     var months = ["Jan", "Feb", "Mar", "Apr", "May", "Jun", "Jul", "Aug", "Sep", "Oct", "Nov", "Dec"];
-    return months[d.getMonth()] + " " + d.getDate() + (currentYear === d.getFullYear() ? "" : ", " + d.getFullYear());
+    return d.getTime() ? months[d.getMonth()] + " " + d.getDate() + (currentYear === d.getFullYear() ? "" : ", " + d.getFullYear()) : "Never";
 }
 
 function createCommentTextbox (parent) {
@@ -680,7 +704,20 @@ document.addEventListener("DOMContentLoaded", function() {
 
     document.getElementById("btnRun").addEventListener("click", runProgram);
     document.getElementById("btnSave").addEventListener("click", save);
-    document.getElementById("btnDelete").addEventListener("click", deleteConfirm);
+    document.getElementById("btnDelete").addEventListener("click", function (e) {
+        openConfirm(e, "delete-confirm");
+    });
+    document.getElementById("btnPublish").addEventListener("click", function (e) {
+        openConfirm(e, "publish-confirm");
+    });
+
+    document.getElementById("delete-cancel-button").addEventListener("click", closeConfirm);
+    document.getElementById("publish-cancel-button").addEventListener("click", closeConfirm);
+
+    document.getElementById("delete-confirm-button").addEventListener("click", deleteProgram);
+    document.getElementById("publish-confirm-button").addEventListener("click", publishProgram);
+
+    document.getElementById("back-cover").addEventListener("click", closeConfirm);
 
     //Before unload listener
     window.addEventListener("beforeunload", function (e) {
@@ -713,7 +750,8 @@ document.addEventListener("DOMContentLoaded", function() {
         if (programData.canEditProgram) {
             document.getElementById("btnSave").style.display = "block"
             if (!programData.new) {
-                document.getElementById("btnDelete").style.display = "block"
+                document.getElementById("btnDelete").style.display = "block";
+                document.getElementById("btnPublish").style.display = "block";
             }
         }
     }
@@ -747,12 +785,23 @@ document.addEventListener("DOMContentLoaded", function() {
 
             el.addEventListener("click", vote);
         });
+
+        document.getElementById("created-date").innerHTML = dateToString(programData.created);
+        if (programData.lastPublished) {
+            document.getElementById("published-date").innerHTML = dateToString(programData.lastPublished);
+        }else {
+            var published = document.getElementById("published");
+            published.parentNode.removeChild(published);
+        }
     }else {
         var t = document.getElementById("vote-table");
         t.parentNode.removeChild(t);
 
         var c = document.getElementById("comment-wrap");
         c.parentNode.removeChild(c);
+
+        var t = document.getElementById("updated-date");
+        t.parentNode.removeChild(t);
     }
 });
 

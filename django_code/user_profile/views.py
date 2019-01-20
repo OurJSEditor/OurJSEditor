@@ -14,14 +14,20 @@ from ourjseditor.funcs import check_username
 def index(request, username):
     try:
         user = User.objects.select_related('profile').get(username=username)
-        return render(request, 'user_profile/user_profile.html', {
+
+        user_data = {
             'user': user,
             'currentUser': request.user,
             'editing': False,
             'user_programs': sorted(  #Sorts based off of sum of votes in all three categories
                 Program.objects.filter(user=user), reverse=True,
                 key=lambda program: sum([getattr(program, t + "_votes") for t in vote_types]))
-        })
+        }
+
+        if request.user.is_authenticated:
+            user_data["subscribed"] = request.user.profile.subscriptions.filter(profile_id=user.profile.profile_id).exists();
+
+        return render(request, 'user_profile/user_profile.html', user_data)
     except User.DoesNotExist:
         return render(request, 'user_profile/doesNotExist.html', {'username': username}, status=404)
 
