@@ -1,2 +1,2 @@
-Django == 1.11.16
+Django == 1.11.18
 python-decouple >= 3.1
