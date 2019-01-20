@@ -48,7 +48,6 @@ body {
     top: 0;
     left: 0;
     background-color: #fff;
-    color: #444;
     height: 100%;
 }
 
@@ -369,6 +368,8 @@ a.comment-cancel {
     border: none;
     padding: inherit;
     font: inherit;
+    color: inherit;
+    background: inherit;
     outline: none;
 }
 
