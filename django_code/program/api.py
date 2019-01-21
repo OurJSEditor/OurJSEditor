@@ -25,10 +25,37 @@ def new_program(request):
         css = data["css"],
     )
 
-    response = api.succeed({"id": program.program_id}, status=201)
+    response = api.succeed({ "id": program.program_id }, status=201)
     response["Location"] = "/program/" + program.program_id
     return response
 
+#/api/program/PRO_ID/forks
+@api.standardAPIErrors("POST")
+def forks(request, program_id):
+    if (request.method == "POST"):
+        if (not request.user.is_authenticated):
+            return api.error("Not logged in.", status=401)
+
+        requested_program = Program.objects.get(program_id=program_id)
+
+        data = json.loads(request.body)
+        if (len(data["title"]) > 45):
+            return api.error("Title length exceeds maximum characters.")
+
+        program = Program.objects.create(
+            user = request.user,
+            parent = requested_program,
+            title = data["title"],
+            html = data["html"],
+            js = data["js"],
+            css = data["css"],
+        )
+
+        response = api.succeed({ "id": program.program_id }, status=201)
+        response["Location"] = "/program/" + program.program_id
+        return response
+
+#/api/program/PRO_ID
 @api.standardAPIErrors("GET","PATCH","DELETE")
 def program(request, program_id):
     requested_program = Program.objects.get(program_id=program_id)

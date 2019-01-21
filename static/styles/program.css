@@ -139,7 +139,7 @@ body {
 }
 
 /*Things hidden initially by CSS, then revealed by Javascript*/
-#btnSave, #btnDelete, #btnPublish, #back-cover, .confirm {
+#btnSave, #btnDelete, #btnPublish, #btnFork, #back-cover, .confirm {
     display: none;
 }
 

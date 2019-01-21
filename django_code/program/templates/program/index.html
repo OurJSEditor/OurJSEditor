@@ -20,9 +20,9 @@
     <!-- Together -->
     <script src="https://togetherjs.com/togetherjs-min.js"></script>
     <!-- Program Script -->
-    <script src="/static/scripts/program.js"></script>
+    <script src="/static/scripts/program.js?v=0.1"></script>
     <!-- Program Style -->
-    <link rel="stylesheet" href="/static/styles/program.css" type="text/css">
+    <link rel="stylesheet" href="/static/styles/program.css?v=0.1" type="text/css">
 </head>
 <body>
     <nav class="navbar navbar-default">
@@ -39,6 +39,7 @@
                 <li id="btnTogether"><a>Collaborate</a></li>
                 <li id="btnSave"><a>Save</a></li>
                 <li id="btnPublish"><a>Publish</a></li>
+                <li id="btnFork"><a>Fork</a></li>
                 <li id="btnDelete"><a>Delete</a></li>
             </ul>
         </div><!-- /.navbar-collapse -->
@@ -50,8 +51,11 @@
     <div id="sidebar">
         <div style="height: 51px;"></div>
         <div class="panel-body">
-            <div id="program-title">Name your program</div>
-            <div class="author-ref">Created by <a id="program-author">You</a>.</div>
+            <div class="sidebar-element">
+                <div id="program-title">Name your program</div>
+                <div class="author-ref">Created by <a id="program-author">You</a>.</div>
+                <div id="parent-program">Based on <a id="parent-program-link"></a>.</div>
+            </div>
 
             <table id="vote-table" class="sidebar-element">
                 <tr>
