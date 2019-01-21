@@ -59,6 +59,8 @@
 
         var csrf_token = "{{ csrf_token }}"
 
+        //Everything in the <title> tag, before the &mdash;
+        var pageTitle = document.getElementById("title-tag").innerText.split("\u2014")[0];
         function updateUnreadCount () {
             var countEl = document.getElementById("notif-count");
             var count = userData.notifications.filter(function (n) {
@@ -68,7 +70,7 @@
             userData.notifCount = count;
 
             var titleString = count ? "(" + count + ") " : "";
-            titleString += programData.title + " \u2014 OurJSEditor";
+            titleString += pageTitle + " \u2014 OurJSEditor";
             document.getElementById("title-tag").innerText = titleString;
         }
 

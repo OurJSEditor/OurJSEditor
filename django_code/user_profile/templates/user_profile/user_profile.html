@@ -2,13 +2,13 @@
 <html><head>
     <link rel="stylesheet" type="text/css" href="/static/styles/user-profile.css">
     {% if editing %}
-        <title>Editing {{ user.username }}'s profile</title>
+        <title id="title-tag">Editing {{ user.username }}'s profile &mdash; OurJSEditor</title>
         <script>
             var current_username = "{{ user.username }}";
         </script>
         <script src="/static/scripts/edit.js"></script>
     {% else %}
-        <title>Profile for {{ user.username }}</title>
+        <title id="title-tag">Profile for {{ user.username }} &mdash; OurJSEditor</title>
     {% endif %}
 </head>
 <body>
