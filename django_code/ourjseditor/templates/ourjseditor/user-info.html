@@ -70,7 +70,7 @@
             userData.notifCount = count;
 
             var titleString = count ? "(" + count + ") " : "";
-            titleString += pageTitle + " \u2014 OurJSEditor";
+            titleString += (window.programData ? programData.title : pageTitle) + " \u2014 OurJSEditor";
             document.getElementById("title-tag").innerText = titleString;
         }
 

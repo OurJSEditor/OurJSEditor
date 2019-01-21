@@ -745,8 +745,6 @@ document.addEventListener("DOMContentLoaded", function() {
         if (!programData.new) {
             document.getElementById("program-author").innerText = programData.author.displayName;
             document.getElementById("program-author").setAttribute("href", "/user/" + programData.author.username);
-
-            document.getElementById("title-tag").innerText = programData.title + " \u2014 OurJSEditor";
         }
 
         jsEditor.setValue(programData.js, -1);
@@ -756,7 +754,6 @@ document.addEventListener("DOMContentLoaded", function() {
 
         //TODO: Maybe add a login check/pop-up here
         document.getElementById("btnFork").style.display = "block";
-        document.getElementById("btnSave").style.display = "block";
 
         if (programData.canEditProgram) {
             document.getElementById("btnSave").style.display = "block";
