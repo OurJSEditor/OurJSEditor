@@ -74,7 +74,7 @@
             document.getElementById("title-tag").innerText = titleString;
         }
 
-        function setNotifRead (notifElId, state) {
+        function setNotifRead (notifElId, state, callback) {
             var notifEl = document.getElementById(notifElId);
             var readIndicator = notifEl.querySelector(".read-indicator");
             var notifs = userData.notifications;
@@ -97,6 +97,9 @@
                 req.setRequestHeader("X-CSRFToken", csrf_token);
                 req.addEventListener("load", function () {
                     readIndicator.classList.toggle("read", (state === "toggle") ? undefined : state);
+                    if (typeof callback === "function") {
+                        callback();
+                    }
                 });
                 req.send(JSON.stringify({ isRead: notifs[j].isRead }));
             }
@@ -149,8 +152,12 @@
                 var notifInfo = document.createElement("a");
                 notifInfo.setAttribute("href", notifs[i].link);
                 notifInfo.classList.add("notif-info-wrap");
-                notifInfo.addEventListener("click", function () {
-                    setNotifRead(this.parentNode.id, true);
+                notifInfo.addEventListener("click", function (e) {
+                    e.preventDefault(); //Stop page from navigating
+
+                    setNotifRead(this.parentNode.id, true, function () {
+                        window.location.href = notifInfo.href;
+                    });
                 });
 
                 var description = document.createElement("div");
