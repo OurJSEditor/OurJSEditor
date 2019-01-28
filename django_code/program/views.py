@@ -66,3 +66,20 @@ def program_file (request, program_id, file_type):
         return HttpResponse("404: No program found with that id", status=404)
 
     return HttpResponse(getattr(program, file_type), content_type=content_types[file_type])
+
+def fullscreen (request, program_id):
+    try:
+        program = Program.objects.get(program_id=program_id)
+    except Program.DoesNotExist:
+        return render(request, "program/404.html", status=404)
+
+    data_dict = {
+        "id": program.program_id,
+
+        "js": program.js,
+        "html": program.html,
+        "css": program.css,
+        "title": program.title,
+    }
+
+    return render(request, "program/fullscreen.html", { "data_dict": json.dumps(data_dict) })

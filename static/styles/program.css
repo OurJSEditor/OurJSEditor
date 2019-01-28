@@ -51,8 +51,18 @@ body {
     height: 100%;
 }
 
-.sidebar-element {
+.sidebar-element:not(:first-child) {
     margin-top: 20px;
+}
+
+.sidebar-link {
+    color: #345e86;
+    text-decoration: underline;
+    cursor: pointer;
+}
+
+#view-fullscreen-link {
+    font-size: 14px;
 }
 
 .vote-button:hover {

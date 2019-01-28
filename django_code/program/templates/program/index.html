@@ -20,9 +20,9 @@
     <!-- Together -->
     <script src="https://togetherjs.com/togetherjs-min.js"></script>
     <!-- Program Script -->
-    <script src="/static/scripts/program.js?v=0.1"></script>
+    <script src="/static/scripts/program.js?v=0.2"></script>
     <!-- Program Style -->
-    <link rel="stylesheet" href="/static/styles/program.css?v=0.1" type="text/css">
+    <link rel="stylesheet" href="/static/styles/program.css?v=0.2" type="text/css">
 </head>
 <body>
     <nav class="navbar navbar-default">
@@ -53,8 +53,8 @@
         <div class="panel-body">
             <div class="sidebar-element">
                 <div id="program-title">Name your program</div>
-                <div class="author-ref">Created by <a id="program-author">You</a>.</div>
-                <div id="parent-program">Based on <a id="parent-program-link"></a>.</div>
+                <div id="program-author">Created by <a class="sidebar-link" id="program-author-link"></a>.</div>
+                <div id="parent-program">Based on <a class="sidebar-link" id="parent-program-link"></a>.</div>
             </div>
 
             <table id="vote-table" class="sidebar-element">
@@ -84,6 +84,10 @@
 
             <div id="editor-settings" class="sidebar-element">
                 <button id="editor-settings-button"><span id="editor-settings-arrow">&#x25B6;</span>Editor Settings</button>
+            </div>
+
+            <div id="view-fullscreen" class="sidebar-element">
+                <a id="view-fullscreen-link" class="sidebar-link">View this program fullscreen</a>
             </div>
         </div>
     </div><!-- /sidebar -->

@@ -92,6 +92,8 @@ function publishProgram (e) {
             document.getElementById("publish-confirm").style.display = "none";
             //Re-hide background
             document.getElementById("back-cover").style.display = "none";
+            //Make sure published time is visible
+            document.getElementById("published").style.display = "block";
             //Update published time in the sidebar
             document.getElementById("published-date").innerHTML = dateToString(d.lastPublished);
             //Update published time in programData
@@ -742,11 +744,6 @@ document.addEventListener("DOMContentLoaded", function() {
     });
 
     if (!runningLocal) {
-        if (!programData.new) {
-            document.getElementById("program-author").innerText = programData.author.displayName;
-            document.getElementById("program-author").setAttribute("href", "/user/" + programData.author.username);
-        }
-
         jsEditor.setValue(programData.js, -1);
         cssEditor.setValue(programData.css, -1);
         htmlEditor.setValue(programData.html, -1);
@@ -777,7 +774,13 @@ document.addEventListener("DOMContentLoaded", function() {
         });
     }
 
+    //Dynamically update sections of the page if it's not a new program
     if (!runningLocal && !programData.new) {
+        //Set program author data
+        document.getElementById("program-author-link").innerText = programData.author.displayName;
+        document.getElementById("program-author-link").setAttribute("href", "/user/" + programData.author.username);
+
+        //Set vote count and event listeners.
         var voteTypes = ["informative", "artistic", "entertaining"];
 
         voteTypes.forEach(function (s) {
@@ -794,27 +797,30 @@ document.addEventListener("DOMContentLoaded", function() {
             el.addEventListener("click", vote);
         });
 
+        //Set "Based on" link
         if (programData.parent) {
             document.getElementById("parent-program-link").href = "/program/" + programData.parent.id;
             document.getElementById("parent-program-link").innerText = programData.parent.title;
         }
 
+        //Set created and published dates
         document.getElementById("created-date").innerHTML = dateToString(programData.created);
         if (programData.lastPublished) {
             document.getElementById("published-date").innerHTML = dateToString(programData.lastPublished);
         }else {
-            var published = document.getElementById("published");
-            published.parentNode.removeChild(published);
+            document.getElementById("published").style.display = "none";
         }
+
+        //Set View Fullscreen link
+        document.getElementById("view-fullscreen-link").href = "/program/" + programData.id + "/fullscreen";
     }else {
-        var t = document.getElementById("vote-table");
-        t.parentNode.removeChild(t);
+        //Page elements that get removed on a new program page
+        var toRemove = ["vote-table", "comment-wrap", "updated-date", "view-fullscreen", "program-author"];
 
-        var c = document.getElementById("comment-wrap");
-        c.parentNode.removeChild(c);
-
-        var t = document.getElementById("updated-date");
-        t.parentNode.removeChild(t);
+        for (var i = 0; i < toRemove.length; i++) {
+            var el = document.getElementById(toRemove[i]);
+            el.parentNode.removeChild(el);
+        }
     }
 
     if (runningLocal || programData.new || !programData.parent) {
