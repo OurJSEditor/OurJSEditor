@@ -30,7 +30,7 @@ def program (request, program_id):
         try:
             current_program = Program.objects.select_related('user').get(program_id=program_id)
         except Program.DoesNotExist:
-            return HttpResponse("404: No program found with that id", status=404)
+            return render(request, "program/404.html", status=404)
 
         data_dict = current_program.to_dict()
         data_dict["canEditProgram"] = (current_program.user == request.user)

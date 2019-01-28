@@ -71,5 +71,5 @@ def reset_password(request):
             return render(request, 'account/resetPassword.html', {"error": "Invalid user."})
 
 def logout(request):
-    auth.logout(request);
-    return redirect("/");
+    auth.logout(request)
+    return redirect("/user/login")

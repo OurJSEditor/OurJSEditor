@@ -1,10 +1,25 @@
-<!DOCTYPE HTML>
-<html>
+<!DOCTYPE html>
+<html lang="en">
+<link rel="stylesheet" href="/static/styles/404.css">
 <head>
-    <title>User {{ username }} does not exist.</title>
-<head>
+    <meta charset="UTF-8">
+    <title id="title-tag">404 User not found</title>
+</head>
 <body>
-    Sorry about that, but the username {{ username }} doesn't match anybody right now. Looks like you're out of luck.<br>
-    Unless you were trying to make an account with this username, in which case go ahead.
+
+{% include "../ourjseditor/user-info.html" %}
+
+<div class="error-pg">
+    <div class="error-message">
+        <h2><strong>Error 404:</strong></h2>
+        <p>
+            This user doesn't exist.
+        </p>
+        <p>
+            Sorry. Unless you want to <a href="/user/logout">create an account</a> with this username, in which case go right ahead.
+        </p>
+    </div>
+</div>
+
 </body>
 </html>
