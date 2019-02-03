@@ -102,6 +102,8 @@
                     }
                 });
                 req.send(JSON.stringify({ isRead: notifs[j].isRead }));
+            }else if (typeof callback === "function") {
+                callback();
             }
         }
 
@@ -155,8 +157,9 @@
                 notifInfo.addEventListener("click", function (e) {
                     e.preventDefault(); //Stop page from navigating
 
+                    var href = this.href;
                     setNotifRead(this.parentNode.id, true, function () {
-                        window.location.href = notifInfo.href;
+                        window.location.href = href;
                     });
                 });
 
