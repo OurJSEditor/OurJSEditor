@@ -36,7 +36,7 @@ def forks(request, program_id):
         if (not request.user.is_authenticated):
             return api.error("Not logged in.", status=401)
 
-        requested_program = Program.objects.get(program_id=program_id)
+        parent_program = Program.objects.get(program_id=program_id)
 
         data = json.loads(request.body)
         if (len(data["title"]) > 45):
@@ -44,12 +44,20 @@ def forks(request, program_id):
 
         program = Program.objects.create(
             user = request.user,
-            parent = requested_program,
+            parent = parent_program,
             title = data["title"],
             html = data["html"],
             js = data["js"],
             css = data["css"],
         )
+
+        if (parent_program.user != program.user):
+            Notif.objects.create(
+                target_user = parent_program.user,
+                link = "/program/" + program.program_id,
+                description = "<strong>{0}</strong> created a fork of your program, <strong>{1}</strong>".format(
+                    escape(request.user.profile.display_name), escape(parent_program.title)),
+            )
 
         response = api.succeed({ "id": program.program_id }, status=201)
         response["Location"] = "/program/" + program.program_id

@@ -39,6 +39,7 @@ class Notif(models.Model):
             "isRead": self.is_read,
             "description": self.description,
             "created": self.created.replace(microsecond=0).isoformat() + "Z",
+            "preview": "" # Gets overwritten if there's a source comment or program
         }
 
         if (self.source_comment):
