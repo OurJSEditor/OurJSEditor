@@ -48,13 +48,14 @@ def new_comment(request, program_id):
     link = "/program/{0}#comment-{1}".format(comment.program.program_id, comment.comment_id);
 
     if (depth == 0):
-        Notif.objects.create(
-            target_user = program.user,
-            link = link,
-            description = "<strong>{0}</strong> left a comment on your program, <strong>{1}</strong>".format(
-                escape(request.user.profile.display_name), escape(program.title)),
-            source_comment = comment
-        )
+        if (program.user != comment.user):
+            Notif.objects.create(
+                target_user = program.user,
+                link = link,
+                description = "<strong>{0}</strong> left a comment on your program, <strong>{1}</strong>".format(
+                    escape(request.user.profile.display_name), escape(program.title)),
+                source_comment = comment
+            )
     else:
         #Create a list of everyone in the comment thread and spam them all
         to_notify = set(Comment.objects
