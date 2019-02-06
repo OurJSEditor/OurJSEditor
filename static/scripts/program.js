@@ -674,7 +674,26 @@ document.addEventListener("DOMContentLoaded", function() {
     jsEditor = ace.edit("js-editor");
     jsEditor.getSession().setMode("ace/mode/javascript");
 
-    document.getElementById("editor-settings").appendChild(initEditorSettings(document.getElementById("editor-settings-button"), [jsEditor, cssEditor, htmlEditor]));
+    var editors = [jsEditor, cssEditor, htmlEditor];
+
+    for (var i = 0; i < editors.length; i++) {
+        editors[i].commands.addCommand({
+            name: "runProgram",
+            bindKey: {win: "Ctrl-alt-r", mac: "Command-alt-r"},
+            exec: function () {
+                runProgram();
+            }
+        });
+        editors[i].commands.addCommand({
+            name: "save",
+            bindKey: {win: "Ctrl-s", mac: "Command-s"},
+            exec: function () {
+                save(false);
+            }
+        });
+    }
+
+    document.getElementById("editor-settings").appendChild(initEditorSettings(document.getElementById("editor-settings-button"), editors));
 
     // TIDYUP Button
     document.getElementById("btnTidyUp").addEventListener("click", function(event) {
