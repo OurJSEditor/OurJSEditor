@@ -4,130 +4,14 @@
         Login &mdash; OurJSE
     </title>
     <link rel="stylesheet" type="text/css" href="/static/styles/login.css">
-    <script>
-    var attemptLogin = function () {
-        var loginT = document.getElementById("loginT");
-        var form = document.getElementById("login-form");
-        var data = {};
-        var inputs = form.elements;
-        for (var i = 0; i < inputs.length; i++) {
-            if (inputs[i].name) {
-                data[inputs[i].name] = inputs[i].value;
-            }
-        }
-        data = JSON.stringify(data);
-
-        var req = new XMLHttpRequest();
-        req.addEventListener("load", function () {
-            console.log(this);
-            if (this.status === 401) {
-                loginT.innerHTML = "Your username or password was incorrect.<br>";
-            }else if (JSON.parse(this.response).success) {
-                var next = "/user/" + JSON.parse(this.response).username;
-                if (URLSearchParams) {
-                    var paramNext = new URLSearchParams(window.location.search).get("next");
-                    if (paramNext && paramNext[0] === "/") { //Should prevent redirection attacks like ?next=badwebsite.com
-                        next = paramNext;
-                    }
-                }
-                location.href = next;
-            }else {
-                loginT.innerHTML = "Something went wrong.<br>";
-                console.log(this);
-            }
-        });
-        req.open("POST", "/api/user/login");
-        req.setRequestHeader("Content-Type", "application/json");
-        req.setRequestHeader("X-CSRFToken", "{{ csrf_token }}");
-        req.send(data);
-    };
-    var checkNewAccount = function () {
-        loginT = document.getElementById("loginT");
-        form = document.getElementById("create-account-form");
-        if (form.username.value.match(/\W|$^/)) {
-           loginT.innerHTML = "Please enter a valid username<br>";
-           return false;
-        }
-        if (!form.email.value.match(/^(?:[\w.+-]+@[a-zA-Z0-9-]+(?:\.[a-zA-Z0-9-]+)+)?$/)) {
-           loginT.innerHTML = "Please enter a valid email, or no email at all.<br>";
-           return false;
-        }
-        if (form.password.value !== form.passwordConfirm.value) {
-           loginT.innerHTML = "Passwords don't match<br>";
-           return false;
-        }
-        if (document.getElementById("available").innerHTML !== "\u2714") {
-           loginT.innerHTML = "That username is already taken<br>";
-           return false;
-        }
-        if (form.password.value === "") {
-            loginT.innerHTML = "Please enter a password<br>";
-            return false;
-        }
-        if (form.displayName.value === "") {
-            form.displayName.value = form.username.value;
-        }
-        return true;
-    };
-    var checkUsername=function(){
-        var available=document.getElementById("available");
-        var ans=false;
-
-        if (document.getElementById("username").value === "") {
-            available.innerHTML = "";
-            return;
-        }
-
-        var req = new XMLHttpRequest();
-        req.addEventListener("load", function() {
-            if (this.status == 200) {
-                ans=JSON.parse(this.response);
-                ans=ans.usernameValid;
-            }
-            if(ans){
-                  available.innerHTML="&#x2714;";
-                  available.style.color="green";
-            }
-            else{
-                   available.innerHTML="&#x2717;";
-                   available.style.color="red";
-            }
-        });
-        req.open("GET", "/api/user/username-valid/" + encodeURIComponent(document.getElementById("username").value));
-        req.send();
-    };
-    </script>
 </head>
 <body>
-    <div id="container">
-    <i id="loginT" style="color:red;">{{ error }}</i>
-    <form action="javascript:attemptLogin()" id="login-form" name="login-form">
-        <b>Login:</b>
-        <br>
-        <input type="text" name="username" autocomplete="username" placeholder="Username" maxlength="45" required>
-        <br>
-        <input type="password" name="password" autocomplete="current-password" placeholder="Password" required>
-        <br>
-        <input class="btn" type="submit" value="Login">
-    </form>
-    <hr>
-    <form method="POST" id="create-account-form" name="create-account-form" onsubmit="return checkNewAccount()" action="new">
-        <b>Create Account:</b>
-        {% csrf_token %}
-        <br>
-        <input type="text" name="displayName" autocomplete="given-name" placeholder="Name" maxlength="45">
-        <br>
-        <input type="email" name="email" autocomplete="email" placeholder="Email">
-        <br>
-        <input type="text" name="username" autocomplete="username" onkeyup="checkUsername()" id="username" placeholder="Username*" maxlength="45" required>
-        <b id="available"></b>
-        <br>
-        <input type="password" name="password" autocomplete="new-password" placeholder="Password*" required>
-        <br>
-        <input type="password" name="passwordConfirm" autocomplete="new-password" placeholder="Repeat Password*" required>
-        <br>
-        <input class="btn" type="submit" value="Create Account">
-    </form>
+    <div id="inner-wrapper">
+        <div class="two-panel collapse-700">
+            <div id="login-form"></div>
+            <div id="signup-form"></div>
+        </div>
     </div>
+    <script src="/static/js/login.js"></script>
 </body>
 </html>

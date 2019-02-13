@@ -1,32 +1,118 @@
-body{
-    background-color:#161E2C;
-    text-align:center;
-    color:#337ab7;
-    font-family:sans-serif;
-}
-input{
-    font-size:1em;
-    width:90%;
-    margin-bottom:0.5em;
-    outline:none;
-}
-.btn{
-    font-size:1.2em;
-    width:100%;
-    color:white;
-    background-color:#337ab7;
-    border:none;
-    transition:0.2s;
-}
-.btn:hover{
-    background-color:#235a87;
-}
-#container{
+@import url('https://fonts.googleapis.com/css?family=Open+Sans');
+/* DARK: #4176a9 */
+/* LIGHT: #487eb3 */
+/* DARK BG #161E2C */
+
+body {
+    font-family: "Open Sans", sans-serif;
     margin: 0 auto;
-    background-color:white;
-    width:20em;
-    text-align:left;
-    padding:1.5em;
-    border-top:solid;
-    border-width:0.5em;
+    background: url(https://i.ibb.co/F0SxwNS/bg.png) #161E2C no-repeat center center fixed;
+    -webkit-background-size: cover;
+    -moz-background-size: cover;
+    -o-background-size: cover;
+    background-size: cover;
+}
+
+#inner-wrapper {
+    padding: 35px 5vw;
+    max-width: 900px;
+    display: relative;
+    margin: 3% auto;
+    background: #f7faff;
+    border-bottom: #487eb3 5px solid;
+}
+
+.two-panel > * {
+    width: 49%;
+    display: block;
+}
+
+.two-panel,
+.tri-flex {
+    display: flex;
+    justify-content: space-between;
+}
+
+.flex-space-around {
+    justify-content: space-around;
+}
+
+@media (max-width: 400px) {
+    .collapse-400 {
+        display: block;
+    }
+    .collapse-400 > * {
+        width: 100%;
+    }
+}
+
+@media (max-width: 700px) {
+    .collapse-700 {
+        display: block;
+    }
+    .collapse-700 > * {
+        width: 100%;
+    }
+    #inner-wrapper {
+        margin: 30px 25px;
+    }
+}
+
+@media (min-width: 700px) {
+    body {
+        width: 100%;
+        height: 100%;
+        position: fixed;
+        display: flex;
+        align-items: center;
+    }
+}
+
+.basic-form > * {
+    margin: 5px 0;
+}
+
+.basic-form input {
+    font-size: 0.9em;
+    padding: 10px;
+    border: 1px solid #999;
+    width: 100%;
+    box-sizing: border-box;
+    -moz-box-sizing: border-box;
+    background: #fbfbfb;
+    font-family: "Open sans", sans-serif;
+    -webkit-transition: background 200ms, border 200ms;
+    transition: background 200ms, border 200ms;
+}
+
+.basic-form input:focus {
+    outline: none;
+    border: 1px solid #111111;
+}
+
+.basic-form input[type="submit"] {
+    border: none;
+    background: #487eb3;
+    color: #fdfaf7;
+    cursor: pointer;
+}
+
+.basic-form input[type="submit"]:focus,
+.basic-form input[type="submit"]:hover {
+    background: #4176a9;
+}
+
+.error {
+    color: #7f0000;
+}
+
+.validated-field {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+}
+
+.validated-field input {
+    width: 90%;
+    width: calc(100% - 35px);
 }
