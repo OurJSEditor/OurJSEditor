@@ -7,9 +7,11 @@ from user_profile.models import Profile
 from ourjseditor.funcs import check_username
 from ourjseditor import api
 
+#api/user/username-valid/USERNAME
 @api.standardAPIErrors("GET")
 def username_valid(request, username):
     return api.succeed({ "usernameValid": check_username(username, "") })
+
 
 @api.standardAPIErrors("GET","PATCH","DELETE")
 def user(request, id):
