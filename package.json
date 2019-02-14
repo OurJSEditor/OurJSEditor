@@ -20,7 +20,9 @@
     "promise-polyfill": "^8.1.0",
     "react": "^16.8.1",
     "react-dom": "^16.8.1",
-    "whatwg-fetch": "^3.0.0"
+    "whatwg-fetch": "^3.0.0",
+    "babel-cli": "^6.26.0",
+    "babel-preset-es2015": "^6.24.1"
   },
   "devDependencies": {
     "babel-core": "^6.26.3",
