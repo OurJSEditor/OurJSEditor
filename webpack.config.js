@@ -13,7 +13,7 @@ module.exports = {
     entry,
     output: {
         filename: "[name].js",
-        path: path.resolve(__dirname, "static/js")
+        path: path.resolve(__dirname, "static/scripts/components")
     },
     module: {
         rules: [

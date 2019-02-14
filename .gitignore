@@ -6,4 +6,4 @@
 OurEnv
 .env
 node_modules
-static/js/**/*.js
+static/scripts/components/**/*.js

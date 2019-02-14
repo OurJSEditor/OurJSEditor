@@ -103,4 +103,4 @@ def new_user(request):
     return api.succeed({
         "id": user.profile.profile_id,
         "username": user.username
-    }, status=201)
+    }, status=200)

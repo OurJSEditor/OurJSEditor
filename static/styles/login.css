@@ -1,12 +1,9 @@
 @import url('https://fonts.googleapis.com/css?family=Open+Sans');
-/* DARK: #4176a9 */
-/* LIGHT: #487eb3 */
-/* DARK BG #161E2C */
 
 body {
     font-family: "Open Sans", sans-serif;
     margin: 0 auto;
-    background: url(https://i.ibb.co/F0SxwNS/bg.png) #161E2C no-repeat center center fixed;
+    background: #f7faff;
     -webkit-background-size: cover;
     -moz-background-size: cover;
     -o-background-size: cover;
@@ -18,8 +15,10 @@ body {
     max-width: 900px;
     display: relative;
     margin: 3% auto;
-    background: #f7faff;
-    border-bottom: #487eb3 5px solid;
+    background: #ffffff;
+    border: 1px solid #999999;
+    border-bottom: 0;
+    box-shadow: 0px 5px 0px 0px #487eb3;
 }
 
 .two-panel > * {
@@ -113,6 +112,9 @@ body {
 }
 
 .validated-field input {
-    width: 90%;
-    width: calc(100% - 35px);
+    margin-right: -35px;
+}
+
+.validated-field img {
+    margin-right: 5px;
 }
