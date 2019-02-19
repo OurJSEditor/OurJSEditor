@@ -100,6 +100,7 @@ def new_user(request):
 
     auth.login(request, user)
 
-    response = api.succeed({ "id": user.profile.profile_id }, status=201)
-    response["Location"] = "/user/" + user.username
-    return response
+    return api.succeed({
+        "id": user.profile.profile_id,
+        "username": user.username
+    }, status=200)
