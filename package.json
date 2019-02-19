@@ -17,12 +17,7 @@
   },
   "homepage": "https://github.com/OurJSEditor/OurJSEditor#readme",
   "dependencies": {
-    "promise-polyfill": "^8.1.0",
-    "react": "^16.8.1",
-    "react-dom": "^16.8.1",
-    "whatwg-fetch": "^3.0.0",
-    "babel-cli": "^6.26.0",
-    "babel-preset-es2015": "^6.24.1"
+
   },
   "devDependencies": {
     "babel-core": "^6.26.3",
@@ -30,6 +25,12 @@
     "babel-preset-env": "^1.7.0",
     "babel-preset-react": "^6.24.1",
     "webpack": "^4.29.3",
-    "webpack-cli": "^3.2.3"
+    "webpack-cli": "^3.2.3",
+    "babel-cli": "^6.26.0",
+    "babel-preset-es2015": "^6.24.1",
+    "promise-polyfill": "^8.1.0",
+    "react": "^16.8.1",
+    "react-dom": "^16.8.1",
+    "whatwg-fetch": "^3.0.0"
   }
 }
