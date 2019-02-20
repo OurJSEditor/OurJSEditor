@@ -59,7 +59,6 @@ export default class SignupForm extends React.Component {
                 <input
                     type="text"
                     placeholder="Name"
-                    minLength="4"
                     maxLength="45"
                     onChange={this.setField.bind(this, "name")}
                     required />

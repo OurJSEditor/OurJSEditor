@@ -16,9 +16,7 @@
     "url": "https://github.com/OurJSEditor/OurJSEditor/issues"
   },
   "homepage": "https://github.com/OurJSEditor/OurJSEditor#readme",
-  "dependencies": {
-
-  },
+  "dependencies": {},
   "devDependencies": {
     "babel-core": "^6.26.3",
     "babel-loader": "^7.1.5",
