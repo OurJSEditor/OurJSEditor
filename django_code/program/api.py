@@ -1,4 +1,5 @@
 from ourjseditor import api
+from ourjseditor.funcs import base64toImageFile
 
 import json
 import datetime
@@ -89,6 +90,16 @@ def program(request, program_id):
                 setattr(requested_program, prop, data[prop])
 
         if "publishedMessage" in data:
+            try:
+                image = base64toImageFile(data["imageData"], "{}.png".format(requested_program.program_id))
+            except TypeError as err:
+                if (err.args[0] == "Image isn't a PNG"):
+                    return api.error("Image must be a PNG")
+                raise
+            except:
+                return api.error("Invalid Image")
+
+            requested_program.image = image
             requested_program.published_message = data["publishedMessage"];
             requested_program.last_published = datetime.datetime.now()
 

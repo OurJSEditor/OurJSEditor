@@ -83,7 +83,9 @@ function deleteProgram () {
     req.send();
 }
 
-function publishProgram (e) {
+function imageReceived (event) {
+    var data = JSON.parse(event.data);
+
     var req = new XMLHttpRequest();
     req.addEventListener("load", function () {
         var d = JSON.parse(this.responseText);
@@ -105,8 +107,17 @@ function publishProgram (e) {
     req.open("PATCH", "/api/program/" + programData.id);
     req.setRequestHeader("X-CSRFToken", csrf_token);
     req.send(JSON.stringify({
-        "publishedMessage": document.getElementById("publish-message").value
+        "publishedMessage": document.getElementById("publish-message").value,
+        "imageData": data.imageData
     }));
+}
+
+function publishProgram (e) {
+    document.getElementById("preview").contentWindow.postMessage(JSON.stringify({
+        type: "thumbnail-request"
+    }), "*");
+
+    window.addEventListener("message", imageReceived, false);
 }
 
 function runProgram (event) {
@@ -120,7 +131,10 @@ function runProgram (event) {
         return ace.edit(language.toLowerCase() + "-editor").getSession().getValue();
     })
 
-    document.getElementById("preview").contentWindow.postMessage(html, "*");
+    document.getElementById("preview").contentWindow.postMessage(JSON.stringify({
+        type: "execute",
+        code: html
+    }), "*");
 }
 
 function dateToString (d) {

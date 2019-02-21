@@ -20,13 +20,45 @@
     <script>
     var frame = document.getElementById("output-frame");
     window.addEventListener("message", function (msg) {
-        //This removes the frame element from the DOM (and then replaces it), clearing the user's old code.
-        frame.parentNode.replaceChild(frame, frame);
+        var data = JSON.parse(msg.data);
+        if (data.type === "execute") {
+            //This removes the frame element from the DOM (and then replaces it), clearing the user's old code.
+            frame.parentNode.replaceChild(frame, frame);
 
-        var outputDoc = frame.contentDocument;
-        outputDoc.write(msg.data);
-        outputDoc.close();
+            var outputDoc = frame.contentDocument;
+            outputDoc.write(data.code);
+            outputDoc.close();
+        }else if (data.type === "thumbnail-request"){
+            var s = document.createElement("script");
+            s.setAttribute("src", "https://cdn.jsdelivr.net/npm/html2canvas@1.0.0-alpha.12/dist/html2canvas.min.js")
+            s.addEventListener("load", function () {
+                html2canvas(document.getElementById("output-frame").contentDocument.body)
+                    .then(function (canvas) {
+                        var data = canvas.toDataURL("image/png");
+
+                        console.log(data);
+                        
+                        window.top.postMessage(JSON.stringify({
+                             imageData: data
+                        }), "*");
+                    });
+            });
+            document.head.appendChild(s);
+        }
     });
+
+    //Check for and load a Promise shim
+    //Adapted from https://github.com/stefanpenner/es6-promise/blob/9869a4bc92c0372b9fc9e2dc3a9a1a861d91bbe0/lib/es6-promise/polyfill.js#L21
+    var promiseToString = null;
+    try {
+        promiseToString = Object.prototype.toString.call(window.Promise.resolve());
+    } catch(e) {}
+
+    if (promiseToString !== '[object Promise]' || window.Promise.cast){
+        var s = document.createElement("script");
+        s.setAttribute("src", "https://cdn.jsdelivr.net/npm/es6-promise@4/dist/es6-promise.auto.min.js");
+        document.head.appendChild(s);
+    }
     </script>
 </body>
 </html>
