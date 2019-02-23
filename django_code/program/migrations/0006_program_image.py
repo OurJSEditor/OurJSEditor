@@ -16,6 +16,6 @@ class Migration(migrations.Migration):
         migrations.AddField(
             model_name='program',
             name='image',
-            field=models.ImageField(default='program/nophoto.png', storage=program.models.OverwriteStorage(), upload_to=program.models.get_image_path),
+            field=models.ImageField(default='program_thumbnails/nophoto.png', storage=program.models.OverwriteStorage(), upload_to=program.models.get_image_path),
         ),
     ]

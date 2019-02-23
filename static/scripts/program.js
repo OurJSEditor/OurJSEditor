@@ -117,6 +117,8 @@ function publishProgram (e) {
         type: "thumbnail-request"
     }), "*");
 
+    save();
+
     window.addEventListener("message", imageReceived, false);
 }
 

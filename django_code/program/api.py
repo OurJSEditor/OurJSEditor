@@ -77,19 +77,15 @@ def program(request, program_id):
         if request.user != requested_program.user:
             return api.error("Not authorized.", status=401)
 
-        valid_props = ["html", "js", "css", "title"]
-
         if "title" in data and len(data["title"]) > 45:
             return api.error("Title length exceeds maximum characters.", status=400)
 
         if "publishedMessage" in data and len(data["publishedMessage"]) > 250:
-                return api.error("Publish message can't exceed 250 characters")
-
-        for prop in valid_props:
-            if prop in data:
-                setattr(requested_program, prop, data[prop])
+            return api.error("Publish message can't exceed 250 characters")
 
         if "publishedMessage" in data:
+            # Should it be possible to publish without an image or update the image without publishing
+
             try:
                 image = base64toImageFile(data["imageData"], "{}.png".format(requested_program.program_id))
             except TypeError as err:
@@ -100,7 +96,8 @@ def program(request, program_id):
                 return api.error("Invalid Image")
 
             requested_program.image = image
-            requested_program.published_message = data["publishedMessage"];
+
+            requested_program.published_message = data["publishedMessage"]
             requested_program.last_published = datetime.datetime.now()
 
             return_data["lastPublished"] = requested_program.last_published.replace(microsecond=0).isoformat() + "Z"
@@ -116,12 +113,21 @@ def program(request, program_id):
                     source_program = requested_program
                 )
 
+        valid_props = ["html", "js", "css", "title"]
+
+        for prop in valid_props:
+            if prop in data:
+                setattr(requested_program, prop, data[prop])
+
         requested_program.save()
 
         return api.succeed(return_data)
     elif (request.method == "DELETE"):
-        if request.user != requested_program.user:
+        if (request.user != requested_program.user):
             return api.error("Not authorized.", status=401)
+
+        if (requested_program.image.name != "program/nophoto.png"):
+            requested_program.image.delete()
 
         requested_program.delete()
 

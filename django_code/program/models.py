@@ -32,7 +32,7 @@ class Program(models.Model):
 
     last_published = models.DateTimeField(blank=True, null=True)
     published_message = models.CharField(max_length=100, blank=True)
-    image = models.ImageField(upload_to=get_image_path, storage=OverwriteStorage(), default="program/nophoto.png")
+    image = models.ImageField(upload_to=get_image_path, storage=OverwriteStorage(), default="program_thumbnails/nophoto.png")
 
     title = models.CharField(max_length=45, default="Program")
     html= models.TextField(blank=True)
