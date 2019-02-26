@@ -142,7 +142,7 @@ def comment_comments(request, *args):
         program_id = args[0]
         comment_id = args[1]
 
-        comments = Comment.objects.select_related("user__profile").filter(program_id=program_id, parent__comment_id=comment_id)
+        comments = Comment.objects.select_related("user__profile").filter(program_id=program_id, parent__comment_id=comment_id).order_by("created")
 
     comments = list(comments)
     return api.succeed({
