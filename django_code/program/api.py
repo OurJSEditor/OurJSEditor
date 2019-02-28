@@ -10,6 +10,7 @@ from views import key_func_mapping
 from vote.models import vote_types
 from notification.models import Notif
 
+#/api/program/new
 @api.standardAPIErrors("POST")
 @api.login_required
 def new_program(request):
@@ -116,6 +117,7 @@ def program(request, program_id):
 
         return api.succeed()
 
+#/api/programs/SORT
 @api.standardAPIErrors("GET")
 def program_list(request, sort):
     if (not sort):
