@@ -1,6 +1,6 @@
-import React from "react";
+import Preact from "preact";
 
-export default class UsernameInput extends React.Component {
+export default class UsernameInput extends Preact.Component {
     constructor(props) {
         super(props);
         this.state = { username: "" };

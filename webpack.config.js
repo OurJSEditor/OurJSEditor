@@ -15,6 +15,7 @@ module.exports = {
         filename: "[name].js",
         path: path.resolve(__dirname, "static/scripts/components")
     },
+    devtool: 'source-map',
     module: {
         rules: [
             {
@@ -24,7 +25,10 @@ module.exports = {
                 use: {
                     loader: "babel-loader",
                     options: {
-                        presets: ["react", "es2015"]
+                        presets: ["react", "es2015"],
+                        plugins: [
+                            ["transform-react-jsx", { "pragma": "Preact.h" }]
+                        ]
                     },
                 },
             }
