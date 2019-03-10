@@ -1,11 +1,11 @@
-import React from "react";
+import Preact from "preact";
 import Api from "../util/wrapper";
 
 import UsernameInput from "./username-input";
 
 const ICON_SIZE = 30;
 
-export default class SignupForm extends React.Component {
+export default class SignupForm extends Preact.Component {
     constructor(props) {
         super(props);
         this.state = {

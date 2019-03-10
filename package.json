@@ -3,7 +3,8 @@
   "version": "1.0.0",
   "description": "This repository is for storing the server-side code which powers [OurJSEditor.com](https://ourjseditor.com).",
   "scripts": {
-    "build": "webpack",
+    "build": "webpack --mode=development",
+    "build-prod": "webpack --mode=production",
     "errorDetails": "webpack --display-error-details",
     "test": "echo \"Error: no test specified\" && exit 1"
   },
@@ -16,19 +17,16 @@
     "url": "https://github.com/OurJSEditor/OurJSEditor/issues"
   },
   "homepage": "https://github.com/OurJSEditor/OurJSEditor#readme",
-  "dependencies": {},
-  "devDependencies": {
+  "dependencies": {
     "babel-core": "^6.26.3",
     "babel-loader": "^7.1.5",
-    "babel-preset-env": "^1.7.0",
     "babel-preset-react": "^6.24.1",
+    "babel-preset-es2015": "^6.24.1",
+    "preact": "^8.4.2",
+    "promise-polyfill": "^8.1.0",
     "webpack": "^4.29.3",
     "webpack-cli": "^3.2.3",
-    "babel-cli": "^6.26.0",
-    "babel-preset-es2015": "^6.24.1",
-    "promise-polyfill": "^8.1.0",
-    "react": "^16.8.1",
-    "react-dom": "^16.8.1",
     "whatwg-fetch": "^3.0.0"
-  }
+  },
+  "devDependencies": {}
 }
