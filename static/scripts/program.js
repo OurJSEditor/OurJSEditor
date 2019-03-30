@@ -54,7 +54,8 @@ function closeConfirm () {
     document.getElementById("back-cover").style.display = "none";
     document.getElementById("delete-confirm").style.display = "none";
     document.getElementById("publish-confirm").style.display = "none";
-    // document.getElementById("backCover").removeEventListener("click", closeConfirm);
+
+    document.getElementById("publish-confirm-button").removeEventListener("click", publishProgram);
 }
 
 function deleteProgram () {
@@ -86,6 +87,18 @@ function deleteProgram () {
 function imageReceived (event) {
     var data = JSON.parse(event.data);
 
+    //We remove the start of the data URL from the potentially insecure frame
+    programData.thumbnailData = data.imageData.slice(22);
+
+    document.getElementById("thumbnail-preview").src = "data:image/png;base64," + programData.thumbnailData;
+
+    document.getElementById("publish-confirm-button").addEventListener("click", publishProgram);
+}
+
+//Runs after the publish confirm button is clicked
+function publishProgram () {
+    save();
+
     var req = new XMLHttpRequest();
     req.addEventListener("load", function () {
         var d = JSON.parse(this.responseText);
@@ -108,18 +121,10 @@ function imageReceived (event) {
     req.setRequestHeader("X-CSRFToken", csrf_token);
     req.send(JSON.stringify({
         "publishedMessage": document.getElementById("publish-message").value,
-        "imageData": data.imageData
+        "imageData": programData.thumbnailData
     }));
-}
 
-function publishProgram (e) {
-    document.getElementById("preview").contentWindow.postMessage(JSON.stringify({
-        type: "thumbnail-request"
-    }), "*");
-
-    save();
-
-    window.addEventListener("message", imageReceived, false);
+    document.getElementById("publish-confirm-button").removeEventListener("click", publishProgram);
 }
 
 function runProgram (event) {
@@ -752,6 +757,12 @@ document.addEventListener("DOMContentLoaded", function() {
         openConfirm(e, "delete-confirm");
     });
     document.getElementById("btnPublish").addEventListener("click", function (e) {
+        document.getElementById("preview").contentWindow.postMessage(JSON.stringify({
+            type: "thumbnail-request"
+        }), "*");
+
+        window.addEventListener("message", imageReceived, false);
+
         openConfirm(e, "publish-confirm");
     });
 
@@ -759,7 +770,6 @@ document.addEventListener("DOMContentLoaded", function() {
     document.getElementById("publish-cancel-button").addEventListener("click", closeConfirm);
 
     document.getElementById("delete-confirm-button").addEventListener("click", deleteProgram);
-    document.getElementById("publish-confirm-button").addEventListener("click", publishProgram);
 
     document.getElementById("back-cover").addEventListener("click", closeConfirm);
 
