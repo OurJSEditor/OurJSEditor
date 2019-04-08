@@ -200,6 +200,8 @@ body {
 }
 
 #thumbnail-preview {
+    display: block;
+    margin-top: 15px;
     width: 200px;
     height: 200px;
 }
