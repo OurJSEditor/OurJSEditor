@@ -618,8 +618,6 @@ function vote () {
 };
 
 function save (fork) {
-    if (runningLocal) return;
-
     //Update programData with the lastest textbox code
     programData.js = jsEditor.getValue();
     programData.css = cssEditor.getValue();
@@ -762,26 +760,24 @@ document.addEventListener("DOMContentLoaded", function() {
         }
     });
 
-    if (!runningLocal) {
-        jsEditor.setValue(programData.js, -1);
-        cssEditor.setValue(programData.css, -1);
-        htmlEditor.setValue(programData.html, -1);
-        document.getElementById("program-title").innerText = programData.title;
+      jsEditor.setValue(programData.js, -1);
+      cssEditor.setValue(programData.css, -1);
+      htmlEditor.setValue(programData.html, -1);
+      document.getElementById("program-title").innerText = programData.title;
 
-        //TODO: Maybe add a login check/pop-up here
-        document.getElementById("btnFork").style.display = "block";
+      //TODO: Maybe add a login check/pop-up here
+      document.getElementById("btnFork").style.display = "block";
 
-        if (programData.canEditProgram) {
-            document.getElementById("btnSave").style.display = "block";
-            if (!programData.new) {
-                document.getElementById("btnDelete").style.display = "block";
-                document.getElementById("btnPublish").style.display = "block";
-            }
-        }
-    }
+      if (programData.canEditProgram) {
+          document.getElementById("btnSave").style.display = "block";
+          if (!programData.new) {
+              document.getElementById("btnDelete").style.display = "block";
+              document.getElementById("btnPublish").style.display = "block";
+          }
+      }
 
     titleLabel = document.getElementById("program-title");
-    if (!runningLocal && programData.canEditProgram) {
+    if (programData.canEditProgram) {
         titleLabel.classList.add("editable");
         titleLabel.addEventListener("click", function (event) {
             event.preventDefault();
@@ -794,7 +790,7 @@ document.addEventListener("DOMContentLoaded", function() {
     }
 
     //Dynamically update sections of the page if it's not a new program
-    if (!runningLocal && !programData.new) {
+    if (!programData.new) {
         //Set program author data
         document.getElementById("program-author-link").innerText = programData.author.displayName;
         document.getElementById("program-author-link").setAttribute("href", "/user/" + programData.author.username);
@@ -842,7 +838,7 @@ document.addEventListener("DOMContentLoaded", function() {
         }
     }
 
-    if (runningLocal || programData.new || !programData.parent) {
+    if (programData.new || !programData.parent) {
         var p = document.getElementById("parent-program");
         p.parentNode.removeChild(p);
     }
@@ -852,7 +848,7 @@ window.addEventListener("load", function () {
     initMd();
 
     //Only bring in comments if it's not a new program
-    if (!runningLocal && !programData.new) {
+    if (!programData.new) {
         var req = new XMLHttpRequest();
         req.open("GET", "/api/program/" + programData.id + "/comments");
         req.addEventListener("load", function () {
