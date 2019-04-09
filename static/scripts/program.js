@@ -87,10 +87,14 @@ function deleteProgram () {
 function imageReceived (event) {
     var data = JSON.parse(event.data);
 
-    //We remove the start of the data URL from the potentially insecure frame
-    programData.thumbnailData = data.imageData.slice(22);
+    //Frame is potentially insecure.
+    if (data.imageData.indexOf("data:image/png;base64,") !== 0) {
+        throw new Error("Image recived from iframe is not base64 png data.");
+    }
+    
+    programData.thumbnailData = data.imageData;
 
-    document.getElementById("thumbnail-preview").src = "data:image/png;base64," + programData.thumbnailData;
+    document.getElementById("thumbnail-preview").src = programData.thumbnailData;
 
     document.getElementById("publish-confirm-button").addEventListener("click", publishProgram);
 }
