@@ -1,6 +1,6 @@
 {
     "title": "Program",
     "html": "<!DOCTYPE HTML>\n<html>\n<head>\n    <style>\n        /*[OurJSEditor insert:CSS]*/\n    </style>\n</head>\n<body>\n    <div id=\"display\">OurJSEditor</div>\n    <script>\n        /*[OurJSEditor insert:JS]*/\n    </script>\n</body>\n</html>",
-    "js": "var el = document.getElementById(\"display\");\nvar angle = -Math.PI / 2;\n\nfunction update() {\n    el.style.left = Math.cos(angle) * 125 + window.innerWidth / 2 + \"px\";\n    el.style.top = Math.sin(angle) * 125 + 400 / 2 + \"px\";\n    angle += 0.02;\n}\n\nwindow.setInterval(function() {\n    update();\n}, 1000 / 60);\n\nwindow.addEventListener(\"resize\", update);",
     "css": "html, body {\n    height: 100%;\n    width: 100%;\n    background: #4A7FB1;\n    display: block;\n    margin: 0;\n    padding: 0;\n}\n\n#display {\n    color: white;\n    font-family: Helvetica, sans-serif;\n    font-size: 30px;\n    position: absolute;\n    transform: translate(-50%, -50%);\n    font-weight: bold;\n}"
+    "js": "var el = document.getElementById(\"display\");\nfunction update (ms) {\n    var pi = Math.PI,\n        start = -0.5 * pi,\n        position = 2 * pi * ( ms % 5000 ) / 5000,\n        radius = 125;\n    el.style.left = radius * Math.cos(start + position) + 0.5 * window.innerWidth + \"px\";\n    el.style.top = radius * Math.sin(start + position) + 0.5 * window.innerHeight + \"px\";\n}\n\nfunction animate (fn) {\n    window.requestAnimationFrame(function (ms) {\n        fn (ms);\n        animate (fn);\n    });\n}\n\nanimate(update);",
 }

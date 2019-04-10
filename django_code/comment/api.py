@@ -137,12 +137,12 @@ def comment_comments(request, *args):
     if (len(args) == 1):
         comment_id = args[0]
 
-        comments = Comment.objects.select_related("user__profile").filter(parent__comment_id=comment_id)
+        comments = Comment.objects.select_related("user__profile").filter(parent__comment_id=comment_id).order_by("created")
     elif (len(args) == 2):
         program_id = args[0]
         comment_id = args[1]
 
-        comments = Comment.objects.select_related("user__profile").filter(program_id=program_id, parent__comment_id=comment_id)
+        comments = Comment.objects.select_related("user__profile").filter(program_id=program_id, parent__comment_id=comment_id).order_by("created")
 
     comments = list(comments)
     return api.succeed({

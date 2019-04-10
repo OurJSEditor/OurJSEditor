@@ -1,9 +1,9 @@
-import React from "react";
+import Preact from "preact";
 import Api from "../util/wrapper";
 
 import UsernameInput from "./username-input";
 
-export default class LoginForm extends React.Component {
+export default class LoginForm extends Preact.Component {
     constructor(props) {
         super(props);
         this.state = { username: "", password: "", error: "" };
@@ -51,4 +51,3 @@ export default class LoginForm extends React.Component {
         );
     }
 }
-

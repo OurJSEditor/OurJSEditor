@@ -6,6 +6,6 @@
 OurEnv
 .env
 node_modules
-static/scripts/components/**/*.js
+static/scripts/components/**/*
 static/media/program_thumbnails/*
 !static/media/program_thumbnails/nophoto.png
