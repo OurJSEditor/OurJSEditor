@@ -199,6 +199,13 @@ body {
     font-weight: bold;
 }
 
+#thumbnail-preview {
+    display: block;
+    margin-top: 15px;
+    width: 200px;
+    height: 200px;
+}
+
 input, textarea {
     width: 100%;
     margin-bottom: 5px;

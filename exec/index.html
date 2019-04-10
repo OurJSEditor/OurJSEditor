@@ -18,15 +18,67 @@
     <iframe src="about:blank" id="output-frame"></iframe>
 
     <script>
+    var SIZE = 500;
+    var outputFrame = document.getElementById("output-frame");
+
+    function saveScreenshot () {
+        html2canvas(outputFrame.contentDocument.body, {
+            width: SIZE,
+            height: SIZE,
+            windowsWidth: SIZE,
+            windowHeight: SIZE,
+        }).then(function (canvas) {
+            var data = canvas.toDataURL("image/png");
+
+            window.top.postMessage(JSON.stringify({
+                 imageData: data
+            }), "*");
+
+            outputFrame.contentWindow.removeEventListener("resize", saveScreenshot);
+
+            outputFrame.style.height = "";
+            outputFrame.style.width = "";
+        });
+    }
+
     var frame = document.getElementById("output-frame");
     window.addEventListener("message", function (msg) {
-        //This removes the frame element from the DOM (and then replaces it), clearing the user's old code.
-        frame.parentNode.replaceChild(frame, frame);
+        var data = JSON.parse(msg.data);
+        if (data.type === "execute") {
+            //This removes the frame element from the DOM (and then replaces it), clearing the user's old code.
+            frame.parentNode.replaceChild(frame, frame);
 
-        var outputDoc = frame.contentDocument;
-        outputDoc.write(msg.data);
-        outputDoc.close();
+            var outputDoc = frame.contentDocument;
+            outputDoc.write(data.code);
+            outputDoc.close();
+        }else if (data.type === "thumbnail-request") {
+            var s = document.createElement("script");
+            s.setAttribute("src", "/html2canvas.min.js")
+            s.addEventListener("load", function () {
+                var outputFrame = document.getElementById("output-frame");
+                outputFrame.style.width = SIZE + "px";
+                outputFrame.style.height = SIZE + "px";
+
+                //Once the resize has applied
+                //Isn't going to run if the window size is already 500x500 by some coincidence
+                outputFrame.contentWindow.addEventListener("resize", saveScreenshot);
+            });
+            document.head.appendChild(s);
+        }
     });
+
+    //Check for and load a Promise shim
+    //Adapted from https://github.com/stefanpenner/es6-promise/blob/9869a4bc92c0372b9fc9e2dc3a9a1a861d91bbe0/lib/es6-promise/polyfill.js#L21
+    var promiseToString = null;
+    try {
+        promiseToString = Object.prototype.toString.call(window.Promise.resolve());
+    } catch(e) {}
+
+    if (promiseToString !== '[object Promise]' || window.Promise.cast){
+        var s = document.createElement("script");
+        s.setAttribute("src", "https://cdn.jsdelivr.net/npm/es6-promise@4/dist/es6-promise.auto.min.js");
+        document.head.appendChild(s);
+    }
     </script>
 </body>
 </html>
