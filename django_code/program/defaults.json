@@ -1,0 +1,37 @@
+{
+    "webpage": {
+        "title": "Webpage",
+        "description": "Some normal DOM manipulation, and some OurJSEditor magic.",
+        "css": "html, body {\n    height: 100%;\n    width: 100%;\n    background: #4A7FB1;\n    display: block;\n    margin: 0;\n    padding: 0;\n}\n\n#display {\n    color: white;\n    font-family: Helvetica, sans-serif;\n    font-size: 30px;\n    position: absolute;\n    transform: translate(-50%, -50%);\n    font-weight: bold;\n}",
+        "html": "<!DOCTYPE HTML>\n<html>\n<head>\n    <style>\n        /*[OurJSEditor insert:CSS]*/\n    </style>\n</head>\n<body>\n    <div id=\"display\">OurJSEditor</div>\n    <script>\n        /*[OurJSEditor insert:JS]*/\n    </script>\n</body>\n</html>",
+        "js": "var el = document.getElementById(\"display\");\nvar angle = -Math.PI / 2;\n\nfunction update() {\n    el.style.left = Math.cos(angle) * 125 + window.innerWidth / 2 + \"px\";\n    el.style.top = Math.sin(angle) * 125 + 400 / 2 + \"px\";\n    angle += 0.02;\n}\n\nwindow.setInterval(function() {\n    update();\n}, 1000 / 60);\n\nwindow.addEventListener(\"resize\", update);"
+    },
+    "p5-example": {
+        "title": "P5.js Example Program",
+        "description": "Coming from KA's Processing.js? Start here",
+        "html": "...",
+        "css": "...",
+        "js": "..."
+    },
+    "blank-webpage": {
+        "title": "Blank Webpage",
+        "description": "Just enough for you to start writing code.",
+        "html": "...",
+        "css": "html, body {\n    padding: 0;\n    margin: 0;\n}",
+        "js": ""
+    },
+    "p5-blank": {
+        "title": "Blank P5.js Program",
+        "description": "You know what's going on, and want to make a program with graphics.",
+        "html": "...",
+        "css": "...",
+        "js": "..."
+    },
+    "blank": {
+        "title": " ",
+        "description": "3 empty editors. Paste in something.",
+        "html": "",
+        "css": "",
+        "js": ""
+    }
+}

@@ -26,6 +26,8 @@ from program import api as program_api
 from comment import api as comment_api
 from vote import api as vote_api
 
+from program.views import new_program as new_program_view
+
 api_urls = [
     url(r'^user/', include([
         url(r'^new$', account_api.new_user, name='new-user-api'), #account
@@ -70,6 +72,7 @@ api_urls = [
 urlpatterns = [
     url(r'^admin/', admin.site.urls),
     url(r'^api/', include(api_urls)),
+    url(r'^new$', new_program_view, name="new-program"),
     url(r'^program', include('program.urls')),
     url(r'^user/', include('account.urls')),
     url(r'^user/', include('user_profile.urls')),

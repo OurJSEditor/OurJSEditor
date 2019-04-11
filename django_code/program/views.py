@@ -16,7 +16,6 @@ key_func_mapping = {
 for t in vote_types:
     key_func_mapping[t] = t + "_votes"
 
-# Create your views here.
 def program (request, program_id):
     data_dict = {}
 
@@ -24,8 +23,7 @@ def program (request, program_id):
         data_dict["new"] = True
         data_dict["canEditProgram"] = True
 
-        with open(os.path.join(os.path.dirname(__file__), 'default.json')) as data_file:
-            data_dict.update(json.load(data_file))
+        # TODO
     else:
         try:
             current_program = Program.objects.select_related('user').get(program_id=program_id)
@@ -66,6 +64,19 @@ def program_file (request, program_id, file_type):
         return HttpResponse("404: No program found with that id", status=404)
 
     return HttpResponse(getattr(program, file_type), content_type=content_types[file_type])
+
+def new_program (request):
+    with open(os.path.join(os.path.dirname(__file__), 'defaults.json')) as data_file:
+        program_templates = json.load(data_file)
+
+    for template in program_templates:
+        t = program_templates[template];
+        program_templates[template] = {
+            "title": t["title"],
+            "description": t["description"]
+        }
+
+    return render(request, "program/new_program.html", { "program_templates": json.dumps(program_templates) })
 
 def fullscreen (request, program_id):
     try:
