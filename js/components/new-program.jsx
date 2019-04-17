@@ -4,7 +4,7 @@ function TemplateType (props) {
     console.log(props);
 
     return (
-        <a class="template" href={props.src}>
+        <a class="template" href={`/program/unsaved?template=${props.src}`}>
             <div class="title">{props.title}</div>
             <div class="description">{props.description}</div>
         </a>

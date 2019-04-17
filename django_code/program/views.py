@@ -19,8 +19,8 @@ for t in vote_types:
 def program (request, program_id):
     data_dict = {}
 
-    if program_id == "new":
-        data_dict["new"] = True
+    if program_id == "unsaved":
+        data_dict["unsaved"] = True
         data_dict["canEditProgram"] = True
 
         # TODO
@@ -66,7 +66,7 @@ def program_file (request, program_id, file_type):
     return HttpResponse(getattr(program, file_type), content_type=content_types[file_type])
 
 def new_program (request):
-    with open(os.path.join(os.path.dirname(__file__), 'defaults.json')) as data_file:
+    with open(os.path.join(os.path.dirname(__file__), 'templates.json')) as data_file:
         program_templates = json.load(data_file)
 
     for template in program_templates:
@@ -76,7 +76,7 @@ def new_program (request):
             "description": t["description"]
         }
 
-    return render(request, "program/new_program.html", { "program_templates": json.dumps(program_templates) })
+    return render(request, "program/new-program.html", { "program_templates": json.dumps(program_templates) })
 
 def fullscreen (request, program_id):
     try:

@@ -18,7 +18,7 @@ function removeTitleInput () {
     titleLabel.innerText = titleInput.value;
     titleInput.parentNode.insertBefore(titleLabel, titleInput);
     titleInput.parentNode.removeChild(titleInput);
-    if (programData.title !== titleLabel.innerText && !programData.new) {
+    if (programData.title !== titleLabel.innerText && !programData.unsaved) {
         var req = new XMLHttpRequest();
         req.addEventListener("load", function (a) {
             //Something went wrong:
@@ -628,7 +628,7 @@ function save (fork) {
         //Something went wrong:
         if (this.status >= 400) {
             var contentType = this.getResponseHeader("content-type").toLowerCase();
-            var outputMessage = "Program " + (programData.new ? "creating" : "editing") + " failed";
+            var outputMessage = "Program " + (programData.unsaved ? "creating" : "editing") + " failed";
             if (contentType.indexOf("json") > -1) {
                 console.log(JSON.parse(this.response));
                 outputMessage += " with the error message:\n\n" + JSON.parse(this.response).error;
@@ -639,7 +639,7 @@ function save (fork) {
                 outputMessage += ".";
             }
             alert(outputMessage);
-        }else if (programData.new || fork) {
+        }else if (programData.unsaved || fork) {
             window.location.href = this.getResponseHeader("Location")
         }
     })
@@ -770,7 +770,7 @@ document.addEventListener("DOMContentLoaded", function() {
 
       if (programData.canEditProgram) {
           document.getElementById("btnSave").style.display = "block";
-          if (!programData.new) {
+          if (!programData.unsaved) {
               document.getElementById("btnDelete").style.display = "block";
               document.getElementById("btnPublish").style.display = "block";
           }
@@ -789,8 +789,8 @@ document.addEventListener("DOMContentLoaded", function() {
         });
     }
 
-    //Dynamically update sections of the page if it's not a new program
-    if (!programData.new) {
+    //Dynamically update sections of the page if it's not an unsaved program
+    if (!programData.unsaved) {
         //Set program author data
         document.getElementById("program-author-link").innerText = programData.author.displayName;
         document.getElementById("program-author-link").setAttribute("href", "/user/" + programData.author.username);
@@ -838,7 +838,7 @@ document.addEventListener("DOMContentLoaded", function() {
         }
     }
 
-    if (programData.new || !programData.parent) {
+    if (programData.unsaved || !programData.parent) {
         var p = document.getElementById("parent-program");
         p.parentNode.removeChild(p);
     }
@@ -847,8 +847,8 @@ document.addEventListener("DOMContentLoaded", function() {
 window.addEventListener("load", function () {
     initMd();
 
-    //Only bring in comments if it's not a new program
-    if (!programData.new) {
+    //Only bring in comments if it's not an unsaved program
+    if (!programData.unsaved) {
         var req = new XMLHttpRequest();
         req.open("GET", "/api/program/" + programData.id + "/comments");
         req.addEventListener("load", function () {
