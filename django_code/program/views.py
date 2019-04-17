@@ -23,7 +23,18 @@ def program (request, program_id):
         data_dict["unsaved"] = True
         data_dict["canEditProgram"] = True
 
-        # TODO
+        with open(os.path.join(os.path.dirname(__file__), 'templates.json')) as data_file:
+            program_templates = json.load(data_file)
+            
+            template_name = request.GET.get("template", "blank")
+            try:
+                template = program_templates[template_name]
+            except KeyError:
+                template = program_templates["blank"]
+
+            template.pop("description")
+                
+            data_dict.update(template)
     else:
         try:
             current_program = Program.objects.select_related('user').get(program_id=program_id)

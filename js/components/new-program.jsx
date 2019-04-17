@@ -20,7 +20,7 @@ export default class TemplateSelector extends Preact.Component {
         const templateKeys = Object.keys(programTemplates);
 
         return (
-            <div id="template-selector">
+            <div>
                 <h2>Select A Template</h2>
                 <div className="subheading">You're not picking a type of program you're bound to, just a template.</div>
                 {
