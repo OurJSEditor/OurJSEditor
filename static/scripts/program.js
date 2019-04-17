@@ -54,7 +54,8 @@ function closeConfirm () {
     document.getElementById("back-cover").style.display = "none";
     document.getElementById("delete-confirm").style.display = "none";
     document.getElementById("publish-confirm").style.display = "none";
-    // document.getElementById("backCover").removeEventListener("click", closeConfirm);
+
+    document.getElementById("publish-confirm-button").removeEventListener("click", publishProgram);
 }
 
 function deleteProgram () {
@@ -83,7 +84,25 @@ function deleteProgram () {
     req.send();
 }
 
-function publishProgram (e) {
+function imageReceived (event) {
+    var data = JSON.parse(event.data);
+
+    //Frame is potentially insecure.
+    if (data.imageData.indexOf("data:image/png;base64,") !== 0) {
+        throw new Error("Image recived from iframe is not base64 png data.");
+    }
+    
+    programData.thumbnailData = data.imageData;
+
+    document.getElementById("thumbnail-preview").src = programData.thumbnailData;
+
+    document.getElementById("publish-confirm-button").addEventListener("click", publishProgram);
+}
+
+//Runs after the publish confirm button is clicked
+function publishProgram () {
+    save();
+
     var req = new XMLHttpRequest();
     req.addEventListener("load", function () {
         var d = JSON.parse(this.responseText);
@@ -105,8 +124,11 @@ function publishProgram (e) {
     req.open("PATCH", "/api/program/" + programData.id);
     req.setRequestHeader("X-CSRFToken", csrf_token);
     req.send(JSON.stringify({
-        "publishedMessage": document.getElementById("publish-message").value
+        "publishedMessage": document.getElementById("publish-message").value,
+        "imageData": programData.thumbnailData
     }));
+
+    document.getElementById("publish-confirm-button").removeEventListener("click", publishProgram);
 }
 
 function runProgram (event) {
@@ -120,7 +142,10 @@ function runProgram (event) {
         return ace.edit(language.toLowerCase() + "-editor").getSession().getValue();
     })
 
-    document.getElementById("preview").contentWindow.postMessage(html, "*");
+    document.getElementById("preview").contentWindow.postMessage(JSON.stringify({
+        type: "execute",
+        code: html
+    }), "*");
 }
 
 function dateToString (d) {
@@ -734,6 +759,12 @@ document.addEventListener("DOMContentLoaded", function() {
         openConfirm(e, "delete-confirm");
     });
     document.getElementById("btnPublish").addEventListener("click", function (e) {
+        document.getElementById("preview").contentWindow.postMessage(JSON.stringify({
+            type: "thumbnail-request"
+        }), "*");
+
+        window.addEventListener("message", imageReceived, false);
+
         openConfirm(e, "publish-confirm");
     });
 
@@ -741,7 +772,6 @@ document.addEventListener("DOMContentLoaded", function() {
     document.getElementById("publish-cancel-button").addEventListener("click", closeConfirm);
 
     document.getElementById("delete-confirm-button").addEventListener("click", deleteProgram);
-    document.getElementById("publish-confirm-button").addEventListener("click", publishProgram);
 
     document.getElementById("back-cover").addEventListener("click", closeConfirm);
 

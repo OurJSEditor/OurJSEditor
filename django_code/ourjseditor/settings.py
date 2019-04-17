@@ -147,3 +147,9 @@ STATIC_URL = '/static/'
 STATIC_ROOT = ''
 
 STATICFILES_DIRS = ( os.path.join(os.path.dirname(BASE_DIR), "static/"), )
+
+# User uploaded files
+
+MEDIA_ROOT = os.path.join(os.path.dirname(BASE_DIR), "static/media/")
+
+MEDIA_URL = '/static/media/'

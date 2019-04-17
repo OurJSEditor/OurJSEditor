@@ -2,8 +2,8 @@
 from __future__ import unicode_literals
 
 from django.db import models
-
 from django.contrib.auth.models import User
+from django.core.files.storage import FileSystemStorage
 
 import datetime
 
@@ -16,6 +16,14 @@ def generate_id():
 def get_default_user():
     return User.objects.get(username="admin")
 
+def get_image_path(program, _):
+    return "program_thumbnails/{}.png".format(program.program_id)
+
+class OverwriteStorage(FileSystemStorage):
+    def get_available_name(self, name, max_length=None):
+        self.delete(name)
+        return name
+
 class Program(models.Model):
     program_id = models.CharField(primary_key=True, max_length=6, default=generate_id)
     user = models.ForeignKey(User, on_delete=models.CASCADE, default=get_default_user)
@@ -24,6 +32,7 @@ class Program(models.Model):
 
     last_published = models.DateTimeField(blank=True, null=True)
     published_message = models.CharField(max_length=100, blank=True)
+    image = models.ImageField(upload_to=get_image_path, storage=OverwriteStorage(), default="program_thumbnails/nophoto.png")
 
     title = models.CharField(max_length=45, default="Program")
     html= models.TextField(blank=True)
