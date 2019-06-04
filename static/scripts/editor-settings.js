@@ -256,6 +256,8 @@ return function (toggleButton, editors) {
                     "indent_size": currentOptions.useSoftTabs ? currentOptions.tabSize : 1,
                     "indent_char": currentOptions.useSoftTabs ? " " : "\t",
                     "selector_separator_newline": false, //CSS only
+                    "space_after_named_function": true, //JS only
+                    "space_after_anon_function": true, //JS only
                 });
                 editors[i].getSession().setValue(newCode);
             }
