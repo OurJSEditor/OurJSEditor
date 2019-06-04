@@ -1,8 +1,6 @@
 import Preact from "preact";
 
 function TemplateType (props) {
-    console.log(props);
-
     return (
         <a class="template" href={`/program/unsaved?template=${props.src}`}>
             <div class="title">{props.title}</div>
@@ -21,8 +19,7 @@ export default class TemplateSelector extends Preact.Component {
 
         const content = (
             <div>
-                <h2>Select A Template</h2>
-                <div className="subheading">You're not picking a type of program you're bound to, just a template.</div>
+                <h2>Select A Template:</h2>
                 <div>
                     {
                         templateKeys.map(template => (
@@ -36,9 +33,7 @@ export default class TemplateSelector extends Preact.Component {
                 </div>
             </div>
         );
-        
-        console.log(content);
-        
+
         return content;
     }
 }

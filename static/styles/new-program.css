@@ -23,10 +23,10 @@ body {
 
 .template {
     display: inline-block;
-    width: 150px;
-    height: 150px;
-    padding: 5px;
-    margin: 10px;
+    width: 200px;
+    height: 200px;
+    padding: 0;
+    margin: 20px;
     border: 1px solid #999999;
     box-shadow: 0px 5px 0px 0px #487eb3;
     text-decoration: none;
@@ -38,11 +38,13 @@ body {
 .template .title {
     text-align: center;
     font-weight: bold;
+    font-size: 18px;
+    padding: 10px;
 }
 
 .template .description {
-    font-size: 14px;
-    margin: 10px;
+    font-size: 15px;
+    padding: 20px;
     display: inline-block;
     vertical-align: bottom;
     bottom: 0;
