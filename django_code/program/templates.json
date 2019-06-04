@@ -2,7 +2,7 @@
     {
         "key": "webpage",
         "title": "Webpage",
-        "description": "Some normal DOM manipulation, and some OurJSEditor magic.",
+        "description": "Some normal DOM manipulation, and some magic.",
         "css": "html, body {\
     height: 100%;\
     width: 100%;\
@@ -54,7 +54,7 @@ window.addEventListener(\"resize\", update);"
     {
         "key": "p5-example",
         "title": "P5.js Example Program",
-        "description": "Coming from KA's Processing.js? Start here",
+        "description": "Coming from KA's Processing.js? Start here.",
         "html":"<!DOCTYPE HTML>\
 <html>\
 <head>\
@@ -123,7 +123,7 @@ function draw() {\
     {
         "key": "blank-webpage",
         "title": "Blank Webpage",
-        "description": "Just enough for you to start writing code.",
+        "description": "Just enough wrapper for you to start writing code.",
         "html":"<!DOCTYPE HTML>\
 <html>\
 <head>\
@@ -148,15 +148,15 @@ function draw() {\
     {
         "key": "p5-blank",
         "title": "Blank P5.js Program",
-        "description": "You know what's going on, and want to make a program with graphics.",
+        "description": "You want to make a new program with graphics.",
         "html": "...",
         "css": "...",
         "js": "..."
     },
     {
         "key": "blank",
-        "title": "Blank Program",
-        "description": "3 empty editors. Paste in something.",
+        "title": "Blank",
+        "description": "3 empty editors. Perfect for pasting in code.",
         "html": "",
         "css": "",
         "js": ""
