@@ -770,21 +770,22 @@ document.addEventListener("DOMContentLoaded", function() {
         }
     });
 
-      jsEditor.setValue(programData.js, -1);
-      cssEditor.setValue(programData.css, -1);
-      htmlEditor.setValue(programData.html, -1);
-      document.getElementById("program-title").innerText = programData.title;
+    jsEditor.setValue(programData.js, -1);
+    cssEditor.setValue(programData.css, -1);
+    htmlEditor.setValue(programData.html, -1);
+    document.getElementById("program-title").innerText = programData.title;
 
-      //TODO: Maybe add a login check/pop-up here
-      document.getElementById("btnFork").style.display = "block";
-
-      if (programData.canEditProgram) {
-          document.getElementById("btnSave").style.display = "block";
-          if (!programData.unsaved) {
-              document.getElementById("btnDelete").style.display = "block";
-              document.getElementById("btnPublish").style.display = "block";
-          }
-      }
+    //TODO: Maybe add a login check/pop-up here
+    if (!programData.unsaved) {
+        document.getElementById("btnFork").style.display = "block";
+    }
+    if (programData.canEditProgram) {
+        document.getElementById("btnSave").style.display = "block";
+    }
+    if (programData.canEditProgram && !programData.unsaved) {
+        document.getElementById("btnDelete").style.display = "block";
+        document.getElementById("btnPublish").style.display = "block";
+    }
 
     titleLabel = document.getElementById("program-title");
     if (programData.canEditProgram) {
