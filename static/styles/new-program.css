@@ -15,6 +15,7 @@ body {
     max-width: 900px;
     display: relative;
     margin: 3% auto;
+    margin-top: 65px;
     background: #ffffff;
     border: 1px solid #999999;
     border-bottom: 0;
