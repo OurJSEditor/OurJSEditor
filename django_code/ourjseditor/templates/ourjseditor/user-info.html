@@ -115,67 +115,72 @@
                 userLinksOpen = !userLinksOpen;
             });
 
-            var notifPanel = document.getElementById("notif-panel");
-            document.getElementById("notif-panel-button").addEventListener("click", function () {
-                notifPanel.classList.toggle("closed");
-            });
-            document.getElementById("notif-panel-close-button").addEventListener("click", function () {
-                notifPanel.classList.toggle("closed");
-            });
+			if (userData.loggedIn) {
+	            var notifPanel = document.getElementById("notif-panel");
+	            document.getElementById("notif-panel-button").addEventListener("click", function () {
+	                notifPanel.classList.toggle("closed");
+	            });
+	            document.getElementById("notif-panel-close-button").addEventListener("click", function () {
+	                notifPanel.classList.toggle("closed");
+	            });
 
-            document.getElementById("notif-all-read").addEventListener("click", function () {
-                var notifs = userData.notifications;
-                for (var i = 0; i < notifs.length; i++) {
-                    if (!notifs[i].isRead) {
-                        setNotifRead("notif-" + notifs[i].id, true);
-                    }
-                }
-            });
+	            document.getElementById("notif-all-read").addEventListener("click", function () {
+	                var notifs = userData.notifications;
+	                for (var i = 0; i < notifs.length; i++) {
+	                    if (!notifs[i].isRead) {
+	                        setNotifRead("notif-" + notifs[i].id, true);
+	                    }
+	                }
+	            });
 
-            updateUnreadCount();
+				updateUnreadCount();
+				
+	            var notifs = userData.notifications;
+	            var notifsWrap = document.getElementById("notifs-wrap");
+	            for (var i = 0; i < notifs.length; i++) {
+	                var notifEl = document.createElement("div");
+	                notifEl.classList.add("notif");
+	                notifEl.setAttribute("id", "notif-" + notifs[i].id)
 
-            var notifs = userData.notifications;
-            var notifsWrap = document.getElementById("notifs-wrap");
-            for (var i = 0; i < notifs.length; i++) {
-                var notifEl = document.createElement("div");
-                notifEl.classList.add("notif");
-                notifEl.setAttribute("id", "notif-" + notifs[i].id)
+	                var readIndicator = document.createElement("span");
+	                readIndicator.classList.add("read-indicator");
+	                if (notifs[i].isRead) {
+	                    readIndicator.classList.add("read");
+	                }
 
-                var readIndicator = document.createElement("span");
-                readIndicator.classList.add("read-indicator");
-                if (notifs[i].isRead) {
-                    readIndicator.classList.add("read");
-                }
+	                readIndicator.addEventListener("click", function (e) {
+	                    setNotifRead(this.parentNode.id, "toggle");
+	                });
 
-                readIndicator.addEventListener("click", function (e) {
-                    setNotifRead(this.parentNode.id, "toggle");
-                });
+	                var notifInfo = document.createElement("a");
+	                notifInfo.setAttribute("href", notifs[i].link);
+	                notifInfo.classList.add("notif-info-wrap");
+	                notifInfo.addEventListener("click", function (e) {
+	                    e.preventDefault(); //Stop page from navigating
 
-                var notifInfo = document.createElement("a");
-                notifInfo.setAttribute("href", notifs[i].link);
-                notifInfo.classList.add("notif-info-wrap");
-                notifInfo.addEventListener("click", function (e) {
-                    e.preventDefault(); //Stop page from navigating
+	                    var href = this.href;
+	                    setNotifRead(this.parentNode.id, true, function () {
+	                        window.location.href = href;
+	                    });
+	                });
 
-                    var href = this.href;
-                    setNotifRead(this.parentNode.id, true, function () {
-                        window.location.href = href;
-                    });
-                });
+	                var description = document.createElement("div");
+	                description.classList.add("notif-description");
+	                description.innerHTML = notifs[i].description;
 
-                var description = document.createElement("div");
-                description.classList.add("notif-description");
-                description.innerHTML = notifs[i].description;
+	                var preview = document.createElement("div");
+	                preview.classList.add("notif-preview")
+	                preview.innerText = notifs[i].preview;
 
-                var preview = document.createElement("div");
-                preview.classList.add("notif-preview")
-                preview.innerText = notifs[i].preview;
-
-                notifEl.appendChild(readIndicator);
-                notifInfo.appendChild(description);
-                notifInfo.appendChild(preview);
-                notifsWrap.appendChild(notifEl).appendChild(notifInfo);
-            }
+	                notifEl.appendChild(readIndicator);
+	                notifInfo.appendChild(description);
+	                notifInfo.appendChild(preview);
+	                notifsWrap.appendChild(notifEl).appendChild(notifInfo);
+	            }
+			}else {
+				var b = document.getElementById("notif-panel-button");
+				b.parentNode.removeChild(b);
+			}
         });
     </script>
 </div>

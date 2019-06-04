@@ -27,8 +27,11 @@
             var html = programData.html.replace(/\/\*\[OurJSEditor insert:(js|css)\]\*\//gi, function (comment, language, position, code) {
                 return programData[language.toLowerCase()];
             });
-
-            document.getElementById("program-result").contentWindow.postMessage(html, "*");
+         
+            document.getElementById("program-result").contentWindow.postMessage(JSON.stringify({
+                type: "execute",
+                code: html
+            }), "*");
         });
     </script>
 </body>

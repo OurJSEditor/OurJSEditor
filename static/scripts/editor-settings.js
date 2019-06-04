@@ -5,9 +5,10 @@ var DEFAULT_SETTINGS = {
     useSoftTabs: true,
     tabSize: 4,
     showInvisibles: false,
-    highlightActiveLine: true, // TODO
-    highlightGutterLine: true, // TODO
-    displayIndentGuides: true, // TODO
+    indentedSoftWrap: true, // Unimplimented
+    highlightActiveLine: true, // Unimplimented
+    highlightGutterLine: true, // Unimplimented
+    displayIndentGuides: true, // Unimplimented
     useWorker: false,
     enableBasicAutocompletion: false,
     enableLiveAutocompletion: true,
@@ -237,6 +238,30 @@ return function (toggleButton, editors) {
 
             container.appendChild(table).appendChild(rowEl);
         }
+        
+        //Create a code beautify button:
+        var beautify = document.createElement("button");
+        beautify.textContent = "Beautify Code";
+        beautify.addEventListener("click", function () {
+            var beautifiersByMode = {
+                "ace/mode/javascript": js_beautify,
+                "ace/mode/html": html_beautify,
+                "ace/mode/css": css_beautify
+            }
+            
+            for (var i = 0; i < editors.length; i++) {
+                var mode = editors[i].getSession().$modeId;
+                
+                var newCode = beautifiersByMode[mode](editors[i].getSession().getValue(), {
+                    "indent_size": currentOptions.useSoftTabs ? currentOptions.tabSize : 1,
+                    "indent_char": currentOptions.useSoftTabs ? " " : "\t",
+                    "selector_separator_newline": false, //CSS only
+                });
+                editors[i].getSession().setValue(newCode);
+            }
+        });
+        container.appendChild(beautify);
+        
         return container;
     }
 
