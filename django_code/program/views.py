@@ -7,6 +7,7 @@ from program.models import Program
 from vote.models import Vote, vote_types
 
 import json
+import re
 import os
 
 key_func_mapping = {
@@ -16,6 +17,11 @@ key_func_mapping = {
 for t in vote_types:
     key_func_mapping[t] = t + "_votes"
 
+with open(os.path.join(os.path.dirname(__file__), 'templates.json'), "r") as data_file:
+    data_str = re.sub(r"\\\n", r"\\n", data_file.read())
+    print(data_str)
+    program_templates = json.loads(data_str)
+
 def program (request, program_id):
     data_dict = {}
 
@@ -23,18 +29,15 @@ def program (request, program_id):
         data_dict["unsaved"] = True
         data_dict["canEditProgram"] = True
 
-        with open(os.path.join(os.path.dirname(__file__), 'templates.json')) as data_file:
-            program_templates = json.load(data_file)
-            
-            template_name = request.GET.get("template", "blank")
-            try:
-                template = program_templates[template_name]
-            except KeyError:
-                template = program_templates["blank"]
+        template_name = request.GET.get("template", "blank")
+        try:
+            template = program_templates[template_name]
+        except KeyError:
+            template = program_templates["blank"]
 
-            template.pop("description")
-                
-            data_dict.update(template)
+        template.pop("description")
+
+        data_dict.update(template)
     else:
         try:
             current_program = Program.objects.select_related('user').get(program_id=program_id)
@@ -77,9 +80,6 @@ def program_file (request, program_id, file_type):
     return HttpResponse(getattr(program, file_type), content_type=content_types[file_type])
 
 def new_program (request):
-    with open(os.path.join(os.path.dirname(__file__), 'templates.json')) as data_file:
-        program_templates = json.load(data_file)
-
     for template in program_templates:
         t = program_templates[template];
         program_templates[template] = {
