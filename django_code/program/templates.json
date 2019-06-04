@@ -1,0 +1,204 @@
+[
+    {
+        "key": "p5-example",
+        "title": "P5.js Example Program",
+        "description": "Coming from KA's Processing.js? Start here.",
+        "html":"<!DOCTYPE HTML>\
+<html>\
+<head>\
+    <style>\
+    /*[OurJSEditor insert:CSS]*/\
+    </style>\
+</head>\
+<body>\
+    <script src=\"https://cdnjs.cloudflare.com/ajax/libs/p5.js/0.5.12/p5.js\"></script>\
+    <script>\
+        /*[OurJSEditor insert:JS]*/\
+    </script>\
+</body>\
+</html>",
+        "css":"body {\
+    width: 100%;\
+    height: 100%;\
+    margin: 0;\
+    padding: 0;\
+    overflow: hidden;\
+}",
+        "js":"/**\
+ * This is a basic set up template for anyone coming\
+from Processing.js or Khan Academy looking to make new Processing programs on OurJSEditor.\
+ *\
+ * There a few differences from Khan Academy. Instead of Processing.js\
+ * created by a KA employee and offically archived, this uses p5.js\
+ * the offical JS version of Processing.\
+ *\
+ * I try to use and comment on all the major differences in this program. Almost all shape calls and callbacks are the same.\
+ * Full P5 reference: http://p5js.org/reference/\
+ */\
+\
+function setup() {\
+    // For now, width expands to fit the user's screen and the height is fixed at 400px\
+    // This may change in future OurJSEditor versions\
+\
+    // After this the width and height variables work normally\
+    var can = createCanvas(document.body.clientWidth, 400).canvas;\
+    //Prevents right clicking from bringing up the context menu\
+    can.addEventListener(\"contextmenu\", e => e.preventDefault());\
+\
+    textFont(\"Tahoma\"); //No createFont is needed\
+    background(255);\
+\
+    fill(0);\
+    noStroke(); //In p5.js, text is affected by stroke\
+    var textContent = \"Click and drag!\";\
+    text(textContent, width/2 - textWidth(textContent)/2, 200);\
+\
+    angleMode(DEGREES);\
+}\
+\
+// This is your normal draw function\
+function draw() {\
+    //Clear the screen if you right click\
+    if (mouseButton === RIGHT) {\
+        background(255);\
+    }\
+\
+    //Draw some cool rotated rounded rectangles when the mouse is pressed down\
+    var g = random(150, 200);\
+    fill(25, g, 75);\
+    strokeWeight(2);\
+    stroke(25, g-25, 75);\
+    if (mouseIsPressed && mouseButton === LEFT) {\
+        push(); //Instead of pushMatrix();\
+        translate(mouseX, mouseY);\
+        rotate(random(0, 360));\
+        rect(-20, 0, 20, 20, 15, 3, 15, 3);\
+        pop();\
+    }\
+}"
+    },
+    {
+        "key": "webpage",
+        "title": "Example Webpage",
+        "description": "Some normal DOM manipulation, and some magic.",
+        "css": "html, body {\
+    height: 100%;\
+    width: 100%;\
+    background: #4A7FB1;\
+    display: block;\
+    margin: 0;\
+    padding: 0;\
+}\
+\
+#display {\
+    color: white;\
+    font-family: Helvetica, sans-serif;\
+    font-size: 30px;\
+    position: absolute;\
+    transform: translate(-50%, -50%);\
+    font-weight: bold;\
+}",
+        "html": "<!DOCTYPE HTML>\
+<html>\
+\
+<head>\
+    <style>\
+        /*[OurJSEditor insert:CSS]*/\
+    </style>\
+</head>\
+<body>\
+    <div id=\"display\">OurJSEditor</div>\
+    <script>\
+        /*[OurJSEditor insert:JS]*/\
+    </script>\
+</body>\
+\
+</html>",
+        "js": "var el = document.getElementById(\"display\");\
+var angle = -Math.PI / 2;\
+\
+function update() {\
+    el.style.left = Math.cos(angle) * 125 + window.innerWidth / 2 + \"px\";\
+    el.style.top = Math.sin(angle) * 125 + 400 / 2 + \"px\";\
+    angle += 0.02;\
+}\
+\
+window.setInterval(function() {\
+    update();\
+}, 1000 / 60);\
+\
+window.addEventListener(\"resize\", update);"
+    },
+    {
+        "key": "blank-webpage",
+        "title": "Blank Webpage",
+        "description": "Just enough wrapper for you to start writing code.",
+        "html":"<!DOCTYPE HTML>\
+<html>\
+<head>\
+    <style>\
+        /*[OurJSEditor insert:CSS]*/\
+    </style>\
+</head>\
+<body>\
+    <script>\
+        /*[OurJSEditor insert:JS]*/\
+    </script>\
+</body>\
+</html>",
+        "css":"html, body {\
+    margin: 0;\
+    padding: 0;\
+    width: 100%;\
+    height: 100%;\
+}",
+        "js":""
+    },
+    {
+        "key": "p5-blank",
+        "title": "Blank P5.js Program",
+        "description": "You want to make a new program with graphics.",
+        "html":"<!DOCTYPE HTML>\
+<html>\
+<head>\
+    <style>\
+    /*[OurJSEditor insert:CSS]*/\
+    </style>\
+</head>\
+<body>\
+    <script src=\"https://cdnjs.cloudflare.com/ajax/libs/p5.js/0.5.12/p5.js\"></script>\
+    <script>\
+        /*[OurJSEditor insert:JS]*/\
+    </script>\
+</body>\
+</html>",
+        "css":"body {\
+    width: 100%;\
+    height: 100%;\
+    margin: 0;\
+    padding: 0;\
+    overflow: hidden;\
+}",
+        "js": "function setup() {\
+    var can = createCanvas(document.body.clientWidth, 400).canvas;\
+    can.addEventListener(\"contextmenu\", function (e) {\
+        e.preventDefault()\
+    });\
+    angleMode(DEGREES);\
+\
+    background(255);\
+}\
+\
+function draw() {\
+    \
+}"
+    },
+    {
+        "key": "blank",
+        "title": "Blank",
+        "description": "3 empty editors. Perfect for pasting in code.",
+        "html": "",
+        "css": "",
+        "js": ""
+    }
+]

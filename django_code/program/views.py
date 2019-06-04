@@ -7,6 +7,7 @@ from program.models import Program
 from vote.models import Vote, vote_types
 
 import json
+import re
 import os
 
 key_func_mapping = {
@@ -16,16 +17,33 @@ key_func_mapping = {
 for t in vote_types:
     key_func_mapping[t] = t + "_votes"
 
-# Create your views here.
+with open(os.path.join(os.path.dirname(__file__), 'templates.json'), "r") as data_file:
+    data_str = re.sub(r"\\\n", r"\\n", data_file.read())
+    program_templates = json.loads(data_str)
+
+def get_template(key):
+    try:
+        return next(t for t in program_templates if t["key"] == key)
+    except StopIteration:
+        raise KeyError(key)
+
 def program (request, program_id):
     data_dict = {}
 
-    if program_id == "new":
-        data_dict["new"] = True
+    if program_id == "unsaved":
+        data_dict["unsaved"] = True
         data_dict["canEditProgram"] = True
 
-        with open(os.path.join(os.path.dirname(__file__), 'default.json')) as data_file:
-            data_dict.update(json.load(data_file))
+        template_name = request.GET.get("template", "blank")
+        try:
+            template = get_template(template_name)
+        except KeyError:
+            template = get_template("blank")
+
+        template = dict(template) #Clone
+        template.pop("description") #Mutates, removing the description property
+
+        data_dict.update(template)
     else:
         try:
             current_program = Program.objects.select_related('user').get(program_id=program_id)
@@ -66,6 +84,15 @@ def program_file (request, program_id, file_type):
         return HttpResponse("404: No program found with that id", status=404)
 
     return HttpResponse(getattr(program, file_type), content_type=content_types[file_type])
+
+def new_program (request):
+    template_descriptions = [{
+        "title": template["title"],
+        "description": template["description"],
+        "key": template["key"]
+    } for template in program_templates]
+
+    return render(request, "program/new-program.html", { "template_descriptions": json.dumps(template_descriptions) })
 
 def fullscreen (request, program_id):
     try:

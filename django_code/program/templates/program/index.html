@@ -137,12 +137,11 @@
     </div>
 
     <script>
-        var runningLocal = false;
-
         try {
             var programData = JSON.parse('{{ data_dict|escapejs }}');
         }catch (e) {
-            var runningLocal = true;
+            alert("Loading program data failed.");
+            raise;
         }
     </script>
 </body>

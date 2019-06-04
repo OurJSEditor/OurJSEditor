@@ -1,0 +1,20 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <title id="title-tag">New Program &mdash; OurJSEditor</title>
+    <link rel="stylesheet" type="text/css" href="/static/styles/new-program.css">
+</head>
+<body>
+    {% include "../ourjseditor/user-info.html" %}
+
+    <div id="inner-wrapper">
+        <div id="template-selector"></div>
+    </div>
+
+    <script>
+        var programTemplates = JSON.parse("{{ template_descriptions|escapejs }}");
+    </script>
+
+    <script src="/static/scripts/components/new-program.js"></script>
+</body>
+</html>

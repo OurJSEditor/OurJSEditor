@@ -18,7 +18,7 @@ function removeTitleInput () {
     titleLabel.innerText = titleInput.value;
     titleInput.parentNode.insertBefore(titleLabel, titleInput);
     titleInput.parentNode.removeChild(titleInput);
-    if (programData.title !== titleLabel.innerText && !programData.new) {
+    if (programData.title !== titleLabel.innerText && !programData.unsaved) {
         var req = new XMLHttpRequest();
         req.addEventListener("load", function (a) {
             //Something went wrong:
@@ -91,7 +91,7 @@ function imageReceived (event) {
     if (data.imageData.indexOf("data:image/png;base64,") !== 0) {
         throw new Error("Image recived from iframe is not base64 png data.");
     }
-    
+
     programData.thumbnailData = data.imageData;
 
     document.getElementById("thumbnail-preview").src = programData.thumbnailData;
@@ -643,8 +643,6 @@ function vote () {
 };
 
 function save (fork) {
-    if (runningLocal) return;
-
     //Update programData with the lastest textbox code
     programData.js = jsEditor.getValue();
     programData.css = cssEditor.getValue();
@@ -655,7 +653,7 @@ function save (fork) {
         //Something went wrong:
         if (this.status >= 400) {
             var contentType = this.getResponseHeader("content-type").toLowerCase();
-            var outputMessage = "Program " + (programData.new ? "creating" : "editing") + " failed";
+            var outputMessage = "Program " + (programData.unsaved ? "creating" : "editing") + " failed";
             if (contentType.indexOf("json") > -1) {
                 console.log(JSON.parse(this.response));
                 outputMessage += " with the error message:\n\n" + JSON.parse(this.response).error;
@@ -666,7 +664,7 @@ function save (fork) {
                 outputMessage += ".";
             }
             alert(outputMessage);
-        }else if (programData.new || fork) {
+        }else if (programData.unsaved || fork) {
             window.location.href = this.getResponseHeader("Location")
         }
     })
@@ -772,26 +770,25 @@ document.addEventListener("DOMContentLoaded", function() {
         }
     });
 
-    if (!runningLocal) {
-        jsEditor.setValue(programData.js, -1);
-        cssEditor.setValue(programData.css, -1);
-        htmlEditor.setValue(programData.html, -1);
-        document.getElementById("program-title").innerText = programData.title;
+    jsEditor.setValue(programData.js, -1);
+    cssEditor.setValue(programData.css, -1);
+    htmlEditor.setValue(programData.html, -1);
+    document.getElementById("program-title").innerText = programData.title;
 
-        //TODO: Maybe add a login check/pop-up here
+    //TODO: Maybe add a login check/pop-up here
+    if (!programData.unsaved) {
         document.getElementById("btnFork").style.display = "block";
-
-        if (programData.canEditProgram) {
-            document.getElementById("btnSave").style.display = "block";
-            if (!programData.new) {
-                document.getElementById("btnDelete").style.display = "block";
-                document.getElementById("btnPublish").style.display = "block";
-            }
-        }
+    }
+    if (programData.canEditProgram) {
+        document.getElementById("btnSave").style.display = "block";
+    }
+    if (programData.canEditProgram && !programData.unsaved) {
+        document.getElementById("btnDelete").style.display = "block";
+        document.getElementById("btnPublish").style.display = "block";
     }
 
     titleLabel = document.getElementById("program-title");
-    if (!runningLocal && programData.canEditProgram) {
+    if (programData.canEditProgram) {
         titleLabel.classList.add("editable");
         titleLabel.addEventListener("click", function (event) {
             event.preventDefault();
@@ -803,8 +800,8 @@ document.addEventListener("DOMContentLoaded", function() {
         });
     }
 
-    //Dynamically update sections of the page if it's not a new program
-    if (!runningLocal && !programData.new) {
+    //Dynamically update sections of the page if it's not an unsaved program
+    if (!programData.unsaved) {
         //Set program author data
         document.getElementById("program-author-link").innerText = programData.author.displayName;
         document.getElementById("program-author-link").setAttribute("href", "/user/" + programData.author.username);
@@ -852,7 +849,7 @@ document.addEventListener("DOMContentLoaded", function() {
         }
     }
 
-    if (runningLocal || programData.new || !programData.parent) {
+    if (programData.unsaved || !programData.parent) {
         var p = document.getElementById("parent-program");
         p.parentNode.removeChild(p);
     }
@@ -861,8 +858,8 @@ document.addEventListener("DOMContentLoaded", function() {
 window.addEventListener("load", function () {
     initMd();
 
-    //Only bring in comments if it's not a new program
-    if (!runningLocal && !programData.new) {
+    //Only bring in comments if it's not an unsaved program
+    if (!programData.unsaved) {
         var req = new XMLHttpRequest();
         req.open("GET", "/api/program/" + programData.id + "/comments");
         req.addEventListener("load", function () {
