@@ -19,8 +19,13 @@ for t in vote_types:
 
 with open(os.path.join(os.path.dirname(__file__), 'templates.json'), "r") as data_file:
     data_str = re.sub(r"\\\n", r"\\n", data_file.read())
-    print(data_str)
     program_templates = json.loads(data_str)
+
+def get_template(key):
+    try:
+        return next(t for t in program_templates if t["key"] == key)
+    except StopIteration:
+        raise KeyError(key)
 
 def program (request, program_id):
     data_dict = {}
@@ -31,11 +36,12 @@ def program (request, program_id):
 
         template_name = request.GET.get("template", "blank")
         try:
-            template = program_templates[template_name]
+            template = get_template(template_name)
         except KeyError:
-            template = program_templates["blank"]
+            template = get_template("blank")
 
-        template.pop("description")
+        template = dict(template) #Clone
+        template.pop("description") #Mutates, removing the description property
 
         data_dict.update(template)
     else:
@@ -80,14 +86,13 @@ def program_file (request, program_id, file_type):
     return HttpResponse(getattr(program, file_type), content_type=content_types[file_type])
 
 def new_program (request):
-    for template in program_templates:
-        t = program_templates[template];
-        program_templates[template] = {
-            "title": t["title"],
-            "description": t["description"]
-        }
+    template_descriptions = [{
+        "title": template["title"],
+        "description": template["description"],
+        "key": template["key"]
+    } for template in program_templates]
 
-    return render(request, "program/new-program.html", { "program_templates": json.dumps(program_templates) })
+    return render(request, "program/new-program.html", { "template_descriptions": json.dumps(template_descriptions) })
 
 def fullscreen (request, program_id):
     try:

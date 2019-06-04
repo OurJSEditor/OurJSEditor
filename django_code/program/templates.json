@@ -1,5 +1,6 @@
-{
-    "webpage": {
+[
+    {
+        "key": "webpage",
         "title": "Webpage",
         "description": "Some normal DOM manipulation, and some OurJSEditor magic.",
         "css": "html, body {\
@@ -50,7 +51,8 @@ window.setInterval(function() {\
 \
 window.addEventListener(\"resize\", update);"
     },
-    "p5-example": {
+    {
+        "key": "p5-example",
         "title": "P5.js Example Program",
         "description": "Coming from KA's Processing.js? Start here",
         "html":"<!DOCTYPE HTML>\
@@ -118,7 +120,8 @@ function draw() {\
     }\
 }"
     },
-    "blank-webpage": {
+    {
+        "key": "blank-webpage",
         "title": "Blank Webpage",
         "description": "Just enough for you to start writing code.",
         "html":"<!DOCTYPE HTML>\
@@ -142,18 +145,20 @@ function draw() {\
 }",
         "js":""
     },
-    "p5-blank": {
+    {
+        "key": "p5-blank",
         "title": "Blank P5.js Program",
         "description": "You know what's going on, and want to make a program with graphics.",
         "html": "...",
         "css": "...",
         "js": "..."
     },
-    "blank": {
+    {
+        "key": "blank",
         "title": "Blank Program",
         "description": "3 empty editors. Paste in something.",
         "html": "",
         "css": "",
         "js": ""
     }
-}
+]

@@ -15,19 +15,17 @@ export default class TemplateSelector extends Preact.Component {
     }
 
     render () {
-        const templateKeys = Object.keys(programTemplates);
-
         const content = (
             <div>
                 <h2>Select A Template:</h2>
                 <div>
                     {
-                        templateKeys.map(template => (
+                        programTemplates.map(template => (
                         <TemplateType
-                            description={programTemplates[template].description}
-                            title={programTemplates[template].title}
-                            src={template}
-                            key={template} />
+                            description={template.description}
+                            title={template.title}
+                            src={template.key}
+                            key={template.key} />
                         ))
                     }
                 </div>
