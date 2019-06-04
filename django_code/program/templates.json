@@ -1,57 +1,5 @@
 [
     {
-        "key": "webpage",
-        "title": "Webpage",
-        "description": "Some normal DOM manipulation, and some magic.",
-        "css": "html, body {\
-    height: 100%;\
-    width: 100%;\
-    background: #4A7FB1;\
-    display: block;\
-    margin: 0;\
-    padding: 0;\
-}\
-\
-#display {\
-    color: white;\
-    font-family: Helvetica, sans-serif;\
-    font-size: 30px;\
-    position: absolute;\
-    transform: translate(-50%, -50%);\
-    font-weight: bold;\
-}",
-        "html": "<!DOCTYPE HTML>\
-<html>\
-\
-<head>\
-    <style>\
-        /*[OurJSEditor insert:CSS]*/\
-    </style>\
-</head>\
-<body>\
-    <div id=\"display\">OurJSEditor</div>\
-    <script>\
-        /*[OurJSEditor insert:JS]*/\
-    </script>\
-</body>\
-\
-</html>",
-        "js": "var el = document.getElementById(\"display\");\
-var angle = -Math.PI / 2;\
-\
-function update() {\
-    el.style.left = Math.cos(angle) * 125 + window.innerWidth / 2 + \"px\";\
-    el.style.top = Math.sin(angle) * 125 + 400 / 2 + \"px\";\
-    angle += 0.02;\
-}\
-\
-window.setInterval(function() {\
-    update();\
-}, 1000 / 60);\
-\
-window.addEventListener(\"resize\", update);"
-    },
-    {
         "key": "p5-example",
         "title": "P5.js Example Program",
         "description": "Coming from KA's Processing.js? Start here.",
@@ -119,6 +67,58 @@ function draw() {\
         rect(mouseX - 10, mouseY - 10, 20, 20, 10, 3, 10, 3);\
     }\
 }"
+    },
+    {
+        "key": "webpage",
+        "title": "Example Webpage",
+        "description": "Some normal DOM manipulation, and some magic.",
+        "css": "html, body {\
+    height: 100%;\
+    width: 100%;\
+    background: #4A7FB1;\
+    display: block;\
+    margin: 0;\
+    padding: 0;\
+}\
+\
+#display {\
+    color: white;\
+    font-family: Helvetica, sans-serif;\
+    font-size: 30px;\
+    position: absolute;\
+    transform: translate(-50%, -50%);\
+    font-weight: bold;\
+}",
+        "html": "<!DOCTYPE HTML>\
+<html>\
+\
+<head>\
+    <style>\
+        /*[OurJSEditor insert:CSS]*/\
+    </style>\
+</head>\
+<body>\
+    <div id=\"display\">OurJSEditor</div>\
+    <script>\
+        /*[OurJSEditor insert:JS]*/\
+    </script>\
+</body>\
+\
+</html>",
+        "js": "var el = document.getElementById(\"display\");\
+var angle = -Math.PI / 2;\
+\
+function update() {\
+    el.style.left = Math.cos(angle) * 125 + window.innerWidth / 2 + \"px\";\
+    el.style.top = Math.sin(angle) * 125 + 400 / 2 + \"px\";\
+    angle += 0.02;\
+}\
+\
+window.setInterval(function() {\
+    update();\
+}, 1000 / 60);\
+\
+window.addEventListener(\"resize\", update);"
     },
     {
         "key": "blank-webpage",
