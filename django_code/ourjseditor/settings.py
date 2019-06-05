@@ -97,6 +97,10 @@ DATABASES = {
     }
 }
 
+if (DATABASES["default"]["ENGINE"] == "django.db.backends.mysql"):
+    DATABASES["default"]["OPTIONS"] = {
+        "charset": "utf8mb4"
+    }
 
 # Email Sending:
 
