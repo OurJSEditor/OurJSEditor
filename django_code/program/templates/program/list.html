@@ -8,7 +8,9 @@
 <body>
     {% include "../ourjseditor/user-info.html" %}
 
-    <table class="main-table programs">
+
+
+    <!--<table class="main-table programs">
         {% for program in programs %}
             <tr>
                 <td>
@@ -24,10 +26,15 @@
         {% empty %}
             <tr>
                 <td>
-                    What?! No Programs.<br>Lame. <a href="/program/new">[New Program]</a>
+                    What?! No Programs.<br>Lame. <a href="/new">[New Program]</a>
                 </td>
             </tr>
         {% endfor %}
-    </table>
+    </table>-->
+
+    <div id="program-list"></div>
+
+    <script>someProgramList = JSON.parse("{{ programs|escapejs }}")</script>
+    <script src="/static/scripts/components/program-list-page.js"></script>
 </body>
 </html>

@@ -69,7 +69,18 @@ def program_list (request, sort):
 
     programs = sorted(Program.objects.all(), reverse=True, key=key_func)[:20]
 
-    return render(request, "program/list.html", {"programs": programs})
+    return render(request, "program/list.html", {"programs": json.dumps(
+        map((lambda p: {
+            "title": p.title,
+            "id": p.program_id,
+            "author" : {
+                "id": p.user_id,
+                "username": p.user.username,
+                "displayName": p.user.profile.display_name,
+            }
+        }), programs)
+    )
+    })
 
 content_types = {
     "html": "text/plain", # Don't want text/html, because that would be served as a webpage

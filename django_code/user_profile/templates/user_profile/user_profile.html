@@ -84,7 +84,7 @@
                 <tr>
                     <td>
                         {% if user.username == currentUser.username %}
-                            You don't have any programs. Try <a href="/program/new">making one</a>.
+                            You don't have any programs. Try <a href="/new">making one</a>.
                         {% else %}
                             {{ user.profile.display_name }} doesn't have any programs.
                         {% endif %}
