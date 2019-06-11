@@ -1,0 +1,87 @@
+/*@import url('https://fonts.googleapis.com/css?family=Open+Sans');*/
+
+body {
+    width: 100%;
+    height: 100%;
+    display: flex;
+    align-items: center;
+    font-family: "Open Sans", sans-serif;
+    margin: 0 auto;
+    background: #f7faff;
+    -webkit-background-size: cover;
+    -moz-background-size: cover;
+    -o-background-size: cover;
+    background-size: cover;
+}
+
+#inner-wrapper {
+    padding: 35px 5vw;
+    width: 1100; /* Assumes (200px programs + 20px padding) * 5 columns */
+    /*display: relative; /*Boi, Bding, I don't know what you were doing*/
+    margin: 3% auto;
+    background: #ffffff;
+    border: 1px solid #999999;
+    border-bottom: 0;
+    box-shadow: 0px 5px 0px 0px #487eb3;
+}
+
+.program-list > table {
+    border-spacing: 30px;
+}
+
+.program {
+    width: 200px;
+    border: 1px solid black;
+    padding: 10px;
+    border: 1px solid #999;
+    background: #fbfbfb;
+    box-shadow: 1px 3px 1px rgba(65, 118, 169, 0.75);
+}
+
+.program img {
+    width: 200px;
+    height: 200px;
+}
+
+.title-wrap {
+    height: 30px;
+    width: 100%;
+    text-align: center;
+}
+.program-title {
+    font-weight: bold;
+    color: black;
+    text-decoration: none;
+    font-size: 18px;
+}
+
+.program-author {
+    color: #505050;
+    margin: 5px;
+    margin-left: 0;
+    /*text-decoration: none;
+    border-bottom: solid 1px #333333;*/
+}
+
+.program-link {
+    display: block;
+}
+
+.vote-info {
+    width: 100%;
+}
+
+.more-programs-button {
+    font-size: 15px;
+    border: none;
+    background: #487eb3;
+    color: #fdfaf7;
+    cursor: pointer;
+    padding: 10px;
+    margin-top: 10px;
+    width: 100%;
+}
+
+.more-programs-button:hover {
+    background: #4176a9;
+}

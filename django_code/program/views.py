@@ -17,15 +17,23 @@ key_func_mapping = {
 for t in vote_types:
     key_func_mapping[t] = t + "_votes"
 
+for sort_name in key_func_mapping:
+    if (type(key_func_mapping[sort_name]) is unicode):
+        # print(type(str(key_func_mapping[sort_name])))
+        str_key = str(key_func_mapping[sort_name])
+        key_func_mapping[sort_name] = lambda program: getattr(program, str_key)
+    
 with open(os.path.join(os.path.dirname(__file__), 'templates.json'), "r") as data_file:
     data_str = re.sub(r"\\\n", r"\\n", data_file.read())
     program_templates = json.loads(data_str)
+
 
 def get_template(key):
     try:
         return next(t for t in program_templates if t["key"] == key)
     except StopIteration:
         raise KeyError(key)
+
 
 def program (request, program_id):
     data_dict = {}
@@ -64,22 +72,17 @@ def program_list (request, sort):
         return redirect("/programs")
 
     key_func = key_func_mapping[sort]
-    if (type(key_func) is unicode):
-        key_func = lambda program: getattr(program, key_func_mapping[sort])
-
+    
     programs = sorted(Program.objects.all(), reverse=True, key=key_func)[:20]
 
-    return render(request, "program/list.html", {"programs": json.dumps(
-        map((lambda p: {
-            "title": p.title,
-            "id": p.program_id,
-            "author" : {
-                "id": p.user_id,
-                "username": p.user.username,
-                "displayName": p.user.profile.display_name,
-            }
-        }), programs)
-    )
+    program_dicts = []
+    for program in programs:
+        program = program.to_dict(include_code=False)
+        program_dicts.append(program)
+    
+    return render(request, "program/list.html", {
+        "programs": json.dumps(program_dicts),
+        "sort": sort
     })
 
 content_types = {

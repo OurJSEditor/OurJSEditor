@@ -1,5 +1,5 @@
 from ourjseditor import api
-from ourjseditor.funcs import base64toImageFile
+from ourjseditor.funcs import base64toImageFile, get_as_int
 
 import json
 import datetime
@@ -137,24 +137,24 @@ def program(request, program_id):
 #/api/programs/SORT
 @api.standardAPIErrors("GET")
 def program_list(request, sort):
-    if (not sort):
-        sort = "new" # Default sort. sort is actually passed in as None, so we can't use an argument default
-
     if (sort not in key_func_mapping):
         return api.error("Invalid sort type: \"{}\"".format(sort))
 
     key_func = key_func_mapping[sort]
-    if (type(key_func) is unicode):
-        key_func = lambda program: getattr(program, key_func_mapping[sort])
-
-    programs = sorted(Program.objects.all(), reverse=True, key=key_func)[:20]
+    
+    offset = get_as_int(request.GET, "offset", 0)
+    limit = get_as_int(request.GET, "limit", 20)
+        
+    if (limit > 20 or limit <= 0):
+        limit = 20
+    
+    # TODO: Optimize and abstract
+    # Oh lets just get and sort all program every time :|
+    programs = sorted(Program.objects.all(), reverse=True, key=key_func)[offset:offset+limit]
 
     program_dicts = []
     for program in programs:
-        program = program.to_dict()
-        del(program["css"])
-        del(program["html"])
-        del(program["js"])
+        program = program.to_dict(include_code=False)
         program_dicts.append(program)
 
     return api.succeed({"sort": sort, "programs": program_dicts})

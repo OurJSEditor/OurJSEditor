@@ -43,7 +43,7 @@ class Program(models.Model):
     artistic_votes = models.IntegerField(default=0)
     informative_votes = models.IntegerField(default=0)
 
-    def to_dict(self):
+    def to_dict(self, include_code=True):
         if self.last_published:
             last_published = self.last_published.replace(microsecond=0).isoformat() + "Z"
         else:
@@ -56,22 +56,27 @@ class Program(models.Model):
                 "title": self.parent.title
             }
 
-        return {
+        program_dict = {
             "id": self.program_id,
             "author": {
-                "id": self.user.profile.profile_id,
-                "displayName": self.user.profile.display_name,
-                "username": self.user.username,
+            "id": self.user.profile.profile_id,
+            "displayName": self.user.profile.display_name,
+            "username": self.user.username,
             },
             "created": self.created.replace(microsecond=0).isoformat() + "Z",
             "parent": parent,
-
-            "lastPublished": last_published,
-
-            "js": self.js,
-            "html": self.html,
-            "css": self.css,
+            
             "title": self.title,
-
+            
+            "lastPublished": last_published,
+            "thumbnailUrl": self.image.url,
+            
             "votes": dict([(t, getattr(self, t + "_votes")) for t in vote_types])
         }
+            
+        if (include_code):
+            program_dict["js"] = self.js
+            program_dict["html"] = self.html
+            program_dict["css"] = self.css
+            
+        return program_dict

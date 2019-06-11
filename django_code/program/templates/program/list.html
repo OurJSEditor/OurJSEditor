@@ -3,38 +3,20 @@
 <head>
     <meta charset="UTF-8">
     <title id="title-tag">Programs &mdash; OurJSEditor</title>
-    <link rel="stylesheet" type="text/css" href="/static/styles/user-profile.css">
+    <!-- <link rel="stylesheet" type="text/css" href="/static/styles/user-profile.css"> -->
+    <link rel="stylesheet" type="text/css" href="/static/styles/program-list.css">
 </head>
 <body>
     {% include "../ourjseditor/user-info.html" %}
 
+    <div id="inner-wrapper">
+        <div id="program-list"></div>
+    </div>
 
-
-    <!--<table class="main-table programs">
-        {% for program in programs %}
-            <tr>
-                <td>
-                    <a class="program-link" href="/program/{{ program.program_id }}">{{ program.title }}</a>
-                </td>
-
-                <td class="user-name">{{ program.user.profile.display_name }}</td>
-
-                <td class="vote-stat">Entertaining:  {{ program.entertaining_votes }}</td>
-                <td class="vote-stat">Artistic:  {{ program.artistic_votes }}</td>
-                <td class="vote-stat">Informative:  {{ program.informative_votes }}</td>
-            </tr>
-        {% empty %}
-            <tr>
-                <td>
-                    What?! No Programs.<br>Lame. <a href="/new">[New Program]</a>
-                </td>
-            </tr>
-        {% endfor %}
-    </table>-->
-
-    <div id="program-list"></div>
-
-    <script>someProgramList = JSON.parse("{{ programs|escapejs }}")</script>
+    <script>
+        window.initialProgramList = JSON.parse("{{ programs|escapejs }}")
+        window.sort = "{{ sort|escapejs }}";
+    </script>
     <script src="/static/scripts/components/program-list-page.js"></script>
 </body>
 </html>
