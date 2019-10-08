@@ -4,6 +4,7 @@ body {
     width: 100%;
     height: 100%;
     display: flex;
+    flex-direction: column;
     align-items: center;
     font-family: "Open Sans", sans-serif;
     margin: 0 auto;
@@ -14,15 +15,46 @@ body {
     background-size: cover;
 }
 
+.header {
+    background: rgb(72, 126, 179);
+    color: white;
+    font-weight: bold;
+    display: inline-block;
+    height: 50px;
+    width: 100%;
+    vertical-align: middle;
+}
+
+.section {
+    width: 44%;
+    position: relative;
+    top: 50%;
+    padding: 0 3%;
+    display: inline-block;
+}
+
+.left.section {
+    left: 0;
+}
+.right.section {
+    right: 0;
+    text-align: right;
+}
+
+.section > * {
+    transform: translate(0, -50%);
+}
+
+
 #inner-wrapper {
-    padding: 35px 5vw;
-    width: 1100; /* Assumes (200px programs + 20px padding) * 5 columns */
-    /*display: relative; /*Boi, Bding, I don't know what you were doing*/
     margin: 3% auto;
-    background: #ffffff;
-    border: 1px solid #999999;
-    border-bottom: 0;
-    box-shadow: 0px 5px 0px 0px #487eb3;
+    background: #FFFFFF;
+    min-width: 1040px;
+}
+
+.program-list {
+    border: 1px solid #999;
+    border-top: 0;
 }
 
 .program-list > table {
@@ -69,6 +101,22 @@ body {
 
 .vote-info {
     width: 100%;
+}
+
+.vote-stat:first-child {
+    text-align: left;
+}
+.vote-stat {
+    text-align: center;
+}
+.vote-stat:last-child {
+    text-align: right;
+}
+
+.vote-stat i {
+    display: inline-block;
+    width: 20px;
+    height: 16px;
 }
 
 .more-programs-button {

@@ -1,11 +1,14 @@
 #user-info {
     display: block !important;
-    position: absolute;
-    right: 0;
-    top: 0;
-    max-width: 300px;
+    position: fixed;
+    right: 10px;
+    bottom: 0;
     overflow: hidden;
     text-align: center;
+    border-top-left-radius: 4px;
+    border-top-right-radius: 4px;
+    box-shadow: 0 0 1.5px 0.5px #172737;
+    z-index: 10; /* Ace uses z-indexes up to 6 */
 }
 
 .user-info-element {
@@ -20,7 +23,7 @@
 .user-info-button {
     color: white;
     background: rgb(65, 118, 169);
-    padding: 15px;
+    padding: 10px 15px;
     margin: 0;
     line-height: 20px;
     font-size: 14px;
@@ -35,7 +38,7 @@
 }
 
 #user-links, #user-links-button {
-    min-width: 80px;
+/*    min-width: 80px;*/
 }
 
 #user-links {
@@ -73,6 +76,7 @@
     background: white;
     border-left: 2px solid #999999;
     text-align: left;
+    overflow-x: hidden; 
 }
 
 #notif-panel:not(.closed) {
@@ -147,4 +151,10 @@
     font-size: 12px;
     padding: 20px;
     color: #888888;
+}
+
+footer {
+    min-height: 40px;
+    width: 100%;
+    display: block; 
 }

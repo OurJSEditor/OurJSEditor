@@ -86,7 +86,6 @@ body {
     margin-bottom: 0px;
     min-height: 50px;
     position: relative;
-    z-index: 10; /* Ace uses z-indexes up to 6 */
 }
 
 .navbar-default .navbar-brand {

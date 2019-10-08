@@ -5,16 +5,17 @@
     <title id="title-tag">Programs &mdash; OurJSEditor</title>
     <!-- <link rel="stylesheet" type="text/css" href="/static/styles/user-profile.css"> -->
     <link rel="stylesheet" type="text/css" href="/static/styles/program-list.css">
+    
+    <script src="https://kit.fontawesome.com/aeb88acb91.js" crossorigin="anonymous"></script>
 </head>
 <body>
-    {% include "../ourjseditor/user-info.html" %}
-
     <div id="inner-wrapper">
-        <div id="program-list"></div>
     </div>
 
+    {% include "../ourjseditor/user-info.html" %}
+
     <script>
-        window.initialProgramList = JSON.parse("{{ programs|escapejs }}")
+        window.initialProgramList = JSON.parse("{{ programs|escapejs }}");
         window.sort = "{{ sort|escapejs }}";
     </script>
     <script src="/static/scripts/components/program-list-page.js"></script>

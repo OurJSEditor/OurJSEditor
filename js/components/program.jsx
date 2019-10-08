@@ -5,6 +5,12 @@ export default function Program (props) {
     
     const voteTypes = Object.keys(program.votes);
     
+    const FAicons = {
+        "informative": "fas fa-graduation-cap",
+        "entertaining": "fas fa-gamepad",
+        "artistic": "fas fa-palette",
+    }
+    
     return (
         <td className="program">
             <div class="title-wrap">
@@ -24,8 +30,8 @@ export default function Program (props) {
             <table class="vote-info"><tbody>
                 <tr>
                     {
-                        voteTypes.map(type => //TODO, yes this looks trash I'm sorry
-                            <td class="vote-stat">{type[0].toUpperCase()}: {program.votes[type]}</td>
+                        voteTypes.map(type =>
+                            <td class="vote-stat">{program.votes[type]} &nbsp;<i class={FAicons[type]}></i></td>
                         )
                     }
                 </tr>

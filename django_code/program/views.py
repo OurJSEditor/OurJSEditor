@@ -19,7 +19,6 @@ for t in vote_types:
 
 for sort_name in key_func_mapping:
     if (type(key_func_mapping[sort_name]) is unicode):
-        # print(type(str(key_func_mapping[sort_name])))
         str_key = str(key_func_mapping[sort_name])
         key_func_mapping[sort_name] = lambda program: getattr(program, str_key)
     
