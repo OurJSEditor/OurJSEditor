@@ -57,6 +57,7 @@
                         <input type="submit" value="Update Your Profile" class="button profile-edit">
                     {% elif user.username == currentUser.username %}
                         <a href="/user/{{ user.username }}/edit" class="button profile-edit">Edit Your Profile</a>
+                        <a href="/user/logout" class="button logout">Logout</a>
                     {% else %}
                         <button id="subscribe-button" class="button{% if subscribed %} subscribed{% endif %}">Subscribe</button>
                     {% endif %}
@@ -68,6 +69,7 @@
         {% endif %}
     </table>
 
+    <!-- TODO: React rewrite -->
     {% if not editing %}
         <table class="main-table programs">
             {% for program in user_programs %}

@@ -6,26 +6,29 @@
     link.setAttribute("type", "text/css");
     link.setAttribute("href", "/static/styles/user-info.css");
     document.head.appendChild(link);
+    
+    var link = document.createElement("link");
+    link.setAttribute("rel", "stylesheet");
+    link.setAttribute("type", "text/css");
+    link.setAttribute("href", "/static/styles/icons.css");
+    document.head.appendChild(link);
 </script>
 
 <div id="user-info" style="display: none">
     <span class="user-info-element">
-        <button id="user-links-button" class="user-info-button">{{ request.user.profile.display_name|default:"Login" }}</button>
-
-        <div id="user-links" style="display: none">
-            {% if request.user.is_authenticated %}
-                <a class="link" href="/user/{{ request.user.username }}">@{{ request.user.username }}</a>
-                <a class="link" href="/">Home</a>
-                <a class="link" href="/user/logout">Log Out</a>
-            {% else %}
-                <a class="link" href="/">Home</a>
-                <a class="link" href="/user/login?next={{ request.path|urlencode }}">Login</a>
-            {% endif %}
-        </div>
+        <a class="user-info-button" href="/">Home</a>
+    </span><!--
+        
+    --><span class="user-info-element">
+        <a class="user-info-button" href="/new">New</a>
+    </span>
+    
+    <span class="user-info-element">
+        <a class="user-info-button" href="/user/{{ request.user.username|default:"login" }}"><span class="icon icon-user"></span> {{ request.user.profile.display_name|default:"Login" }}</a>
     </span><!--
 
     --><span class="user-info-element">
-        <button id="notif-panel-button" class="user-info-button">Notifs (<span id="notif-count">0</span>)</button>
+        <button id="notif-panel-button" class="user-info-button"><span class="icon icon-bell"></span> Notifs (<span id="notif-count">0</span>)</button>
 
         <div id="notif-panel" class="closed">
             <div class="notif-buttons-wrap">
@@ -107,13 +110,6 @@
         }
 
         document.addEventListener("DOMContentLoaded", function () {
-            var userLinksOpen = false;
-            var userLinks = document.getElementById("user-links");
-            document.getElementById("user-links-button").addEventListener("click", function () {
-                userLinks.style.display = userLinksOpen ? "none" : "block";
-                userLinksOpen = !userLinksOpen;
-            });
-
 			if (userData.loggedIn) {
 	            var notifPanel = document.getElementById("notif-panel");
 	            document.getElementById("notif-panel-button").addEventListener("click", function () {
