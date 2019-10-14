@@ -68,7 +68,7 @@ export default class ProgramList extends Preact.Component {
         //loadMostPrograms needs to be called IFF we don't have any programs cached
         
         if (window.history.replaceState) {
-            window.history.replaceState({"sort": newSort}, document.title, newSort);
+            window.history.replaceState({"sort": newSort}, document.title, "/programs/" + newSort);
         }
         
         this.setState({
