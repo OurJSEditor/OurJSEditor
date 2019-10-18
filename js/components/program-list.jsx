@@ -66,8 +66,7 @@ export default class ProgramList extends Preact.Component {
     }
     
     sortChange (e) {
-        const newSort = e.target.selectedOptions[0].value;
-        //TODO: Same as e.target.value?
+        const newSort = e.target.value;
 
         /*
         The idea is that the cached list for the current sort and the current program list are always the same (===). 
