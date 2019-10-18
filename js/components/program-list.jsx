@@ -30,7 +30,6 @@ export default class ProgramList extends Preact.Component {
         this.state.numCols = 4;
         
         this.state.programList = props.initialProgramList;
-        this.state.offset = props.initialProgramList.length; //Offset is the offset to start the next request with. It should always be the length of programList
         cachedProgramLists[this.state.sort] = this.state.programList;
         
         if (this.state.programList.length === 0) { //TODO: add a comment, when is this true?
@@ -41,44 +40,51 @@ export default class ProgramList extends Preact.Component {
         this.state.hasShowMoreButton = props.hasShowMoreButton;
     }
 
-    loadMorePrograms () {
-        const programList = this.state.programList;
+    loadMorePrograms (newSort) {
+        const sort = typeof newSort === "string" ? newSort : this.state.sort;
         
-        this.api.getPrograms(this.baseUrl + this.state.sort, this.state.offset).then(newPrograms => {
+        const programList = cachedProgramLists[sort];
+        
+        this.api.getPrograms(this.baseUrl + sort, programList.length).then(newPrograms => {
             if (newPrograms.length < 20) {
                 this.setState({ "hasShowMoreButton": false });
                 programList.complete = true;
             }
+            
             programList.push(...newPrograms);
-            this.setState({ "programList": programList, "offset": programList.length });
+            this.setState({ "programList": programList, "sort": sort});
+            
+            //This replaces history sometimes when it doesn't need to (ie, the sort hasn't changed)
+            if (window.history.replaceState && window.location.pathname !== "/programs/" + sort) {
+                window.history.replaceState({"sort": sort}, document.title, "/programs/" + sort);
+            }
+        }).catch(err => {
+            console.error(err);
+            this.setState({ "sort": this.state.sort });
+            alert("Unable to load programs. Is the internet connection online?");
         });
     }
     
     sortChange (e) {
-        const select = e.target;
-        const newSort = select.selectedOptions[0].value;
+        const newSort = e.target.selectedOptions[0].value;
+        //TODO: Same as e.target.value?
 
-        //The idea is that the cached list for the current sort and the current program list are always the same (===). 
+        /*
+        The idea is that the cached list for the current sort and the current program list are always the same (===). 
+
+        programList needs to be changed if we have programs cached
+        loadMostPrograms needs to be called IFF we don't have any programs cached
+        */
         
-        //state.sort needs to be changed.
-        //programList needs to be changed.
-        //offset needs to be updated
-        //loadMostPrograms needs to be called IFF we don't have any programs cached
-        
-        if (window.history.replaceState) {
-            window.history.replaceState({"sort": newSort}, document.title, "/programs/" + newSort);
+        if (cachedProgramLists[newSort].length === 0) {
+            this.loadMorePrograms(newSort);
+        }else {
+            this.setState({
+                "sort": newSort,
+                "programList": cachedProgramLists[newSort],
+                "hasShowMoreButton": !cachedProgramLists[newSort].complete
+            })
         }
-        
-        this.setState({
-            "sort": newSort,
-            "programList": cachedProgramLists[newSort],
-            "offset": cachedProgramLists[newSort].length,
-            "hasShowMoreButton": !cachedProgramLists[newSort].complete
-        }, () => {
-            if (this.state.programList.length === 0) {
-                this.loadMorePrograms();
-            }
-        })
     }
     
     render () {
