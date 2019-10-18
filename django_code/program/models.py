@@ -2,6 +2,7 @@
 from __future__ import unicode_literals
 
 from django.db import models
+from django.db.models import F
 from django.contrib.auth.models import User
 from django.core.files.storage import FileSystemStorage
 
@@ -80,3 +81,34 @@ class Program(models.Model):
             program_dict["css"] = self.css
             
         return program_dict
+
+# Called from:
+#   - program/view.program_list; get the first 20 programs by a sort
+#   - program/api.program_list; get programs with offset and limit
+#   - view and api for user program list, need sort, offset, and limit options
+#   TODO: on the home page, like getting 5 most recently edited programs (limit, sort, user, unpublished)
+#   TODO: to get spin-offs of a given program
+
+# filters is a Q object
+# e.g. get_programs("top", Q(author=User.objects.get(username="Matthias")), published_only=True)
+def get_programs(sort, filters=None, offset=0, limit=20, published_only=True):
+    if (published_only):
+        programs = Program.objects.filter(last_published__isnull=False)
+
+    if (filters):
+        programs = Program.objects.filter(filters)
+
+    # Maps public names (top, new, hot, entertaining, etc.) to names the database understands (total_votes, created, hotness?, entertaining_votes)
+    if (sort == "top"):
+        programs = programs.annotate(total_votes=F("informative_votes") + F("artistic_votes") + F("entertaining_votes"))
+        sort = "-total_votes"
+    elif (sort == "new"):
+        sort = "-last_published" if published_only else "-created"
+    elif (sort in vote_types):
+        sort = "-" + sort + "_votes"
+    else:
+        raise ValueError("Invalid Sort.")
+
+    programs = programs.order_by(sort)[offset:offset+limit]
+
+    return programs

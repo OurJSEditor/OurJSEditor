@@ -6,8 +6,7 @@ import datetime
 
 from django.template.defaultfilters import escape
 
-from models import Program
-from views import key_func_mapping
+from models import Program, get_programs
 from vote.models import vote_types
 from notification.models import Notif
 
@@ -134,23 +133,19 @@ def program(request, program_id):
 
         return api.succeed()
 
-#/api/programs/SORT
+#/api/programs/SORT ?limit=20&offset=0
 @api.standardAPIErrors("GET")
 def program_list(request, sort):
-    if (sort not in key_func_mapping):
-        return api.error("Invalid sort type: \"{}\"".format(sort))
-
-    key_func = key_func_mapping[sort]
-    
     offset = get_as_int(request.GET, "offset", 0)
     limit = get_as_int(request.GET, "limit", 20)
         
     if (limit > 20 or limit <= 0):
         limit = 20
-    
-    # TODO: Optimize and abstract
-    # Oh lets just get and sort all program every time :|
-    programs = sorted(Program.objects.all(), reverse=True, key=key_func)[offset:offset+limit]
+
+    try:
+        programs = get_programs(sort, offset=offset, limit=limit)
+    except ValueError as e:
+        return api.error(str(e))
 
     program_dicts = []
     for program in programs:

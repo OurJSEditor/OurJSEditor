@@ -3,24 +3,12 @@ from __future__ import unicode_literals
 
 from django.shortcuts import render, redirect
 from django.http import HttpResponse
-from program.models import Program
+from program.models import Program, get_programs
 from vote.models import Vote, vote_types
 
 import json
 import re
 import os
-
-key_func_mapping = {
-    "new": "created",
-    "top": lambda program: sum([getattr(program, t + "_votes") for t in vote_types])
-}
-for t in vote_types:
-    key_func_mapping[t] = t + "_votes"
-
-for sort_name in key_func_mapping:
-    if (type(key_func_mapping[sort_name]) is unicode):
-        str_key = str(key_func_mapping[sort_name])
-        key_func_mapping[sort_name] = lambda program: getattr(program, str_key)
     
 with open(os.path.join(os.path.dirname(__file__), 'templates.json'), "r") as data_file:
     data_str = re.sub(r"\\\n", r"\\n", data_file.read())
@@ -67,18 +55,17 @@ def program_list (request, sort):
     if (not sort):
         sort = "new" # Default sort. sort is actually passed in as None, so we can't use an argument default
 
-    if (sort not in key_func_mapping):
+    try:
+        programs = get_programs(sort)
+    except ValueError:
         return redirect("/programs")
-
-    key_func = key_func_mapping[sort]
-    
-    programs = sorted(Program.objects.all(), reverse=True, key=key_func)[:20]
 
     program_dicts = []
     for program in programs:
         program = program.to_dict(include_code=False)
         program_dicts.append(program)
     
+    #TODO: complete? Right now we don't track that
     return render(request, "program/list.html", {
         "programs": json.dumps(program_dicts),
         "sort": sort

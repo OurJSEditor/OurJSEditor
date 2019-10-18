@@ -1,12 +1,12 @@
 from django.contrib.auth.models import User
+from django.db.models import Q
 
-import json
-
-from program.models import Program
-from program.views import key_func_mapping
+from program.models import Program, get_programs
 from user_profile.models import Profile
 from ourjseditor.funcs import check_username, get_as_int
 from ourjseditor import api
+
+import json
 
 #api/user/username-valid/USERNAME
 @api.standardAPIErrors("GET")
@@ -115,13 +115,10 @@ def program_list(request, user_id, sort):
     if (limit > 20 or limit <= 0):
         limit = 20
         
-    if (sort not in key_func_mapping):
-        return api.error("Invalid sort type: \"{}\"".format(sort))
-    
-    key_func = key_func_mapping[sort]
-        
-    # TODO: Optimize and abstract
-    programs = sorted(Program.objects.filter(user=requested_user), reverse=True, key=key_func)[offset:offset+limit]
+    try:
+        programs = get_programs(sort, Q(user=requested_user), offset=offset, limit=limit, published_only=False)
+    except ValueError as e:
+        return api.error(str(e))
     
     program_dicts = []
     for program in programs:
