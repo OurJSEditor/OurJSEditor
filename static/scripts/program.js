@@ -7,8 +7,8 @@ titleInput.setAttribute("id", "program-title");
 titleInput.addEventListener("change", removeTitleInput);
 titleInput.addEventListener("blur", removeTitleInput);
 titleInput.addEventListener("keypress", function (e) {
-    //If the enter or return key is pressed.
-    if (e.which === 13) {
+    //If the enter or return key is pressed. keyCode for older browser compatibility
+    if (e.key === "Enter" || e.keyCode === 13) {
         removeTitleInput();
     }
 });
