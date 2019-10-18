@@ -6,9 +6,11 @@ from django import db
 
 import json
 
-def error(text, status=400):
+def error(text, data={}, status=400):
+    data["success"] = False
+    data["error"] = text
     return HttpResponse(
-        json.dumps({"success": False,"error": text}),
+        json.dumps(data),
         status=status,
         content_type="application/json"
     )
@@ -52,8 +54,8 @@ class standardAPIErrors(object):
                         raise
                     return error("Missing data for {}.".format(str(err)))
                 #Random stuff, like calling len() on a number or ["hi"] on something that's not a dict
-                except TypeError:
-                    return error("I don't know, this catches all sorts of wierd stuff. Maybe your data's the wrong type (string/number/object)?")
+                except TypeError as err:
+                    return error("TypeError", data={"internalError": str(err)})
                 #When we try to .get() something and it doesn't exist
                 except ObjectDoesNotExist:
                     return error("The requested object could not be found (because it doesn't exist).", status=404)
