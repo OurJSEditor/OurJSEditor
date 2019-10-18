@@ -58,7 +58,7 @@ export default class ProgramList extends Preact.Component {
     
     sortChange (e) {
         const select = e.target;
-        const newSort = select.selectedOptions[0].dataset.sortKey;
+        const newSort = select.selectedOptions[0].value;
 
         //The idea is that the cached list for the current sort and the current program list are always the same (===). 
         
@@ -100,9 +100,9 @@ export default class ProgramList extends Preact.Component {
                     <div class="left section"><div>Program List</div></div>
             
                     <div class="right section">
-                        <select onChange={ this.sortChange.bind(this) }>{
+                        <select onChange={ this.sortChange.bind(this) } value={ this.state.sort }>{
                             sorts.map(sort =>
-                                <option data-sort-key={sort}>{sort[0].toUpperCase() + sort.slice(1)}</option>
+                                <option value={sort}>{sort[0].toUpperCase() + sort.slice(1)}</option>
                             )
                         }</select>
                     </div>
