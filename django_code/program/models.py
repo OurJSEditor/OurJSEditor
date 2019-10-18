@@ -92,11 +92,13 @@ class Program(models.Model):
 # filters is a Q object
 # e.g. get_programs("top", Q(author=User.objects.get(username="Matthias")), published_only=True)
 def get_programs(sort, filters=None, offset=0, limit=20, published_only=True):
+    programs = Program.objects
+    
     if (published_only):
-        programs = Program.objects.filter(last_published__isnull=False)
+        programs = programs.filter(last_published__isnull=False)
 
     if (filters):
-        programs = Program.objects.filter(filters)
+        programs = programs.filter(filters)
 
     # Maps public names (top, new, hot, entertaining, etc.) to names the database understands (total_votes, created, hotness?, entertaining_votes)
     if (sort == "top"):
