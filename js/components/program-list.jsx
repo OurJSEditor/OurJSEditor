@@ -32,12 +32,12 @@ export default class ProgramList extends Preact.Component {
         this.state.programList = props.initialProgramList;
         cachedProgramLists[this.state.sort] = this.state.programList;
         
-        if (this.state.programList.length === 0) { //TODO: add a comment, when is this true?
-            console.log("Just loaded with no programs??");
+        if (this.state.programList.length === 0) {
+            console.error("Just loaded with no programs. This shouldn't happen");
             this.loadMorePrograms();
         }
         
-        this.state.hasShowMoreButton = props.hasShowMoreButton;
+        this.state.hasShowMoreButton = props.initialProgramList.length === 20;
     }
 
     loadMorePrograms (newSort) {
