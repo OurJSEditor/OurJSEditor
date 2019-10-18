@@ -60,9 +60,9 @@ class Program(models.Model):
         program_dict = {
             "id": self.program_id,
             "author": {
-            "id": self.user.profile.profile_id,
-            "displayName": self.user.profile.display_name,
-            "username": self.user.username,
+                "id": self.user.profile.profile_id,
+                "displayName": self.user.profile.display_name,
+                "username": self.user.username,
             },
             "created": self.created.replace(microsecond=0).isoformat() + "Z",
             "parent": parent,

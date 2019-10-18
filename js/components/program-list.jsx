@@ -51,8 +51,6 @@ export default class ProgramList extends Preact.Component {
             }
             programList.push(...newPrograms);
             this.setState({ "programList": programList, "offset": programList.length });
-            
-            // cachedProgramLists[this.state.sort] = this.state.programList; //TODO: needed?
         });
     }
     
