@@ -5,10 +5,10 @@ export default function Program (props) {
     
     const voteTypes = Object.keys(program.votes);
     
-    const FAicons = {
-        "informative": "fas fa-graduation-cap",
-        "entertaining": "fas fa-gamepad",
-        "artistic": "fas fa-palette",
+    const iconClasses = {
+        "informative": "icon icon-graduation-cap",
+        "entertaining": "icon icon-gamepad",
+        "artistic": "icon icon-brush",
     }
     
     return (
@@ -31,7 +31,7 @@ export default function Program (props) {
                 <tr>
                     {
                         voteTypes.map(type =>
-                            <td class="vote-stat">{program.votes[type]} &nbsp;<i class={FAicons[type]}></i></td>
+                            <td class="vote-stat">{program.votes[type]} &nbsp;<span class={iconClasses[type]}></span></td>
                         )
                     }
                 </tr>
