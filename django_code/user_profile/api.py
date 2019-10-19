@@ -1,25 +1,32 @@
 from django.contrib.auth.models import User
+from django.db.models import Q
+
+from program.models import Program, get_programs
+from user_profile.models import Profile
+from ourjseditor.funcs import check_username, get_as_int
+from ourjseditor import api
 
 import json
-
-from program.models import Program
-from user_profile.models import Profile
-from ourjseditor.funcs import check_username
-from ourjseditor import api
 
 #api/user/username-valid/USERNAME
 @api.standardAPIErrors("GET")
 def username_valid(request, username):
     return api.succeed({ "usernameValid": check_username(username, "") })
 
-
-@api.standardAPIErrors("GET","PATCH","DELETE")
-def user(request, id):
+# Return a user by username or id
+def get_user(user_id, and_profile=True):
     try:
-        requested_user = Profile.objects.select_related('user').get(profile_id=id).user
-    except Profile.DoesNotExist:
-        #If id doesn't match, we try username. If username doesn't, we throw an error caught by standardAPIErrors
-        requested_user = User.objects.select_related('profile').get(username=id)
+        return Profile.objects.select_related('user').get(profile_id=user_id).user
+    except Profile.DoesNotExist: #If id doesn't match, we try username. If username doesn't, we throw an error caught by standardAPIErrors
+        if (and_profile):
+            return User.objects.select_related('profile').get(username=user_id)
+        else:
+            return User.objects.get(username=user_id)
+    
+#/api/user/USERNAME
+@api.standardAPIErrors("GET","PATCH","DELETE")
+def user(request, user_id):
+    requested_user = get_user(user_id)
 
     if request.method == "GET":
         user_data = {
@@ -66,13 +73,10 @@ def user(request, id):
 
         return api.succeed()
 
+#/api/user/USERNAME/subscribed
 @api.standardAPIErrors("GET", "PATCH")
-def subscribed(request, id):
-    try:
-        target_profile = Profile.objects.get(profile_id=id)
-    except Profile.DoesNotExist:
-        # If id doesn't match, we try username. If username doesn't, we throw an error caught by standardAPIErrors
-        target_profile = User.objects.select_related('profile').get(username=id).profile
+def subscribed(request, user_id):
+    target_profile = get_user(user_id).profile
 
     is_subscribed = bool(request.user.is_authenticated and
         request.user.profile.subscriptions.filter(profile_id=target_profile.profile_id))
@@ -95,3 +99,35 @@ def subscribed(request, id):
             request.user.profile.subscriptions.remove(target_profile)
 
         return api.succeed({ "subscribed": data["subscribed"] })
+
+#/api/user/USERNAME/programs/SORT
+@api.standardAPIErrors("GET", "POST")
+def program_list(request, user_id, sort):
+    if request.method == "POST":
+        # It seems intutive that POSTing here would make a new program. However, that is not the case
+        return api.error("Make a new program by posting to /api/program/new")
+    
+    requested_user = get_user(user_id, and_profile=False)
+        
+    offset = get_as_int(request.GET, "offset", 0)
+    limit = get_as_int(request.GET, "limit", 20)
+    
+    if (limit > 20 or limit <= 0):
+        limit = 20
+        
+    try:
+        programs = get_programs(sort, Q(user=requested_user), offset=offset, limit=limit, published_only=False)
+    except ValueError as e:
+        return api.error(str(e))
+    
+    program_dicts = []
+    for program in programs:
+        program = program.to_dict()
+        del(program["css"])
+        del(program["html"])
+        del(program["js"])
+        program_dicts.append(program)
+        
+    return api.succeed({"sort": sort, "programs": program_dicts})
+    
+    

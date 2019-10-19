@@ -57,6 +57,7 @@
                         <input type="submit" value="Update Your Profile" class="button profile-edit">
                     {% elif user.username == currentUser.username %}
                         <a href="/user/{{ user.username }}/edit" class="button profile-edit">Edit Your Profile</a>
+                        <a href="/user/logout" class="button logout">Logout</a>
                     {% else %}
                         <button id="subscribe-button" class="button{% if subscribed %} subscribed{% endif %}">Subscribe</button>
                     {% endif %}
@@ -68,6 +69,7 @@
         {% endif %}
     </table>
 
+    <!-- TODO: React rewrite -->
     {% if not editing %}
         <table class="main-table programs">
             {% for program in user_programs %}
@@ -84,7 +86,7 @@
                 <tr>
                     <td>
                         {% if user.username == currentUser.username %}
-                            You don't have any programs. Try <a href="/program/new">making one</a>.
+                            You don't have any programs. Try <a href="/new">making one</a>.
                         {% else %}
                             {{ user.profile.display_name }} doesn't have any programs.
                         {% endif %}

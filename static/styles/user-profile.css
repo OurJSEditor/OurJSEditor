@@ -59,11 +59,13 @@ body {
     font-family: sans-serif;
     width: 100%;
     color: white;
-    background-color: #337ab7;
+    background: #337ab7;
     border: none;
     transition: 0.2s;
     text-decoration: none;
     outline: none;
+    padding: 3px 10px;
+    width: initial;
 }
 
 .button:hover {
@@ -71,9 +73,11 @@ body {
     cursor: pointer;
 }
 
-.profile-edit, #subscribe-button {
-    padding: 3px 10px;
-    width: initial;
+.logout {
+    background: #b9554b;
+}
+.logout:hover {
+    background: #6e312b;
 }
 
 #subscribe-button.subscribed {

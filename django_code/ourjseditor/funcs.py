@@ -1,4 +1,5 @@
 # A file to store miscillaneous functions that are accessed by multiple files and apps
+# TODO: Rename this file to "util.py" and fix imports
 
 chars = "abcdefghijklmnopqrstuvwzyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789_-"
 reserved_ids = ["ourjse"]
@@ -22,6 +23,16 @@ def get_id():
     else:
         return id_string
 
+def get_as_int(dict_like, key, default_value):
+    value = dict_like.get(key, default_value)
+    try:
+        value = int(value)
+    except ValueError:
+        value = default_value
+    
+    return value
+        
+# TODO: Move to user_profile code
 # Validates a username
 def check_username(test_username, current_username):
     from program.models import Program

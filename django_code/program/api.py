@@ -1,13 +1,12 @@
 from ourjseditor import api
-from ourjseditor.funcs import base64toImageFile
+from ourjseditor.funcs import base64toImageFile, get_as_int
 
 import json
 import datetime
 
 from django.template.defaultfilters import escape
 
-from models import Program
-from views import key_func_mapping
+from models import Program, get_programs
 from vote.models import vote_types
 from notification.models import Notif
 
@@ -134,27 +133,23 @@ def program(request, program_id):
 
         return api.succeed()
 
-#/api/programs/SORT
+#/api/programs/SORT ?limit=20&offset=0
 @api.standardAPIErrors("GET")
 def program_list(request, sort):
-    if (not sort):
-        sort = "new" # Default sort. sort is actually passed in as None, so we can't use an argument default
+    offset = get_as_int(request.GET, "offset", 0)
+    limit = get_as_int(request.GET, "limit", 20)
+        
+    if (limit > 20 or limit <= 0):
+        limit = 20
 
-    if (sort not in key_func_mapping):
-        return api.error("Invalid sort type: \"{}\"".format(sort))
-
-    key_func = key_func_mapping[sort]
-    if (type(key_func) is unicode):
-        key_func = lambda program: getattr(program, key_func_mapping[sort])
-
-    programs = sorted(Program.objects.all(), reverse=True, key=key_func)[:20]
+    try:
+        programs = get_programs(sort, offset=offset, limit=limit)
+    except ValueError as e:
+        return api.error(str(e))
 
     program_dicts = []
     for program in programs:
-        program = program.to_dict()
-        del(program["css"])
-        del(program["html"])
-        del(program["js"])
+        program = program.to_dict(include_code=False)
         program_dicts.append(program)
 
     return api.succeed({"sort": sort, "programs": program_dicts})
