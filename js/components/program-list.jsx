@@ -49,17 +49,20 @@ export default class ProgramList extends Preact.Component {
         const programList = cachedProgramLists[sort];
         
         this.api.getPrograms(this.baseUrl + sort, programList.length).then(newPrograms => {
+            programList.push(...newPrograms);
+
             if (newPrograms.length < 20) {
                 this.setState({ "hasShowMoreButton": false });
                 programList.complete = true;
             }
+
+            this.setState({
+                "programList": programList,
+                "sort": sort
+            });
             
-            programList.push(...newPrograms);
-            this.setState({ "programList": programList, "sort": sort});
-            
-            //This replaces history sometimes when it doesn't need to (ie, the sort hasn't changed)
             if (window.history.replaceState && window.location.pathname !== "/programs/" + sort) {
-                window.history.replaceState({"sort": sort}, document.title, "/programs/" + sort);
+                window.history.replaceState({"sort": newSort}, document.title, "/programs/" + sort);
             }
         }).catch(err => {
             console.error(err);
@@ -86,6 +89,10 @@ export default class ProgramList extends Preact.Component {
                 "programList": cachedProgramLists[newSort],
                 "hasShowMoreButton": !cachedProgramLists[newSort].complete
             })
+            
+            if (window.history.replaceState && window.location.pathname !== "/programs/" + newSort) {
+                window.history.replaceState({"sort": newSort}, document.title, "/programs/" + newSort);
+            }
         }
     }
     
