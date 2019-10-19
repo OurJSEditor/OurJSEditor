@@ -37,7 +37,10 @@ export default class ProgramList extends Preact.Component {
             this.loadMorePrograms();
         }
         
-        this.state.hasShowMoreButton = props.initialProgramList.length === 20;
+        this.state.hasShowMoreButton = props.initialProgramList.length >= 20;
+        if (props.initialProgramList.length < 20) {
+            cachedProgramLists[this.state.sort].complete = true;
+        }
     }
 
     loadMorePrograms (newSort) {
