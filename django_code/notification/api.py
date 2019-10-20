@@ -1,9 +1,9 @@
-# -*- coding: utf-8 -*-
 from __future__ import unicode_literals
+
 import json
 
 from ourjseditor import api
-from models import Notif
+from .models import Notif
 
 # /notif/NOTIFIC_ID
 @api.standardAPIErrors("PATCH")
@@ -31,7 +31,7 @@ def notif(request, notif_id):
 @api.login_required
 def notif_list(request):
     notifs = Notif.objects.filter(target_user=request.user).order_by("-created")
-    notifs = map(lambda n: n.to_dict(), notifs)
+    notifs = [n.to_dict() for n in notifs]
 
     return api.succeed({ "notifs": notifs })
 

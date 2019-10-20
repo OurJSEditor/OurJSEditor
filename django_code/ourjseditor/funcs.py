@@ -55,35 +55,41 @@ from PIL import Image
 
 def base64toImageFile(imageData, file_name):
     # Check if this is a base64 string
-    if isinstance(imageData, (str, unicode)):
-        header = None
+    try:
+        if (not isinstance(imageData, unicode)):
+            return
+    except: # Error on `unicode` if we're in Python 3, then we need to check if it's a str
+        if (not isinstance(imageData, str)):
+            return
+            
+    header = None
 
-        # Check if the base64 string is in the "data:" format
-        if "data:" in imageData and ";base64," in imageData:
-            # Break out the header from the base64 content
-            header, imageData = imageData.split(';base64,')
+    # Check if the base64 string is in the "data:" format
+    if "data:" in imageData and ";base64," in imageData:
+        # Break out the header from the base64 content
+        header, imageData = imageData.split(';base64,')
 
-        # No animated thumbnail here
-        if header != "data:image/png":
-            raise TypeError("Image isn't a PNG")
+    # No animated thumbnail here
+    if header != "data:image/png":
+        raise TypeError("Image isn't a PNG")
 
-        # Try to decode the file. Error if it fails.
-        decoded_file = base64.b64decode(imageData)
+    # Try to decode the file. Error if it fails.
+    decoded_file = base64.b64decode(imageData)
 
-        # Verify image, adapted from https://github.com/django/django/blob/master/django/forms/fields.py#L629
-        image_data_bytes = BytesIO(decoded_file);
-        image = Image.open(image_data_bytes)
-        image.verify()
+    # Verify image, adapted from https://github.com/django/django/blob/master/django/forms/fields.py#L629
+    image_data_bytes = BytesIO(decoded_file);
+    image = Image.open(image_data_bytes)
+    image.verify()
 
-        image = Image.open(image_data_bytes)
+    image = Image.open(image_data_bytes)
 
-        if (Image.MIME.get(image.format) != "image/png"):
-            raise TypeError("Image isn't a PNG")
+    if (Image.MIME.get(image.format) != "image/png"):
+        raise TypeError("Image isn't a PNG")
 
-        # Resize image
-        image = image.resize((200, 200), Image.BICUBIC)
+    # Resize image
+    image = image.resize((200, 200), Image.BICUBIC)
 
-        imageData = BytesIO()
-        image.save(imageData, format="PNG")
+    imageData = BytesIO()
+    image.save(imageData, format="PNG")
 
-        return ContentFile(imageData.getvalue(), name=file_name)
+    return ContentFile(imageData.getvalue(), name=file_name)

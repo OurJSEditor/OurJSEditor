@@ -7,8 +7,11 @@ from django.template.loader import render_to_string
 
 import json
 import re
-import urllib
 import time
+try:
+    from urllib.parse import urlencode
+except ImportError:
+    from urllib import urlencode
 
 from ourjseditor.funcs import check_username
 from ourjseditor import api
@@ -53,7 +56,7 @@ def forgot_password(request):
     link = link.format(
         protocol="https" if request.is_secure() else "http",
         domain=Site.objects.get_current().domain,
-        query_params=urllib.urlencode({ "token": token, "user_id": user.profile.profile_id })
+        query_params=urlencode({ "token": token, "user_id": user.profile.profile_id })
     )
     message = render_to_string("account/forgotPasswordEmail.html", {
         "link": link,

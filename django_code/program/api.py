@@ -6,7 +6,7 @@ import datetime
 
 from django.template.defaultfilters import escape
 
-from models import Program, get_programs
+from .models import Program, get_programs
 from vote.models import vote_types
 from notification.models import Notif
 

@@ -5,7 +5,7 @@ from django.core import urlresolvers
 from django.core.exceptions import ImproperlyConfigured
 from django.utils.deprecation import MiddlewareMixin
 
-import api
+from . import api
 
 # Adapted from https://github.com/dghubble/django-unslashed/blob/master/unslashed/middleware.py
 

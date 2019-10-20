@@ -1,16 +1,19 @@
-# -*- coding: utf-8 -*-
 from __future__ import unicode_literals
+
 import json
-import urlparse
+try:
+    from urllib.parse import parse_qs
+except ImportError:
+    from urlparse import parse_qs
 
 from ourjseditor import api
-from models import Vote, vote_types
+from .models import Vote, vote_types
 from program.models import Program
 
 @api.standardAPIErrors("POST","DELETE")
 @api.login_required
 def program_vote(request, program_id):
-    vote_type = urlparse.parse_qs(request.META["QUERY_STRING"])["type"][0]
+    vote_type = parse_qs(request.META["QUERY_STRING"])["type"][0]
 
     if (vote_type not in vote_types):
         return api.error("Invalid vote type.")

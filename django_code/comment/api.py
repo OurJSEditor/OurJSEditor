@@ -1,10 +1,9 @@
-# -*- coding: utf-8 -*-
 from __future__ import unicode_literals
 import json
 import datetime
 from django.template.defaultfilters import escape
 
-from models import Comment
+from .models import Comment
 from program.models import Program
 from notification.models import Notif
 from ourjseditor import api
@@ -146,7 +145,7 @@ def comment_comments(request, *args):
 
     comments = list(comments)
     return api.succeed({
-        "comments": map(lambda c: c.to_dict(), comments)
+        "comments": [c.to_dict() for c in comments]
     })
 
 # /program/PRO_ID/comments
@@ -154,5 +153,5 @@ def comment_comments(request, *args):
 def program_comments(request, program_id):
     comments = list(Comment.objects.select_related("user__profile").filter(program_id=program_id, depth=0).order_by("-created"))
     return api.succeed({
-        "comments": map(lambda c: c.to_dict(), comments)
+        "comments": [c.to_dict() for c in comments]
     })
