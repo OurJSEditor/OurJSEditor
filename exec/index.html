@@ -49,7 +49,7 @@
             frame.parentNode.replaceChild(frame, frame);
 
             var outputDoc = frame.contentDocument;
-            outputDoc.write(data.code);
+            outputDoc.body.innerHTML = data.code;
             outputDoc.close();
         }else if (data.type === "thumbnail-request") {
             var s = document.createElement("script");
