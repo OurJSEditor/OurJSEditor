@@ -41,6 +41,21 @@
         });
     }
 
+    /**
+     * @param {HTMLIFrameElement} iframe - An <iframe> element to write to
+     * @param {string} content - Plain HTML to be injected into the iframe
+     */
+    function writeToIframe(iframe, content) {
+        var contentDocument = iframe.contentDocument;
+        iframe.addEventListener('load', function() {
+            contentDocument.body.innerHTML = content;
+        }, false);
+        // We must open and close the iframe.contentDocument to trigger the
+        // onload event correctly - the only cross-browser reliable way
+        contentDocument.open();
+        contentDocument.close();
+    }
+
     var frame = document.getElementById("output-frame");
     window.addEventListener("message", function (msg) {
         var data = JSON.parse(msg.data);
@@ -48,9 +63,7 @@
             //This removes the frame element from the DOM (and then replaces it), clearing the user's old code.
             frame.parentNode.replaceChild(frame, frame);
 
-            var outputDoc = frame.contentDocument;
-            outputDoc.body.innerHTML = data.code;
-            outputDoc.close();
+            writeToIframe(frame, data.code);
         }else if (data.type === "thumbnail-request") {
             var s = document.createElement("script");
             s.setAttribute("src", "/html2canvas.min.js")
