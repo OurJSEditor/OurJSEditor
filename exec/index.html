@@ -42,28 +42,30 @@
     }
 
     /**
-     * @param {HTMLIFrameElement} iframe - An <iframe> element to write to
+     * @param {HTMLIFrameElement} iframe - An <iframe> element to replace
      * @param {string} content - Plain HTML to be injected into the iframe
      */
-    function writeToIframe(iframe, content) {
-        var contentDocument = iframe.contentDocument;
-        iframe.addEventListener('load', function() {
-            contentDocument.body.innerHTML = content;
+    function replaceFrame(iframe, content) {
+        var newIframe = document.createElement("iframe");
+
+        newIframe.addEventListener('load', function() {
+            newIframe.contentDocument.open();
+            // NOTE: document.write is the only reliable way, innerHTML doesn't
+            // always work properly
+            newIframe.contentDocument.write(content);
+            newIframe.contentDocument.close();
         }, false);
-        // We must open and close the iframe.contentDocument to trigger the
-        // onload event correctly - the only cross-browser reliable way
-        contentDocument.open();
-        contentDocument.close();
+
+        newIframe.src = iframe.src;
+        newIframe.id = iframe.id;
+        iframe.parentNode.replaceChild(newIframe, iframe);
     }
 
-    var frame = document.getElementById("output-frame");
     window.addEventListener("message", function (msg) {
         var data = JSON.parse(msg.data);
         if (data.type === "execute") {
-            //This removes the frame element from the DOM (and then replaces it), clearing the user's old code.
-            frame.parentNode.replaceChild(frame, frame);
-
-            writeToIframe(frame, data.code);
+            var oldFrame = document.getElementById("output-frame");
+            replaceFrame(oldFrame, data.code);
         }else if (data.type === "thumbnail-request") {
             var s = document.createElement("script");
             s.setAttribute("src", "/html2canvas.min.js")
