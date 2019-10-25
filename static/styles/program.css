@@ -33,10 +33,22 @@ body {
     margin-bottom: 5px;
 }
 
+.editorContainer, .editorContainer > * {
+    box-sizing: border-box; 
+}
+
 .editor {
     height: 400px;
     width: 100%;
     border: 1px #cecece solid;
+}
+
+.editor-header {
+    width: 100%;
+    padding: 2px 5px;
+    font-size: 12px;
+    color: #fff;
+    background: rgb(72, 126, 179);
 }
 
 #sidebar {
