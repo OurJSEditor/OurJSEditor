@@ -2,123 +2,29 @@
 <html lang="en">
 <head>
     <meta charset="UTF-8">
-    <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
-    <link rel='stylesheet' type='text/css' href='https://fonts.googleapis.com/css?family=Open+Sans:300,400,600,700,400italic'>
-    <link rel="stylesheet" type="text/css" href="/static/styles/bootstrap.min.css">
-    <link rel="stylesheet" type="text/css" href="/static/styles/home.css">
-<!--
-Accord Template
-http://www.templatemo.com/tm-478-accord
--->
-    <title>Our JS Editor</title>
+    <link rel="stylesheet" type="text/css" href="/static/styles/program-sections.css">
+
+    <title id="title-tag">Our JS Editor</title>
 </head>
 
 <body>
-    <div class="main-body">
-        <div class="container">
-            <div class="row">
-                <div class="main-page">
-
-                    <aside class="main-navigation">
-                        <div class="main-menu">
-
-                            <div class="menu-container">
-                                <div class="block-keep-ratio block-keep-ratio-2-1 block-keep-ratio-md-2-1 block-width-full github">
-                                    <a href="https://github.com/OurJSEditor" class="main-menu-link  block-keep-ratio__content">
-                                        <span class="main-menu-link-text">
-                                            GITHUB
-                                        </span>
-                                    </a>
-                                </div>
-                            </div>
-
-                            <div class="menu-container">
-                                <div class="block-keep-ratio block-keep-ratio-2-1 block-keep-ratio-md-2-1 block-width-full discord">
-                                    <a href="https://discord.gg/WSHpEPa" class="main-menu-link  block-keep-ratio__content">
-                                        <span class="main-menu-link-text">
-                                            DISCORD
-                                        </span>
-                                    </a>
-                                </div>
-                            </div>
-
-                        </div> <!-- main-menu -->
-                    </aside> <!-- main-navigation -->
-
-                    <div class="content-main">
-                        <div class="row margin-b-30">
-                            <div class="col-xs-12 col-sm-12 col-md-12 col-lg-12">
-                                <div class="banner-main-home">
-                                    <div class="banner-main-home-text">
-                                        <div class="heading">
-                                            <h1>Our JS Editor</h1>
-                                            <p class="text-uppercase">THE JAVASCRIPT EDITOR FOR ALL OF US</p>
-                                        </div>
-                                        <div class="desc">
-                                            <p>With Our JS Editor, we tried to make an online, lightweight javascript editor which not only lets you quickly create and save your own amazing programs, but which lets you view the best programs from your peers, rate them, provide them with feedback, and get inspired to create something more amazing than you could have alone.</p>
-                                            {% if not logged_in %}
-                                                <a href="/user/login" class="button">
-                                                    SIGN UP
-                                                </a>
-                                            {% else %}
-                                                <a href="/user/{{username}}" class="button">
-                                                    YOUR PROGRAMS
-                                                </a>
-                                            {% endif %}
-                                            <a href="/programs{% if not logged_in %}/top{% endif %}" class="button">
-                                                ALL PROGRAMS
-                                            </a>
-                                            <a href="/new" class="button">
-                                                NEW PROGRAM
-                                            </a>
-                                        </div>
-                                    </div>
-                                    <img src="/static/images/logo-small.png" alt="Image" class="img-responsive" height="300" width="300">
-                                </div>
-                            </div>
-                        </div>
-                        <div class="row margin-b-30">
-                            <div class="col-xs-12 col-sm-12 col-md-6 col-lg-6">
-                                <div class="box london">
-                                    <div class="box-icon">
-                                        <img src="/static/images/home-img-2.jpg" alt="Image" class="img-responsive">
-                                    </div>
-                                    <div class="info float-container">
-                                        <div class="col-sm-12 london-title">
-                                            <h3 class="text-uppercase">An amazing community</h3>
-                                            <h4 class="text-uppercase">Let others see your awesome code</h4>
-                                        </div>
-                                        <p>Unlike other online editors, which require you send a link to people for them to see your program, Our JS Editor lets you publish programs for other people to checkout, as well as view popular programs made by others.</p>
-                                    </div>
-                                </div>
-                            </div>
-
-                            <div class="col-xs-12 col-sm-12 col-md-6 col-lg-6">
-                                <div class="box paris">
-                                    <div class="box-icon">
-                                        <img src="/static/images/home-img-3.jpg" alt="Image" class="img-responsive">
-                                    </div>
-                                    <div class="info float-container">
-                                        <div class="col-sm-12 london-title paris-title">
-                                            <h3 class="text-uppercase">Built using JSTinker</h3>
-                                            <h4 class="text-uppercase">And the ACE editor</h4>
-                                        </div>
-                                        <p><a href="https://github.com/johncipponeri/jstinker">JSTinker</a> is a fully-featured Javascript, HTML, and CSS editor and executor which uses the <a href="https://ace.c9.io">ACE editor</a> to provide you with things like syntax highlighting. Our JS Editor makes use of both of them.</p>
-                                    </div>
-                                </div>
-                            </div>
-                        </div> <!-- row -->
-                    </div> <!-- .content-main -->
-                </div> <!-- .main-page -->
-            </div> <!-- .row -->
-            <footer class="row">
-                <div class="col-xs-12 col-sm-12 col-md-12 col-lg-12 footer">
-                    <p class="copyright">Copyright © 2017 Our JS Editor</p>
-                </div>
-            </footer>  <!-- .row -->
-        </div> <!-- .container -->
-    </div> <!-- .main-body -->
+    <div id="main-content">
+    </div>
+    
+    {% include "../ourjseditor/user-info.html" %}
+    
+    <script>
+        /*
+        -Loads
+            -If you're logged in
+                -Recently created programs of yours
+                -Recently published programs from your subscriptions
+            -Top programs
+        */
+        window.programs = JSON.parse("{{ programs|escapejs }}")
+    </script>
+    <script src="/static/scripts/components/home.js"></script>
 </body>
 </html>

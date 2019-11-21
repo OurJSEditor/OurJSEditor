@@ -85,7 +85,7 @@ class Program(models.Model):
 #   - program/view.program_list; get the first 20 programs by a sort
 #   - program/api.program_list; get programs with offset and limit
 #   - view and api for user program list, need sort, offset, and limit options
-#   TODO: on the home page, like getting 5 most recently edited programs (limit, sort, user, unpublished)
+#   - home page, getting 3 most recently edited programs (limit, sort, user, unpublished), 3 popular programs, 4 programs from subscriptions
 #   TODO: to get spin-offs of a given program
 
 # filters is a Q object

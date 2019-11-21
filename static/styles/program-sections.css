@@ -1,0 +1,224 @@
+body {
+    width: 100%;
+    height: 100%;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    font-family: Helvetica, Arial, sans-serif;
+    margin: 0 auto;
+    background: #f7faff;
+    -webkit-background-size: cover;
+    -moz-background-size: cover;
+    -o-background-size: cover;
+    background-size: cover;
+}
+
+#main-content {
+    margin: 3% auto;
+}
+
+
+
+/** -- Section Styling -- **/
+
+section {
+    background: #FFFFFF;
+    min-width: 1040px;
+    margin: 30px;
+}
+
+.section-header {
+    background: rgb(72, 126, 179);
+    color: white;
+    font-weight: bold;
+    display: inline-block;
+    height: 50px;
+    width: 100%;
+    vertical-align: middle;
+}
+
+.section-header .left, .section-header .right {
+    width: 44%;
+    position: relative;
+    top: 50%;
+    padding: 0 3%;
+    display: inline-block;
+}
+
+.section-header .left {
+    left: 0;
+}
+.section-header .right {
+    right: 0;
+    text-align: right;
+}
+
+.section-header .left > *, .section-header .right > * {
+    transform: translate(0, -50%);
+}
+
+.section-content {
+    border: 1px solid #999;
+    border-top: 0;
+}
+
+
+
+/** -- Program List Styling -- **/
+
+table.program-list {
+    border-spacing: 30px;
+}
+
+.more-programs-button {
+    font-size: 15px;
+    border: none;
+    background: #487eb3;
+    color: #fdfaf7;
+    cursor: pointer;
+    padding: 10px;
+    margin-top: 10px;
+    width: 100%;
+}
+
+.more-programs-button:hover {
+    background: #4176a9;
+}
+
+
+
+/** -- Program Styling -- **/
+
+.program {
+    width: 200px;
+    border: 1px solid black;
+    padding: 10px;
+    border: 1px solid #999;
+    background: #fbfbfb;
+    box-shadow: 1px 3px 1px rgba(65, 118, 169, 0.75);
+}
+
+.program img {
+    width: 200px;
+    height: 200px;
+}
+
+.title-wrap {
+    height: 30px;
+    width: 100%;
+    text-align: center;
+}
+.program-title {
+    font-weight: bold;
+    color: black;
+    text-decoration: none;
+    font-size: 18px;
+}
+
+.program-author {
+    color: #505050;
+    margin: 5px;
+    margin-left: 0;
+    /*text-decoration: none;
+    border-bottom: solid 1px #333333;*/
+}
+
+.program-link {
+    display: block;
+}
+
+.vote-info {
+    width: 100%;
+}
+
+.vote-stat:first-child {
+    text-align: left;
+}
+.vote-stat {
+    text-align: center;
+}
+.vote-stat:last-child {
+    text-align: right;
+}
+
+.vote-stat i {
+    display: inline-block;
+    width: 20px;
+    height: 16px;
+}
+
+/** -- Button Styling -- **/
+/*TODO hover button color*/
+.button {
+    display: block;
+    text-align: center;
+    background: #487eb3;
+    color: white;
+    text-decoration: none;
+    padding: 15px;
+    margin: 15px;
+    transition: background 0.1s;
+}
+.button.half:first-child {
+    margin-bottom: 100px;
+}
+.button.half:last-child {
+    margin-top: 100px;
+}
+
+.button:hover {
+    background-color: #235a87;
+}
+
+.welcome {
+    position: relative;
+}
+
+.welcome .button {
+    float: right;
+}
+
+.welcome .button-wrap {
+    position: absolute;
+    right: 30px;
+    top: 50%;
+    transform: translate(0, -50%);
+}
+
+.program.button-wrap {
+    border: none;
+    box-shadow: none;
+    background: none;
+}
+
+.copy {
+    padding: 15px;
+    margin: 15px;
+    display: inline-block;
+    vertical-align: middle;
+}
+
+#banner .section-header {
+    height: 100px;
+}
+
+#banner img {
+    height: 20px;
+}
+
+#banner .button-wrap {
+    display: block;
+    transform: translate(0, -75%);
+}
+
+#banner .button {
+    display: inline;
+    background: rgb(247, 250, 255);
+    color: #4176a9;
+    padding: 10px 15px;
+    cursor: pointer;
+}
+
+#banner .button:hover {
+    background: rgba(247, 250, 255, 0.8)
+}
