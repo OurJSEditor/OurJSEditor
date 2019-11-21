@@ -23,6 +23,7 @@
 }
 
 .user-info-button {
+    font-family: Helvetica, Arial, sans-serif;
     color: white;
     background: rgb(65, 118, 169);
     padding: 10px 15px;
