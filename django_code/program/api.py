@@ -147,9 +147,6 @@ def program_list(request, sort):
     except ValueError as e:
         return api.error(str(e))
 
-    program_dicts = []
-    for program in programs:
-        program = program.to_dict(include_code=False)
-        program_dicts.append(program)
+    program_dicts = [p.to_dict(include_code=False) for p in programs]
 
     return api.succeed({"sort": sort, "programs": program_dicts})

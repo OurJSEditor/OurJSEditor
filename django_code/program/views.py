@@ -59,10 +59,7 @@ def program_list (request, sort):
     except ValueError:
         return redirect("/programs")
 
-    program_dicts = []
-    for program in programs:
-        program = program.to_dict(include_code=False)
-        program_dicts.append(program)
+    program_dicts = [p.to_dict(include_code=False) for p in programs]
     
     #TODO: complete? Right now we don't track that
     return render(request, "program/list.html", {
