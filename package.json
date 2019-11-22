@@ -23,10 +23,10 @@
     "babel-loader": "^7.1.5",
     "babel-preset-react": "^6.24.1",
     "babel-preset-es2015": "^6.24.1",
-    "preact": "^8.4.2",
     "promise-polyfill": "^8.1.0",
-    "webpack": "^4.29.3",
-    "webpack-cli": "^3.2.3",
+    "preact": "^8.5.2",
+    "webpack": "^4.41.2",
+    "webpack-cli": "^3.3.9",
     "whatwg-fetch": "^3.0.0"
   },
   "devDependencies": {}
