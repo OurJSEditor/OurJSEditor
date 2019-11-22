@@ -27,9 +27,9 @@ def index(request, username):
         if request.user.is_authenticated:
             user_data["subscribed"] = request.user.profile.subscriptions.filter(profile_id=user.profile.profile_id).exists();
 
-        return render(request, 'user_profile/user_profile.html', user_data)
+        return render(request, 'user_profile/user-profile.html', user_data)
     except User.DoesNotExist:
-        return render(request, 'user_profile/doesNotExist.html', {'username': username}, status=404)
+        return render(request, 'user_profile/does-not-exist.html', {'username': username}, status=404)
 
 def edit(request, username):
     if (request.method == 'POST'):
@@ -53,8 +53,8 @@ def edit(request, username):
         try:
             user = User.objects.select_related('profile').get(username=username)
             if (user.username == request.user.username):
-                return render(request, 'user_profile/user_profile.html', {'editing': True})
+                return render(request, 'user_profile/user-profile.html', {'editing': True})
             else:
-                return render(request, 'user_profile/accessDenied.html', {'username': username}, status=403)
+                return render(request, 'user_profile/access-denied.html', {'username': username}, status=403)
         except User.DoesNotExist:
-            return render(request, 'user_profile/doesNotExist.html', {'username': username}, status=404)
+            return render(request, 'user_profile/does-not-exist.html', {'username': username}, status=404)
