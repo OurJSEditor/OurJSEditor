@@ -158,6 +158,10 @@ table.program-list {
     padding: 15px;
     margin: 15px;
     transition: background 0.1s;
+    outline: none;
+    cursor: pointer;
+    border: none;
+    font-family: Helvetica, Arial, sans-serif;
 }
 .button.half:first-child {
     margin-bottom: 100px;

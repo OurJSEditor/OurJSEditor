@@ -1,10 +1,12 @@
 import re
+import json
+
 from django.shortcuts import render, redirect
 from django.contrib.auth.models import User
 from django.http import HttpResponse
+from django.db.models import Q
 
-from program.models import Program
-from vote.models import vote_types
+from program.models import get_programs
 from ourjseditor.funcs import check_username
 
 # Create your views here.
@@ -15,13 +17,14 @@ def index(request, username):
     try:
         user = User.objects.select_related('profile').get(username=username)
 
+        programs = get_programs("top", Q(user=user), published_only=False, limit=1000)
+        program_dicts = [p.to_dict(include_code=False) for p in programs]
+
         user_data = {
             'user': user,
             'currentUser': request.user,
             'editing': False,
-            'user_programs': sorted(  #Sorts based off of sum of votes in all three categories
-                Program.objects.filter(user=user), reverse=True,
-                key=lambda program: sum([getattr(program, t + "_votes") for t in vote_types]))
+            'user_programs': json.dumps(program_dicts)
         }
 
         if request.user.is_authenticated:

@@ -5,6 +5,9 @@ export default function Program (props) {
     
     const voteTypes = Object.keys(program.votes);
     
+    //Default to true
+    const shouldShowAuthorName = typeof props.shouldShowAuthorName === "undefined" ? true : props.shouldShowAuthorName;
+    
     const iconClasses = {
         "informative": "icon icon-graduation-cap",
         "entertaining": "icon icon-gamepad",
@@ -25,7 +28,9 @@ export default function Program (props) {
                 } />
             </a>
             
-            <a className="program-author program-link" href={"/user/" + program.author.username}>{program.author.displayName}</a>
+            { shouldShowAuthorName ? 
+                <a className="program-author program-link" href={"/user/" + program.author.username}>{program.author.displayName}</a>
+            : null }
             
             <table class="vote-info"><tbody>
                 <tr>

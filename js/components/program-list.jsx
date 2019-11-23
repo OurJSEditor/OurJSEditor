@@ -25,16 +25,18 @@ export default class ProgramList extends Preact.Component {
 
         this.api = new Api();
         this.baseUrl = props.baseUrl ? props.baseUrl : "/api/programs/";
-
-        this.state.sort = props.sort;
+        this.title = props.title;
+        this.shouldUpdateURL = props.shouldUpdateURL;
+        this.shouldShowAuthorName = props.shouldShowAuthorName;
 
         this.state.numCols = 4;
 
+        this.state.sort = props.sort;
         this.state.programList = props.initialProgramList;
         cachedProgramLists[this.state.sort] = this.state.programList;
 
         if (this.state.programList.length === 0) {
-            console.error("Just loaded with no programs. This shouldn't happen");
+            console.error("Just loaded with no programs. This shouldn't happen.");
             this.loadMorePrograms();
         }
 
@@ -62,7 +64,7 @@ export default class ProgramList extends Preact.Component {
                 "sort": sort
             });
 
-            if (window.history.replaceState && window.location.pathname !== "/programs/" + sort) {
+            if (this.shouldUpdateURL && window.history.replaceState && window.location.pathname !== "/programs/" + sort) {
                 window.history.replaceState({"sort": newSort}, document.title, "/programs/" + sort);
             }
         }).catch(err => {
@@ -91,7 +93,7 @@ export default class ProgramList extends Preact.Component {
                 "hasShowMoreButton": !cachedProgramLists[newSort].complete
             })
 
-            if (window.history.replaceState && window.location.pathname !== "/programs/" + newSort) {
+            if (this.shouldUpdateURL && window.history.replaceState && window.location.pathname !== "/programs/" + newSort) {
                 window.history.replaceState({"sort": newSort}, document.title, "/programs/" + newSort);
             }
         }
@@ -118,12 +120,12 @@ export default class ProgramList extends Preact.Component {
 
         return (
             <div id="program-list">
-                <PageSection title="Program List" headerRight={sortSelector}>
+                <PageSection title={this.title} headerRight={sortSelector}>
                     <table className="program-list"><tbody>{
                         programRows.map(row => (
                             <tr>{
                                 row.map(program => (
-                                    <Program program={program} />
+                                    <Program program={program} shouldShowAuthorName={this.shouldShowAuthorName}/>
                                 ))
                             }</tr>
                         ))

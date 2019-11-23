@@ -1,6 +1,5 @@
 <!DOCTYPE html>
 <html><head>
-    <link rel="stylesheet" type="text/css" href="/static/styles/user-profile.css">
     {% if editing %}
         <title id="title-tag">Editing {{ user.username }}'s profile &mdash; OurJSEditor</title>
         <script>
@@ -10,90 +9,77 @@
     {% else %}
         <title id="title-tag">Profile for {{ user.username }} &mdash; OurJSEditor</title>
     {% endif %}
+    <link rel="stylesheet" type="text/css" href="/static/styles/program-sections.css">
+    <link rel="stylesheet" type="text/css" href="/static/styles/user-profile.css">
 </head>
 <body>
     {% include "../ourjseditor/user-info.html" %}
-    <table class="main-table profile">
-        {% if editing %}
-            <form method="POST" id="profileForm" onsubmit="return checkForm()">
-            {% csrf_token %}
-        {% endif %}
-        <tbody>
-            <tr>
-                <td class="name">
-                    <div class="display-name">
-                        {% if editing %}
-                            <input class="name-edit" type="text" name="display_name" value="{{ user.profile.display_name }}" placeholder="Display Name" maxlength="45">
-                        {% else %}
-                            {{ user.profile.display_name }}
-                        {% endif %}
-                    </div>
-                    <div class="username">
-                        {% if editing %}
-                            <input class="name-edit" type="text" name="username" value="{{ user.username }}" placeholder="Username" onkeyup="checkUsername()" id="username" maxlength="45">
-                            <b id="available"></b><br>
-                        {% else %}
-                            {{ user.username }}
-                        {% endif %}
-                    </div>
-                </td>
-            </tr>
-            <tr>
-                <td>
-                    <p class="bio">
-                        {% if editing %}
-                            <textarea class="bio-edit" name="bio" placeholder="Tell everyone about yourself." maxlength="500">{{ user.profile.bio }}</textarea>
-                        {% else %}
-                            {{ user.profile.bio|linebreaksbr }}
-                        {% endif %}
-                    </p>
-                </td>
-            </tr>
-            <tr>
-                <td class="edit-wrap">
-                    {% if editing %}
-                        <i id="loginT" style="color:red;"></i>
-                        <a href="/user/{{ user.username }}" class="button profile-edit">Cancel changes</a>
-                        <input type="submit" value="Update Your Profile" class="button profile-edit">
-                    {% elif user.username == currentUser.username %}
-                        <a href="/user/{{ user.username }}/edit" class="button profile-edit">Edit Your Profile</a>
-                        <a href="/user/logout" class="button logout">Logout</a>
-                    {% else %}
-                        <button id="subscribe-button" class="button{% if subscribed %} subscribed{% endif %}">Subscribe</button>
-                    {% endif %}
-                </td>
-            </tr>
-        </tbody>
-        {% if editing %}
-            </form>
-        {% endif %}
-    </table>
-
-    <!-- TODO: React rewrite -->
-    {% if not editing %}
-        <table class="main-table programs">
-            {% for program in user_programs %}
+    <section>
+        <table class="main-table profile">
+            {% if editing %}
+                <form method="POST" id="profileForm" onsubmit="return checkForm()">
+                {% csrf_token %}
+            {% endif %}
+            <tbody>
                 <tr>
-                    <td>
-                        <a class="program-link" href="/program/{{ program.program_id }}">{{ program.title }}</a>
+                    <td class="name">
+                        <div class="display-name">
+                            {% if editing %}
+                                <input class="name-edit" type="text" name="display_name" value="{{ user.profile.display_name }}" placeholder="Display Name" maxlength="45">
+                            {% else %}
+                                {{ user.profile.display_name }}
+                            {% endif %}
+                        </div>
+                        <div class="username">
+                            {% if editing %}
+                                <input class="name-edit" type="text" name="username" value="{{ user.username }}" placeholder="Username" onkeyup="checkUsername()" id="username" maxlength="45">
+                                <b id="available"></b><br>
+                            {% else %}
+                                {{ user.username }}
+                            {% endif %}
+                        </div>
                     </td>
-
-                    <td class="vote-stat">Entertaining:  {{ program.entertaining_votes }}</td>
-                    <td class="vote-stat">Artistic:  {{ program.artistic_votes }}</td>
-                    <td class="vote-stat">Informative:  {{ program.informative_votes }}</td>
                 </tr>
-            {% empty %}
                 <tr>
                     <td>
-                        {% if user.username == currentUser.username %}
-                            You don't have any programs. Try <a href="/new">making one</a>.
+                        <p class="bio">
+                            {% if editing %}
+                                <textarea class="bio-edit" name="bio" placeholder="Tell everyone about yourself." maxlength="500">{{ user.profile.bio }}</textarea>
+                            {% else %}
+                                {{ user.profile.bio|linebreaksbr }}
+                            {% endif %}
+                        </p>
+                    </td>
+                </tr>
+                <tr>
+                    <td class="edit-wrap">
+                        {% if editing %}
+                            <i id="loginT" style="color:red;"></i>
+                            <a href="/user/{{ user.username }}" class="button profile-edit">Cancel changes</a>
+                            <input type="submit" value="Update Your Profile" class="button profile-edit">
+                        {% elif user.username == currentUser.username %}
+                            <a href="/user/{{ user.username }}/edit" class="button profile-edit">Edit Your Profile</a>
+                            <a href="/user/logout" class="button logout">Logout</a>
                         {% else %}
-                            {{ user.profile.display_name }} doesn't have any programs.
+                            <button id="subscribe-button" class="button{% if subscribed %} subscribed{% endif %}">Subscribe</button>
                         {% endif %}
                     </td>
                 </tr>
-            {% endfor %}
+            </tbody>
+            {% if editing %}
+                </form>
+            {% endif %}
         </table>
+    </section>
+
+    {% if not editing %}
+        <div class="programs" id="main-table"></div>
+        
+        <script>
+            window.initialProgramList = JSON.parse("{{ user_programs|escapejs }}");
+        </script>
+        
+        <script src="/static/scripts/components/user-profile.js"></script>
     {% endif %}
 
     <script>

@@ -1,28 +1,17 @@
 body {
     background-color: #161E2C;
-    font-family: sans-serif;
+    font-family: Helvetica, Arial, sans-serif;
     margin: 0;
 }
 
 .main-table {
-    width: 70%;
-    max-width: 70%;
+    width: 100%;
     background: white;
     border-spacing: 20px;
-    padding: 0px;
-    margin: 20px;
-    margin-left: 15%;
 }
 
-.main-table.programs td {
-    padding: 10px;
-}
-
-.program-link {
-    text-decoration: none;
-    border-bottom: 1px solid rgb(148, 148, 148);
-    padding: 1px 5px 1px 2px;
-    color: black;
+.page-section {
+    margin: 0;
 }
 
 .name {
@@ -56,21 +45,10 @@ body {
 
 .button {
     font-size: 1.2em;
-    font-family: sans-serif;
-    width: 100%;
-    color: white;
     background: #337ab7;
-    border: none;
-    transition: 0.2s;
-    text-decoration: none;
-    outline: none;
     padding: 3px 10px;
-    width: initial;
-}
-
-.button:hover {
-    background-color: #235a87;
-    cursor: pointer;
+    margin: 0;
+    display: inline-block;
 }
 
 .logout {
@@ -116,15 +94,9 @@ body {
     color: rgb(232, 232, 232);
 }
 
-.name-edit::placeholder {
-    color: rgb(232, 232, 232);
-}
-.name-edit::-webkit-input-placeholder {
-    color: rgb(232, 232, 232);
-}
-.name-edit::-moz-placeholder {
-    color: rgb(232, 232, 232);
-}
+.name-edit::placeholder,
+.name-edit::-webkit-input-placeholder,
+.name-edit::-moz-placeholder,
 .name-edit:-ms-input-placeholder {
     color: rgb(232, 232, 232);
 }
