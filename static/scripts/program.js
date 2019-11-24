@@ -697,26 +697,23 @@ document.addEventListener("DOMContentLoaded", function() {
     jsEditor = ace.edit("js-editor");
     jsEditor.getSession().setMode("ace/mode/javascript");
 
-    var editors = [jsEditor, cssEditor, htmlEditor];
-
-    for (var i = 0; i < editors.length; i++) {
-        editors[i].commands.addCommand({
-            name: "runProgram",
-            bindKey: {win: "Ctrl-alt-r", mac: "Command-alt-r"},
-            exec: function () {
+    document.addEventListener("keydown", function (e) {
+        //cmd/ctrl/shift + enter to run
+        if (e.key ? (e.key === "Enter") : (e.keyCode === 13)) {
+            if (e.metaKey || e.ctrlKey || e.shiftKey) {
                 runProgram();
+                e.preventDefault() && e.stopPropagation();
             }
-        });
-        editors[i].commands.addCommand({
-            name: "save",
-            bindKey: {win: "Ctrl-s", mac: "Command-s"},
-            exec: function () {
+        }else if (e.key ? (e.key === "s") : (e.keyCode === 83)) {
+            //cmd/ctrl + s to save
+            if (e.metaKey || e.ctrlKey) {
                 save(false);
+                e.preventDefault() && e.stopPropagation();
             }
-        });
-    }
+        }
+    })
 
-    document.getElementById("editor-settings").appendChild(initEditorSettings(document.getElementById("editor-settings-button"), editors));
+    document.getElementById("editor-settings").appendChild(initEditorSettings(document.getElementById("editor-settings-button"), [jsEditor, cssEditor, htmlEditor]));
 
     // Together Button
     document.getElementById("btnTogether").addEventListener("click", function(event) {
