@@ -71,13 +71,14 @@ def new_comment(request, program_id):
                 source_comment = comment
             )
 
-        #Notify the original comment creator seperately
-        Notif.objects.create(
-            target_user = parent_comment.user, link = link,
-            description = "<strong>{0}</strong> replied to your comment on <strong>{1}</strong>".format(
-                escape(request.user.profile.display_name), escape(program.title)),
-            source_comment = comment
-        )
+        #Notify the original comment creator separately, if that's not the same person that posted this reply
+        if (parent_comment.user != comment.user):
+            Notif.objects.create(
+                target_user = parent_comment.user, link = link,
+                description = "<strong>{0}</strong> replied to your comment on <strong>{1}</strong>".format(
+                    escape(request.user.profile.display_name), escape(program.title)),
+                source_comment = comment
+            )
 
     response = api.succeed({"id": comment.comment_id}, status=201)
     response["Location"] = link
