@@ -8,7 +8,7 @@ def count_votes(apps, schema_editor):
     Program = apps.get_model("program", "Program")
     Vote = apps.get_model("vote", "Vote")
 
-    vote_types = ["artistic", "entertaining", "informative"];
+    vote_types = ["artistic", "entertaining", "informative"]
 
     for program in Program.objects.all():
         for t in vote_types:

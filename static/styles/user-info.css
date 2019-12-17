@@ -57,7 +57,7 @@
     background: white;
     border-left: 2px solid #999999;
     text-align: left;
-    overflow-x: hidden; 
+    overflow-x: hidden;
 }
 
 #notif-panel:not(.closed) {
@@ -137,5 +137,5 @@
 footer {
     min-height: 50px;
     width: 100%;
-    display: block; 
+    display: block;
 }

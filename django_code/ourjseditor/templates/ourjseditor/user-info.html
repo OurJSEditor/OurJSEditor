@@ -18,11 +18,11 @@
     <span class="user-info-element">
         <a class="user-info-button" href="/">Home</a>
     </span><!--
-        
+
     --><span class="user-info-element">
         <a class="user-info-button" href="/new">New</a>
     </span>
-    
+
     <span class="user-info-element">
         <a class="user-info-button" href="/user/{{ request.user.username|default:"login" }}"><span class="icon icon-user"></span> {{ request.user.profile.display_name|default:"Login" }}</a>
     </span><!--
@@ -43,7 +43,7 @@
             </div>
         </div>
     </span>
-    
+
     <script>
         {% load notifications %}
 

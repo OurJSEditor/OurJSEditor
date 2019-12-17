@@ -28,7 +28,7 @@ def index(request, username):
         }
 
         if request.user.is_authenticated:
-            user_data["subscribed"] = request.user.profile.subscriptions.filter(profile_id=user.profile.profile_id).exists();
+            user_data["subscribed"] = request.user.profile.subscriptions.filter(profile_id=user.profile.profile_id).exists()
 
         return render(request, 'user_profile/user-profile.html', user_data)
     except User.DoesNotExist:
@@ -47,9 +47,9 @@ def edit(request, username):
            return HttpResponse('null', content_type="application/json", status=400)
        if (display_name == ''):
            display_name = username
-       request.user.username = username;
-       request.user.profile.display_name = display_name;
-       request.user.profile.bio = bio;
+       request.user.username = username
+       request.user.profile.display_name = display_name
+       request.user.profile.bio = bio
        request.user.save()
        return redirect("/user/" + username)
     else:

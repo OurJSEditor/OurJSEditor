@@ -238,7 +238,7 @@ return function (toggleButton, editors) {
 
             container.appendChild(table).appendChild(rowEl);
         }
-        
+
         //Create a code beautify button:
         var beautify = document.createElement("button");
         beautify.textContent = "Beautify Code";
@@ -248,10 +248,10 @@ return function (toggleButton, editors) {
                 "ace/mode/html": html_beautify,
                 "ace/mode/css": css_beautify
             }
-            
+
             for (var i = 0; i < editors.length; i++) {
                 var mode = editors[i].getSession().$modeId;
-                
+
                 var newCode = beautifiersByMode[mode](editors[i].getSession().getValue(), {
                     "indent_size": currentOptions.useSoftTabs ? currentOptions.tabSize : 1,
                     "indent_char": currentOptions.useSoftTabs ? " " : "\t",
@@ -263,7 +263,7 @@ return function (toggleButton, editors) {
             }
         });
         container.appendChild(beautify);
-        
+
         return container;
     }
 

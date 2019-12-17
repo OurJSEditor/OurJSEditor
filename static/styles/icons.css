@@ -18,15 +18,15 @@
     display: inline-block;
     width: 1em;
 /*    height: 20px;*/
-    
+
     text-align: center;
-    
+
     /* For safety - reset parent styles, that can break glyph codes*/
     font-variant: normal;
     text-transform: none;
-    
+
     /* font-size: 120%; */
-    
+
     /* Font smoothing. That was taken from TWBS */
     -webkit-font-smoothing: antialiased;
     -moz-osx-font-smoothing: grayscale;

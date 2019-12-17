@@ -8,7 +8,7 @@ from vote.models import Vote, vote_types
 import json
 import re
 import os
-    
+
 with open(os.path.join(os.path.dirname(__file__), 'templates.json'), "r") as data_file:
     data_str = re.sub(r"\\\n", r"\\n", data_file.read())
     program_templates = json.loads(data_str)

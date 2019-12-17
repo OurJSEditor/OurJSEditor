@@ -23,10 +23,10 @@ export function PageSection(props) {
 export default class Home extends Preact.Component {
     constructor (props) {
         super(props);
-        
+
         this.loggedIn = props.loggedIn;
     }
-    
+
     render () {
         return (
             <div>
@@ -38,15 +38,15 @@ export default class Home extends Preact.Component {
                             <a className="button" href="https://github.com/OurJSEditor/OurJSEditor">GITHUB</a>
                         </span>
                     }/>
-            
+
                 <PageSection id="user-specific" title={this.loggedIn ? "You were working on" : "Welcome to OurJSEditor"}>
-                        { this.loggedIn ? 
+                        { this.loggedIn ?
                             <table className="program-list">
                                 <tr>
                                     {
                                         programs.recent.map(program => <Program program={program} />)
                                     }
-                                    
+
                                     <td className="button-wrap program">
                                         <a className="button half" href="/new">New program</a>
                                         <a className="button half" href={"/user/" + userData.username}>All your programs</a>
@@ -70,7 +70,7 @@ export default class Home extends Preact.Component {
                             </div>
                         }
                 </PageSection>
-            
+
                 <PageSection id="popular" title="Popular Programs">
                     <table className="program-list">
                         <tr>
@@ -83,8 +83,8 @@ export default class Home extends Preact.Component {
                         </tr>
                     </table>
                 </PageSection>
-            
-                { this.loggedIn ? 
+
+                { this.loggedIn ?
                 <PageSection id="subscriptions" title="Recent from your subscriptions">
                     <table className="program-list">
                         <tr>

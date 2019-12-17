@@ -11,7 +11,7 @@ from vote.models import vote_types
 
 def generate_id():
     from ourjseditor.funcs import get_id
-    return get_id();
+    return get_id()
 
 def get_default_user():
     return User.objects.get(username="admin")
@@ -65,20 +65,20 @@ class Program(models.Model):
             },
             "created": self.created.replace(microsecond=0).isoformat() + "Z",
             "parent": parent,
-            
+
             "title": self.title,
-            
+
             "lastPublished": last_published,
             "thumbnailUrl": self.image.url,
-            
+
             "votes": dict([(t, getattr(self, t + "_votes")) for t in vote_types])
         }
-            
+
         if (include_code):
             program_dict["js"] = self.js
             program_dict["html"] = self.html
             program_dict["css"] = self.css
-            
+
         return program_dict
 
 # Called from:
@@ -92,7 +92,7 @@ class Program(models.Model):
 # e.g. get_programs("top", Q(author=User.objects.get(username="Matthias")), published_only=True)
 def get_programs(sort, filters=None, offset=0, limit=20, published_only=True):
     programs = Program.objects
-    
+
     if (published_only):
         programs = programs.filter(last_published__isnull=False)
 

@@ -1,7 +1,7 @@
-# A file to store miscillaneous functions that are accessed by multiple files and apps
+# A file to store miscellaneous functions that are accessed by multiple files and apps
 # TODO: Rename this file to "util.py" and fix imports
 
-chars = "abcdefghijklmnopqrstuvwzyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789_-"
+chars = "abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789_-"
 reserved_ids = ["ourjse"]
 from django.contrib.auth.models import User
 
@@ -29,9 +29,9 @@ def get_as_int(dict_like, key, default_value):
         value = int(value)
     except ValueError:
         value = default_value
-    
+
     return value
-        
+
 # TODO: Move to user_profile code
 # Validates a username
 def check_username(test_username, current_username):
@@ -45,7 +45,7 @@ def check_username(test_username, current_username):
         (test_username == current_username or not User.objects.filter(username=test_username).exists()) and
         not Program.objects.filter(program_id=test_username).exists() and
         not Profile.objects.filter(profile_id=test_username).exists()
-        )
+    )
 
 #Loosely adapted from https://github.com/encode/django-rest-framework/pull/1268
 from django.core.files.base import ContentFile
@@ -61,7 +61,7 @@ def base64toImageFile(imageData, file_name):
     except: # Error on `unicode` if we're in Python 3, then we need to check if it's a str
         if (not isinstance(imageData, str)):
             return
-            
+
     header = None
 
     # Check if the base64 string is in the "data:" format
@@ -77,7 +77,7 @@ def base64toImageFile(imageData, file_name):
     decoded_file = base64.b64decode(imageData)
 
     # Verify image, adapted from https://github.com/django/django/blob/master/django/forms/fields.py#L629
-    image_data_bytes = BytesIO(decoded_file);
+    image_data_bytes = BytesIO(decoded_file)
     image = Image.open(image_data_bytes)
     image.verify()
 

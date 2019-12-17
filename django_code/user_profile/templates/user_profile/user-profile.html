@@ -74,16 +74,16 @@
 
     {% if not editing %}
         <div class="programs" id="main-table"></div>
-        
+
         <script>
             window.initialProgramList = JSON.parse("{{ user_programs|escapejs }}");
         </script>
-        
+
         <script src="/static/scripts/components/user-profile.js"></script>
     {% endif %}
 
     <script>
-        var subscribeButton = document.getElementById("subscribe-button")
+        var subscribeButton = document.getElementById("subscribe-button");
         if (subscribeButton) {
             var subscribed = subscribeButton.classList.contains("subscribed");
 

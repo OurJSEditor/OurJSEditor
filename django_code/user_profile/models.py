@@ -8,7 +8,7 @@ from django.dispatch import receiver
 def generate_id():
     from ourjseditor.funcs import get_id
 
-    return get_id();
+    return get_id()
 
 class Profile(models.Model):
     user = models.OneToOneField(User, on_delete=models.CASCADE)

@@ -22,7 +22,7 @@ def get_user(user_id, and_profile=True):
             return User.objects.select_related('profile').get(username=user_id)
         else:
             return User.objects.get(username=user_id)
-    
+
 #/api/user/USERNAME
 @api.standardAPIErrors("GET","PATCH","DELETE")
 def user(request, user_id):
@@ -106,22 +106,20 @@ def program_list(request, user_id, sort):
     if request.method == "POST":
         # It seems intutive that POSTing here would make a new program. However, that is not the case
         return api.error("Make a new program by posting to /api/program/new")
-    
+
     requested_user = get_user(user_id, and_profile=False)
-        
+
     offset = get_as_int(request.GET, "offset", 0)
     limit = get_as_int(request.GET, "limit", 20)
-    
+
     if (limit > 20 or limit <= 0):
         limit = 20
-        
+
     try:
         programs = get_programs(sort, Q(user=requested_user), offset=offset, limit=limit, published_only=False)
     except ValueError as e:
         return api.error(str(e))
-        
+
     program_dicts = [p.to_dict(include_code=False) for p in programs]
-        
+
     return api.succeed({"sort": sort, "programs": program_dicts})
-    
-    

@@ -91,7 +91,7 @@ export default class ProgramList extends Preact.Component {
                 "sort": newSort,
                 "programList": cachedProgramLists[newSort],
                 "hasShowMoreButton": !cachedProgramLists[newSort].complete
-            })
+            });
 
             if (this.shouldUpdateURL && window.history.replaceState && window.location.pathname !== "/programs/" + newSort) {
                 window.history.replaceState({"sort": newSort}, document.title, "/programs/" + newSort);

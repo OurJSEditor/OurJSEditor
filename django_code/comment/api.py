@@ -33,7 +33,7 @@ def new_comment(request, program_id):
         parent_comment.reply_count += 1
         parent_comment.save()
 
-    program = Program.objects.get(program_id = program_id);
+    program = Program.objects.get(program_id = program_id)
 
     comment = Comment.objects.create(
         user = request.user,
@@ -44,7 +44,7 @@ def new_comment(request, program_id):
         original_content = data["content"],
     )
 
-    link = "/program/{0}#comment-{1}".format(comment.program.program_id, comment.comment_id);
+    link = "/program/{0}#comment-{1}".format(comment.program.program_id, comment.comment_id)
 
     if (depth == 0):
         if (program.user != comment.user):
@@ -120,8 +120,8 @@ def comment(request, *args):
 
         parent = requested_comment.parent
         if (parent is not None):
-            parent.reply_count -= 1;
-            parent.save();
+            parent.reply_count -= 1
+            parent.save()
 
         requested_comment.delete()
 
