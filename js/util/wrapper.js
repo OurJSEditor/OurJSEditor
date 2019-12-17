@@ -39,5 +39,8 @@ export default class Api {
             { displayName, username, password }, this.csrf);
     }
 
+    getPrograms(src, offset = 0, limit = 20) {
+        //TODO: way of auto-encoding queryParams?
+        return fetch(`${src}?offset=${offset}&limit=${limit}`).then(json).then(res => res.programs);
     }
 }
