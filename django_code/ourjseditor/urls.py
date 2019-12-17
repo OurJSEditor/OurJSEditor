@@ -15,7 +15,6 @@ Including another URLconf
 """
 
 from django.conf.urls import url, include
-from django.contrib import admin
 
 from . import views
 
@@ -71,7 +70,6 @@ api_urls = [
 ]
 
 urlpatterns = [
-    url(r'^admin/', admin.site.urls),
     url(r'^api/', include(api_urls)),
     url(r'^new$', new_program_view, name="new-program"),
     url(r'^program', include('program.urls')),

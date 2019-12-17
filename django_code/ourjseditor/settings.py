@@ -28,15 +28,12 @@ DEBUG = True
 
 ALLOWED_HOSTS = ['www.ourjseditor.com', 'ourjseditor.com','45.56.88.22','localhost','127.0.0.1']
 
-
 # Application definition
 
 INSTALLED_APPS = [
-    'django.contrib.admin',
     'django.contrib.auth',
     'django.contrib.contenttypes',
     'django.contrib.sessions',
-    'django.contrib.messages',
     'django.contrib.staticfiles',
     'django.contrib.sites',
     'django.contrib.redirects',
@@ -56,7 +53,6 @@ MIDDLEWARE = [
     'ourjseditor.middleware.RemoveSlashMiddleware',
     'django.middleware.csrf.CsrfViewMiddleware',
     'django.contrib.auth.middleware.AuthenticationMiddleware',
-    'django.contrib.messages.middleware.MessageMiddleware',
     'django.middleware.clickjacking.XFrameOptionsMiddleware',
     'django.contrib.redirects.middleware.RedirectFallbackMiddleware',
 ]
