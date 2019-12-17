@@ -76,7 +76,10 @@
         <div class="programs" id="main-table"></div>
 
         <script>
-            window.initialProgramList = JSON.parse("{{ user_programs|escapejs }}");
+            window.listOptions = JSON.parse("{{ listOptions|escapejs }}");
+            window.user = {
+                id: "{{ user.profile.profile_id }}"
+            };
         </script>
 
         <script src="/static/scripts/components/user-profile.js"></script>

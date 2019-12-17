@@ -12,8 +12,7 @@
     {% include "../ourjseditor/user-info.html" %}
 
     <script>
-        window.initialProgramList = JSON.parse("{{ programs|escapejs }}");
-        window.sort = "{{ sort|escapejs }}";
+        window.listOptions = JSON.parse("{{ listOptions|escapejs }}");
     </script>
     <script src="/static/scripts/components/program-list-page.js"></script>
 </body>

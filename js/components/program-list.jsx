@@ -27,12 +27,13 @@ export default class ProgramList extends Preact.Component {
         this.baseUrl = props.baseUrl ? props.baseUrl : "/api/programs/";
         this.title = props.title;
         this.shouldUpdateURL = props.shouldUpdateURL;
-        this.shouldShowAuthorName = props.shouldShowAuthorName;
+        this.shouldShowAuthorName = props.shouldShowAuthorName; //This gets passed through to Program, where it defaults to true
 
         this.state.numCols = 4;
 
-        this.state.sort = props.sort;
-        this.state.programList = props.initialProgramList;
+        this.state.sort = props.listOptions.sort;
+        this.state.programList = props.listOptions.initialPrograms;
+        this.perPage = props.listOptions.perPage;
         cachedProgramLists[this.state.sort] = this.state.programList;
 
         if (this.state.programList.length === 0) {
@@ -40,10 +41,11 @@ export default class ProgramList extends Preact.Component {
             this.loadMorePrograms();
         }
 
-        this.state.hasShowMoreButton = props.initialProgramList.length >= 20;
-        if (props.initialProgramList.length < 20) {
-            cachedProgramLists[this.state.sort].complete = true;
+        if (this.state.programList.length <= this.perPage) {
+            this.state.programList.complete = true;
         }
+        //hasShowMoreButton should always be the opposite of whether the current programList this.state.programList is complete
+        this.state.hasShowMoreButton = !this.state.programList.complete;
     }
 
     loadMorePrograms (newSort) {
@@ -51,10 +53,10 @@ export default class ProgramList extends Preact.Component {
 
         const programList = cachedProgramLists[sort];
 
-        this.api.getPrograms(this.baseUrl + sort, programList.length).then(newPrograms => {
+        this.api.getPrograms(this.baseUrl + sort, programList.length, this.perPage).then(newPrograms => {
             programList.push(...newPrograms);
 
-            if (newPrograms.length < 20) {
+            if (newPrograms.length < this.perPage) {
                 this.setState({ "hasShowMoreButton": false });
                 programList.complete = true;
             }
@@ -102,8 +104,12 @@ export default class ProgramList extends Preact.Component {
     render () {
         const programRows = [];
 
+
+        //Ignore the last program (which we use to keep track of if we have more programs), if we haven't completed the current list
+        let numPrograms = this.state.programList.length - (this.state.programList.complete ? 0 : 1);
+
         //Collect array into sub arrays of four (or numCols)
-        for (let i = 0; i < this.state.programList.length; i ++) {
+        for (let i = 0; i < numPrograms; i ++) {
             if (i % this.state.numCols === 0) {
                 programRows.push([]);
             }

@@ -54,17 +54,21 @@ def program_list (request, sort):
     if (not sort):
         sort = "new" # Default sort. sort is actually passed in as None, so we can't use an argument default
 
+    perPage = 20 # Per DRY, there should be one place that specifies how many items are on a page. It is here!
+
     try:
-        programs = get_programs(sort)
+        programs = get_programs(sort, limit=perPage + 1) # Load and pass one extra program
     except ValueError:
         return redirect("/programs")
 
     program_dicts = [p.to_dict(include_code=False) for p in programs]
-    
-    #TODO: complete? Right now we don't track that
+
     return render(request, "program/list.html", {
-        "programs": json.dumps(program_dicts),
-        "sort": sort
+        "listOptions" : json.dumps({
+            "initialPrograms": program_dicts,
+            "perPage": perPage,
+            "sort": sort
+        })
     })
 
 content_types = {

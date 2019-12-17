@@ -17,14 +17,20 @@ def index(request, username):
     try:
         user = User.objects.select_related('profile').get(username=username)
 
-        programs = get_programs("top", Q(user=user), published_only=False, limit=1000)
+        listOptions = {
+            'perPage': 50,
+            'sort': 'new' if user == request.user else 'top' #If you're looking at your own profile, show new programs
+        }
+
+        programs = get_programs(listOptions['sort'], Q(user=user), published_only=False, limit=listOptions['perPage'] + 1)
         program_dicts = [p.to_dict(include_code=False) for p in programs]
 
+        listOptions["initialPrograms"] = program_dicts
         user_data = {
             'user': user,
             'currentUser': request.user,
             'editing': False,
-            'user_programs': json.dumps(program_dicts)
+            'listOptions': json.dumps(listOptions)
         }
 
         if request.user.is_authenticated:
