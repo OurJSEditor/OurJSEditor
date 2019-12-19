@@ -1,10 +1,10 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
+    {% load static %}
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-
-    <link rel="stylesheet" type="text/css" href="/static/styles/program-sections.css">
+    <link rel="stylesheet" type="text/css" href="{% static 'program/program-sections.css' %}">
 
     <title id="title-tag">Our JS Editor</title>
 </head>
@@ -13,7 +13,7 @@
     <div id="main-content">
     </div>
 
-    {% include "../ourjseditor/user-info.html" %}
+    {% include "ourjseditor/user-info.html" %}
 
     <script>
         /*
@@ -25,6 +25,6 @@
         */
         window.programs = JSON.parse("{{ programs|escapejs }}")
     </script>
-    <script src="/static/scripts/components/home.js"></script>
+    <script src="{% static 'jsx-components/home.js' %}"></script>
 </body>
 </html>

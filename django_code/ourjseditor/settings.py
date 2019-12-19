@@ -24,7 +24,7 @@ BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 SECRET_KEY = config('SECRET_KEY')
 
 # SECURITY WARNING: don't run with debug turned on in production!
-DEBUG = False
+DEBUG = True
 
 ALLOWED_HOSTS = ['www.ourjseditor.com', 'ourjseditor.com','45.56.88.22','localhost','127.0.0.1']
 
@@ -151,24 +151,6 @@ STATICFILES_DIRS = ( os.path.join(os.path.dirname(BASE_DIR), "js/build/"), )
 
 # User uploaded files
 
-MEDIA_ROOT = os.path.join(os.path.dirname(BASE_DIR), "sandbox/programs/")
+MEDIA_ROOT = os.path.join(os.path.dirname(BASE_DIR), "sandbox/")
 
 MEDIA_URL = config("MEDIA_URL")
-
-# MEDIA_URL = '/static/media/'
-
-LOGGING = {
-    'version': 1,
-    'disable_existing_loggers': False,
-    'handlers': {
-        'console': {
-            'class': 'logging.StreamHandler',
-        },
-    },
-    'loggers': {
-        'django': {
-            'handlers': ['console'],
-            'level': 'INFO'
-        },
-    },
-}

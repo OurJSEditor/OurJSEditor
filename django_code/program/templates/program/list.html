@@ -1,9 +1,10 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
+    {% load static %}
     <meta charset="UTF-8">
     <title id="title-tag">Programs &mdash; OurJSEditor</title>
-    <link rel="stylesheet" type="text/css" href="/static/styles/program-sections.css">
+    <link rel="stylesheet" type="text/css" href="{% static 'program/program-sections.css' %}">
 </head>
 <body>
     <div id="main-content">
@@ -14,6 +15,6 @@
     <script>
         window.listOptions = JSON.parse("{{ listOptions|escapejs }}");
     </script>
-    <script src="/static/scripts/components/program-list-page.js"></script>
+    <script src="{% static 'jsx-components/program-list-page.js' %}"></script>
 </body>
 </html>
