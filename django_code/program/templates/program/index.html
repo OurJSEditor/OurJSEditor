@@ -1,34 +1,35 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
+    {% load static %}
     <meta charset="UTF-8">
     <title id="title-tag">New program &mdash; OurJSEditor</title>
 
     <!-- Ace Editor -->
-    <script src="/static/scripts/ace/ace.js" type="text/javascript" charset="utf-8"></script>
-    <script src="/static/scripts/ace/ext-language_tools.js" type="text/javascript" charset="utf-8"></script>
+    <script src="{% static 'program/ace/ace.js' %}" type="text/javascript" charset="utf-8"></script>
+    <script src="{% static 'program/ace/ext-language_tools.js' %}" type="text/javascript" charset="utf-8"></script>
     <!-- Markdown -->
     <script src="https://cdn.jsdelivr.net/npm/remarkable@1.7.1/dist/remarkable.min.js"></script>
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/highlightjs/cdn-release@9.13.1/build/styles/default.min.css">
     <script src="https://cdn.jsdelivr.net/gh/highlightjs/cdn-release@9.13.1/build/highlight.min.js"></script>
     <!-- Beautify Web - HTML, CSS, JS -->
-    <script src="/static/scripts/beautify-web/beautify-html.js"></script>
-    <script src="/static/scripts/beautify-web/beautify-css.js"></script>
-    <script src="/static/scripts/beautify-web/beautify.js"></script>
+    <script src="{% static 'program/beautify-web/beautify-html.js' %}"></script>
+    <script src="{% static 'program/beautify-web/beautify-css.js' %}"></script>
+    <script src="{% static 'program/beautify-web/beautify.js' %}"></script>
     <!-- Editor Settings -->
-    <script src="/static/scripts/editor-settings.js"></script>
+    <script src="{% static 'program/editor-settings.js' %}"></script>
     <!-- Together -->
     <script src="https://togetherjs.com/togetherjs-min.js"></script>
     <!-- Program Script -->
-    <script src="/static/scripts/program.js?v=0.2"></script>
+    <script src="{% static 'program/program.js' %}"></script>
     <!-- Program Style -->
-    <link rel="stylesheet" href="/static/styles/program.css?v=0.2" type="text/css">
+    <link rel="stylesheet" href="{% static 'program/program.css' %}" type="text/css">
 </head>
 <body>
     <nav class="navbar navbar-default">
         <!-- Brand and toggle get grouped for better mobile display -->
         <div class="navbar-header">
-            <a class="navbar-brand" href="/"><img src="/static/images/logo-text.png" height="20px"></a>
+            <a class="navbar-brand" href="/"><img src="{% static 'images/logo-text.png' %}" height="20px"></a>
         </div>
 
         <!-- Collect the nav links, forms, and other content for toggling -->
@@ -99,7 +100,7 @@
             <!-- Preview -->
             <div class="editorContainer">
                 <h3 class="editor-header">Preview</h3>
-                <iframe class="editor" id="preview" name="result" src="https://exec.ourjseditor.com" sandbox="allow-forms allow-scripts allow-same-origin" frameborder="0"></iframe>
+                <iframe class="editor" id="preview" name="result" src="{{ MEDIA_URL }}index.html" sandbox="allow-forms allow-scripts allow-same-origin" frameborder="0"></iframe>
             </div>
         </div>
         <div class="bottom">
@@ -145,7 +146,7 @@
             var programData = JSON.parse('{{ data_dict|escapejs }}');
         }catch (e) {
             alert("Loading program data failed.");
-            raise;
+            throw e;
         }
     </script>
 </body>

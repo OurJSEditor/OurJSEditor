@@ -22,7 +22,7 @@ export default function Program (props) {
 
             <a href={"/program/" + program.id} className="program-link">
                 <img class="thumbnail" src={program.thumbnailUrl} title={
-                    program.thumbnailUrl === "/static/media/program_thumbnails/nophoto.png" ?
+                    program.thumbnailUrl.slice(-11) === "/nophoto.png" ?
                         "This program is unpublished and doesn't have a thumbnail" :
                         program.title
                 } />

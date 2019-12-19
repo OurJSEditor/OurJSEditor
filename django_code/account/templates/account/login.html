@@ -1,10 +1,11 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
+    {% load static %}
     <title>
         Login &mdash; OurJSEditor
     </title>
-    <link rel="stylesheet" type="text/css" href="/static/styles/login.css">
+    <link rel="stylesheet" type="text/css" href="{% static 'user_profile/login.css' %}">
 </head>
 <body>
     <div id="inner-wrapper">
@@ -13,6 +14,6 @@
             <div id="signup-form"></div>
         </div>
     </div>
-    <script src="/static/scripts/components/login.js"></script>
+    <script src="{% static 'jsx-components/login.js' %}"></script>
 </body>
 </html>

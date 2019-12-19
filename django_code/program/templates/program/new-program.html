@@ -1,8 +1,9 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
+    {% load static %}
     <title id="title-tag">New Program &mdash; OurJSEditor</title>
-    <link rel="stylesheet" type="text/css" href="/static/styles/new-program.css">
+    <link rel="stylesheet" type="text/css" href="{% static 'program/new-program.css' %}">
 </head>
 <body>
     {% include "../ourjseditor/user-info.html" %}
@@ -15,6 +16,6 @@
         var programTemplates = JSON.parse("{{ template_descriptions|escapejs }}");
     </script>
 
-    <script src="/static/scripts/components/new-program.js"></script>
+    <script src="{% static 'jsx-components/new-program.js' %}"></script>
 </body>
 </html>

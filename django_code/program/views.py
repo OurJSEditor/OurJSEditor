@@ -2,6 +2,7 @@ from __future__ import unicode_literals
 
 from django.shortcuts import render, redirect
 from django.http import HttpResponse
+from django.conf import settings
 from program.models import Program, get_programs
 from vote.models import Vote, vote_types
 
@@ -48,7 +49,10 @@ def program (request, program_id):
         data_dict["canEditProgram"] = (current_program.user == request.user)
         data_dict["hasVoted"] = dict([(t, bool(Vote.objects.filter(vote_type=t, voted_object_id=program_id, user_id=request.user.id).count())) for t in vote_types])
 
-    return render(request, "program/index.html", {"data_dict": json.dumps(data_dict)})
+    return render(request, "program/index.html", {
+        "data_dict": json.dumps(data_dict),
+        "MEDIA_URL": settings.MEDIA_URL
+    })
 
 def program_list (request, sort):
     if (not sort):
@@ -109,4 +113,7 @@ def fullscreen (request, program_id):
         "title": program.title,
     }
 
-    return render(request, "program/fullscreen.html", { "data_dict": json.dumps(data_dict) })
+    return render(request, "program/fullscreen.html", {
+        "data_dict": json.dumps(data_dict),
+        "MEDIA_URL": settings.MEDIA_URL
+    })

@@ -1,16 +1,17 @@
+{% load static %}
 <link rel="icon" href="/favicon.ico">
 
 <script>
     var link = document.createElement("link");
     link.setAttribute("rel", "stylesheet");
     link.setAttribute("type", "text/css");
-    link.setAttribute("href", "/static/styles/user-info.css");
+    link.setAttribute("href", "{% static 'ourjseditor/user-info.css' %}");
     document.head.appendChild(link);
 
     var link = document.createElement("link");
     link.setAttribute("rel", "stylesheet");
     link.setAttribute("type", "text/css");
-    link.setAttribute("href", "/static/styles/icons.css");
+    link.setAttribute("href", "{% static 'ourjseditor/icons.css' %}");
     document.head.appendChild(link);
 </script>
 

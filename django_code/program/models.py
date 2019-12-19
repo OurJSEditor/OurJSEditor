@@ -17,7 +17,7 @@ def get_default_user():
     return User.objects.get(username="admin")
 
 def get_image_path(program, _):
-    return "program_thumbnails/{}.png".format(program.program_id)
+    return "program/{}.png".format(program.program_id)
 
 class OverwriteStorage(FileSystemStorage):
     def get_available_name(self, name, max_length=None):
@@ -32,7 +32,7 @@ class Program(models.Model):
 
     last_published = models.DateTimeField(blank=True, null=True)
     published_message = models.CharField(max_length=100, blank=True)
-    image = models.ImageField(upload_to=get_image_path, storage=OverwriteStorage(), default="program_thumbnails/nophoto.png")
+    image = models.ImageField(upload_to=get_image_path, storage=OverwriteStorage(), default="program/nophoto.png")
 
     title = models.CharField(max_length=45, default="Program")
     html= models.TextField(blank=True)
