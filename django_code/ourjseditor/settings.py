@@ -24,7 +24,7 @@ BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 SECRET_KEY = config('SECRET_KEY')
 
 # SECURITY WARNING: don't run with debug turned on in production!
-DEBUG = True
+DEBUG = False
 
 ALLOWED_HOSTS = ['www.ourjseditor.com', 'ourjseditor.com','45.56.88.22','localhost','127.0.0.1']
 
@@ -140,16 +140,35 @@ APPEND_SLASH = False
 REMOVE_SLASH = True
 
 # Static files (CSS, JavaScript, Images)
-# https://docs.djangoproject.com/en/1.10/howto/static-files/
+
+STATICFILES_STORAGE = 'django.contrib.staticfiles.storage.ManifestStaticFilesStorage'
 
 STATIC_URL = '/static/'
 
-STATIC_ROOT = ''
+STATIC_ROOT = os.path.join(os.path.dirname(BASE_DIR), "static/") #Doesn't exist until we run collectstatic
 
-STATICFILES_DIRS = ( os.path.join(os.path.dirname(BASE_DIR), "static/"), )
+STATICFILES_DIRS = ( os.path.join(os.path.dirname(BASE_DIR), "js/build/"), )
 
 # User uploaded files
 
-MEDIA_ROOT = os.path.join(os.path.dirname(BASE_DIR), "static/media/")
+MEDIA_ROOT = os.path.join(os.path.dirname(BASE_DIR), "sandbox/programs/")
 
-MEDIA_URL = '/static/media/'
+MEDIA_URL = config("MEDIA_URL")
+
+# MEDIA_URL = '/static/media/'
+
+LOGGING = {
+    'version': 1,
+    'disable_existing_loggers': False,
+    'handlers': {
+        'console': {
+            'class': 'logging.StreamHandler',
+        },
+    },
+    'loggers': {
+        'django': {
+            'handlers': ['console'],
+            'level': 'INFO'
+        },
+    },
+}

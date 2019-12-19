@@ -13,7 +13,7 @@ module.exports = {
     entry,
     output: {
         filename: "[name].js",
-        path: path.resolve(__dirname, "static/scripts/components")
+        path: path.resolve(__dirname, "js/build/jsx-components")
     },
     devtool: 'source-map',
     module: {
