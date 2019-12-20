@@ -3,10 +3,10 @@
 *.sqlite
 *.sqlite3
 *.pyc
-OurEnv
 .env
-node_modules
-static
-js/build
-sandbox/program/*
-!sandbox/program/nophoto.png
+/OurEnv
+/node_modules
+/static
+/js/build
+/sandbox/program/*
+!/sandbox/program/nophoto.png
