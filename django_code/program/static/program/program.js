@@ -686,6 +686,8 @@ function save (fork) {
 }
 
 document.addEventListener("DOMContentLoaded", function() {
+    ace.config.set("basePath", "/static/program/ace");
+
     ace.require("ace/ext/language_tools");
 
     htmlEditor = ace.edit("html-editor");

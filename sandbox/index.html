@@ -53,7 +53,7 @@
             outputDoc.close();
         }else if (data.type === "thumbnail-request") {
             var s = document.createElement("script");
-            s.setAttribute("src", "/html2canvas.min.js")
+            s.setAttribute("src", "html2canvas.min.js");
             s.addEventListener("load", function () {
                 var outputFrame = document.getElementById("output-frame");
                 outputFrame.style.width = SIZE + "px";
