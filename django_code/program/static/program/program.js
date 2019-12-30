@@ -245,7 +245,18 @@ function createCommentTextbox (parent) {
     row.appendChild(content);
     row.appendChild(buttons);
     return com;
-};
+}
+
+function jumpToComment(commentEl) {
+    if (commentEl) {
+        commentEl.scrollIntoView();
+        var permalinked = document.getElementsByClassName("permalinked");
+        if (permalinked.length) {
+            permalinked[0].classList.remove("permalinked");
+        }
+        commentEl.classList.add("permalinked");
+    }
+}
 
 //comment is a comment object; scrollTarget is the id of the comment that we're going to try to scroll to once things load
 function unfoldComment (comment, scrollTarget) {
@@ -273,15 +284,13 @@ function unfoldComment (comment, scrollTarget) {
 
                 if (scrollTarget) {
                     var scrollComment = document.getElementById(scrollTarget);
-                    if (scrollComment) {
-                        scrollComment.scrollIntoView();
-                    }
+                    jumpToComment(scrollComment);
                 }
             }
         });
         req.send();
     }
-};
+}
 
 function initMd () {
     window.md = new Remarkable({
@@ -567,6 +576,11 @@ function displayComment (comment) {
     comment.element = com;
     comment.unfolded = null;
 
+    var scrollCommentId = window.location.hash.match(/^#comment-(\w{10})$/);
+    if (scrollCommentId && scrollCommentId[1] === comment.id) {
+        jumpToComment(com);
+    }
+
     return com;
 }
 
@@ -599,7 +613,7 @@ function hashUpdated() {
     var scrollCommentId = window.location.hash.slice(1);
     var scrollComment = document.getElementById(scrollCommentId);
     if (scrollComment && scrollCommentId) {
-        scrollComment.scrollIntoView();
+        jumpToComment(scrollComment);
     }else if (scrollCommentId.search(/^comment-\w{10}$/) > -1) {
         var req = new XMLHttpRequest();
         req.open("GET", "/api/comment/" + scrollCommentId.slice(8));

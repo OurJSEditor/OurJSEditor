@@ -231,6 +231,11 @@ input, textarea {
 .comment {
     margin: 15px;
     background: #FFFFFF;
+    transition: box-shadow 0.25s ease;
+}
+
+.comment.permalinked {
+    box-shadow: 0px 0px 6px 1px #fdd258;
 }
 
 .comment, .comment-content {
