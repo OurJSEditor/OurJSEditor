@@ -194,6 +194,88 @@ function draw() {\
 }"
     },
     {
+        "key": "markdown",
+        "title": "Markdown",
+        "description": "Write Markdown in the JS box and have it render.",
+        "html": "<!DOCTYPE HTML>\
+<html>\
+<head>\
+    <style>\
+        /*[OurJSEditor insert:CSS]*/\
+    </style>\
+    <script src=\"https://cdn.jsdelivr.net/npm/remarkable@1.7.1/dist/remarkable.min.js\"></script>\
+    <link rel=\"stylesheet\" href=\"https://cdn.jsdelivr.net/gh/highlightjs/cdn-release@9.13.1/build/styles/default.min.css\">\
+    <script src=\"https://cdn.jsdelivr.net/gh/highlightjs/cdn-release@9.13.1/build/highlight.min.js\"></script>\
+</head>\
+<body>\
+    <script type=\"text/md\" id=\"text-data\">/*[OurJSEditor insert:JS]*/</script>\
+\
+    <script>\
+        let content = document.getElementById(\"text-data\").innerHTML;\
+\
+        const md = new Remarkable({\
+            html: false, breaks: true, linkify: true, typographer: true,\
+            highlight: function (str, lang) {\
+                if (lang && hljs.getLanguage(lang)) {\
+                    return hljs.highlight(lang, str).value;\
+                }\
+                return hljs.highlightAuto(str).value;\
+            }\
+        })\
+        document.body.innerHTML = md.render(content);\
+    </script>\
+</body>\
+</html>",
+        "js": "***\
+\
+#### Why we use `===` in JavaScript.\
+\
+```js\
+> \"\" == false\
+< true\
+\
+> 0 == false\
+< true\
+\
+> \"\" == 0\
+< false\
+```\
+\
+***\
+\
+ > Codes are a puzzle. A game, just like any other game.\
+ \
+-- Alan Turing\
+\
+***\
+",
+        "css": "html, body {\
+    margin: 10px;\
+    padding: 0;\
+    background: #FFFFFF;\
+}\
+\
+code,\
+pre {\
+    background-color: #F6F6F6;\
+    border-radius: 3px;\
+    padding: 4px\
+}\
+\
+blockquote {\
+    padding: 10px 15px;\
+    margin: 0 5px;\
+    border-left: 5px solid #F6F6F6;\
+}\
+\
+blockquote *:last-child {\
+    margin-bottom: 0;\
+}\
+blockquote *:first-child {\
+    margin-top: 0;\
+}"
+    },
+    {
         "key": "blank",
         "title": "Blank",
         "description": "3 empty editors. Perfect for pasting in code.",
