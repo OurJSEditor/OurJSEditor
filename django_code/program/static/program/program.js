@@ -326,22 +326,29 @@ function displayComment (comment) {
     var t = document.createElement("table");
     var contentCell = document.createElement("td");
     var content = document.createElement("div");
-    var author = document.createElement("td");
+    var lowerRowRight = document.createElement("td");
     var upperRow = document.createElement("tr");
     var lowerRow = document.createElement("tr");
     var link = document.createElement("a");
     var lowerRowLeft = document.createElement("td");
+    var permalink = document.createElement("a");
 
     com.classList.add("comment");
     com.setAttribute("id", "comment-" + comment.id);
     link.setAttribute("href", "/user/" + comment.author.username);
-    author.classList.add("comment-author");
+    lowerRowRight.classList.add("lower-right");
 
     contentCell.setAttribute("colspan", 2);
     content.classList.add("comment-content");
-    author.innerText = "Posted " + dateToString(comment.created) + " by ";
-    link.innerText = comment.author.displayName;
     content.innerHTML = md.render(comment.content);
+
+    permalink.href = window.location.origin + window.location.pathname + "#comment-" + comment.id;
+    permalink.innerText = "(Permalink)";
+    permalink.classList.add("permalink");
+    lowerRowRight.appendChild(permalink);
+    lowerRowRight.appendChild(document.createTextNode("Posted " + dateToString(comment.created) + " by"));
+    link.innerText = comment.author.displayName;
+    lowerRowRight.appendChild(link);
 
     lowerRow.classList.add("lower-row");
 
@@ -472,7 +479,7 @@ function displayComment (comment) {
         deleteButton.appendChild(deleteText);
         deleteButton.classList.add("comment-delete-button");
         deleteButton.addEventListener("click", function () {
-            //Return if there's already a comfirm thing open under this.
+            //Return if there's already a confirm thing open under this.
             if (deleteButton.getElementsByClassName("comment-delete-confirm").length) return;
 
             var commentDeleteConfirm = document.createElement("div");
@@ -553,7 +560,7 @@ function displayComment (comment) {
 
     upperRow.appendChild(contentCell).appendChild(content);
     lowerRow.appendChild(lowerRowLeft);
-    lowerRow.appendChild(author).appendChild(link);
+    lowerRow.appendChild(lowerRowRight);
     com.appendChild(t).appendChild(upperRow);
     t.appendChild(lowerRow);
 
@@ -561,7 +568,7 @@ function displayComment (comment) {
     comment.unfolded = null;
 
     return com;
-};
+}
 
 function displayComments (comments) {
     programData.comments = comments;

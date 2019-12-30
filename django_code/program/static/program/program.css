@@ -80,9 +80,9 @@ body {
 .vote-button:hover {
     cursor: pointer;
     -webkit-user-select: none;
-       -moz-user-select: none;
-        -ms-user-select: none;
-            user-select: none;
+    -moz-user-select: none;
+    -ms-user-select: none;
+    user-select: none;
 }
 
 .vote-button.voted {
@@ -253,9 +253,10 @@ input, textarea {
 .comment .lower-row td {
     background: #f0f0f0;
     padding: 10px;
+    font-size: 13px
 }
 
-.comment .comment-author {
+.comment .lower-right {
     text-align: right;
 }
 
@@ -263,6 +264,12 @@ input, textarea {
     color: black;
     text-decoration: underline;
     margin: 0 5px;
+    font-size: 15px;
+}
+
+.comment .lower-row .permalink {
+    font-size: 13px;
+    color: #333;
 }
 
 .comment-comment {
