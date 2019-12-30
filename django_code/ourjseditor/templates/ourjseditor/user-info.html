@@ -25,7 +25,7 @@
     </span>
 
     <span class="user-info-element">
-        <a class="user-info-button" href="/user/{{ request.user.username|default:"login" }}"><span class="icon icon-user"></span> {{ request.user.profile.display_name|default:"Login" }}</a>
+        <a class="user-info-button" href='/user/{{ request.user.username|default:"login" }}{% if not request.user.username %}?next={{ request.path|urlencode:"" }}{% endif %}'><span class="icon icon-user"></span> {{ request.user.profile.display_name|default:"Login" }}</a>
     </span><!--
 
     --><span class="user-info-element">
