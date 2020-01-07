@@ -8,7 +8,7 @@ from comment.models import Comment
 from program.models import Program
 
 #10 character random id. May conflict with comments
-chars = "abcdefghijklmnopqrstuvwzyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789_-"
+chars = "abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789_-"
 def generate_notif_id():
     id_string = ""
     while len(id_string) < 10:

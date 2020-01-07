@@ -8,7 +8,7 @@ import random
 from program.models import Program
 
 #10 character random id. May conflict with notifications
-chars = "abcdefghijklmnopqrstuvwzyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789_-"
+chars = "abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789_-"
 def generate_comment_id():
     id_string = ""
     while len(id_string) < 10:
