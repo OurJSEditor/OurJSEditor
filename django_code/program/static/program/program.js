@@ -797,15 +797,17 @@ document.addEventListener("DOMContentLoaded", function() {
     document.getElementById("program-title").innerText = programData.title;
 
     //TODO: Maybe add a login check/pop-up here
-    if (!programData.unsaved) {
-        document.getElementById("btnFork").style.display = "block";
-    }
     if (programData.canEditProgram) {
         document.getElementById("btnSave").style.display = "block";
     }
-    if (programData.canEditProgram && !programData.unsaved) {
-        document.getElementById("btnDelete").style.display = "block";
-        document.getElementById("btnPublish").style.display = "block";
+    if (!programData.unsaved) {
+        document.getElementById("btnFork").style.display = "block";
+        if (programData.canEditProgram) {
+            document.getElementById("btnPublish").style.display = "block";
+        }
+        if (programData.author.id === userData.id) {
+            document.getElementById("btnDelete").style.display = "block";
+        }
     }
 
     titleLabel = document.getElementById("program-title");

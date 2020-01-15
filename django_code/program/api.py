@@ -63,6 +63,22 @@ def forks(request, program_id):
         response = api.succeed({ "id": program.program_id }, status=201)
         response["Location"] = "/program/" + program.program_id
         return response
+        
+#/api/program/collaborators
+@api.standardAPIErrors("POST") # TODO: GET?
+def collaborators(request, program_id):
+    # {user:{id:""}}
+    # {user:{username:""}}
+    # the request is unauthed
+    # Check if collaborators is already a collab
+    # or is the author
+
+    pass
+    
+#/api/program/collaborators/USER_ID
+@api.standardAPIErrors("DELETE") #TODO: maybe a PUT instead of a POST
+def collaborators(request, program_id):
+    pass
 
 #/api/program/PRO_ID
 @api.standardAPIErrors("GET","PATCH","DELETE")
@@ -74,7 +90,7 @@ def program(request, program_id):
         data = json.loads(request.body)
         return_data = {}
 
-        if request.user != requested_program.user:
+        if not requested_program.can_user_edit(request.user):
             return api.error("Not authorized.", status=401)
 
         if "title" in data and len(data["title"]) > 45:

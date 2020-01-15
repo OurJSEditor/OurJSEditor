@@ -29,6 +29,7 @@ class Program(models.Model):
     user = models.ForeignKey(User, on_delete=models.CASCADE, default=get_default_user)
     created = models.DateTimeField(auto_now_add=True)
     parent = models.ForeignKey('self', on_delete=models.SET_NULL, blank=True, null=True) #The program this is a Spin-off of
+    collaborators = models.ManyToManyField(User, related_name="+")
 
     last_published = models.DateTimeField(blank=True, null=True)
     published_message = models.CharField(max_length=100, blank=True)
@@ -42,7 +43,13 @@ class Program(models.Model):
     entertaining_votes = models.IntegerField(default=0)
     artistic_votes = models.IntegerField(default=0)
     informative_votes = models.IntegerField(default=0)
-
+    
+    def can_user_edit(self, user):
+        return (
+            self.user == user or
+            self.collaborators.filter(id=user.id).exists()
+        )
+    
     def to_dict(self, include_code=True):
         if self.last_published:
             last_published = self.last_published.replace(microsecond=0).isoformat() + "Z"
@@ -71,6 +78,8 @@ class Program(models.Model):
             "lastPublished": last_published,
             "thumbnailUrl": self.image.url,
 
+            "collaborators": list(self.collaborators.values_list("profile__profile_id", flat=True)),
+            
             "votes": dict([(t, getattr(self, t + "_votes")) for t in vote_types])
         }
 

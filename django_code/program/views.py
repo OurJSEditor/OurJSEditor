@@ -46,7 +46,7 @@ def program (request, program_id):
             return render(request, "program/404.html", status=404)
 
         data_dict = current_program.to_dict()
-        data_dict["canEditProgram"] = (current_program.user == request.user)
+        data_dict["canEditProgram"] = current_program.can_user_edit(request.user)
         data_dict["hasVoted"] = dict([(t, bool(Vote.objects.filter(vote_type=t, voted_object_id=program_id, user_id=request.user.id).count())) for t in vote_types])
 
     return render(request, "program/index.html", {
