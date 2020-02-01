@@ -37,8 +37,8 @@ function removeTitleInput () {
                 alert(outputMessage);
             }
         });
-        req.open("PATCH", "/api/program/" + programData.id)
-        req.setRequestHeader("X-CSRFToken", csrf_token)
+        req.open("PATCH", "/api/program/" + programData.id);
+        req.setRequestHeader("X-CSRFToken", csrf_token);
         req.send(JSON.stringify({ "title" : titleInput.value }))
     }
     programData.title = document.getElementById("program-title").innerText;
@@ -78,7 +78,7 @@ function deleteProgram () {
         }else {
             window.location.href = "/user/" + programData.author.username;
         }
-    })
+    });
     req.open("DELETE", "/api/program/" + programData.id);
     req.setRequestHeader("X-CSRFToken", csrf_token);
     req.send();
@@ -140,7 +140,7 @@ function runProgram (event) {
     var html = ace.edit("html-editor").getSession().getValue();
     html = html.replace(/\/\*\[OurJSEditor insert:(js|css)\]\*\//gi, function (comment, language, position, code) {
         return ace.edit(language.toLowerCase() + "-editor").getSession().getValue();
-    })
+    });
 
     document.getElementById("preview").contentWindow.postMessage(JSON.stringify({
         type: "execute",
@@ -172,7 +172,7 @@ function createCommentTextbox (parent) {
 
         var req = new XMLHttpRequest();
         req.open("POST", "/api/program/" + programData.id + "/comment/new");
-        req.setRequestHeader("X-CSRFToken", csrf_token)
+        req.setRequestHeader("X-CSRFToken", csrf_token);
         req.setRequestHeader("Content-Type", "application/json");
         req.addEventListener("load", function () {
             var data = JSON.parse(this.response);
@@ -190,7 +190,7 @@ function createCommentTextbox (parent) {
                     "edited": null,
                     "created": (new Date()).toISOString().replace(/\.\d\d\dZ/, "Z"),
                     "id": data.id,
-                }
+                };
 
                 if (parent) {
                     for (var i = 0; i < programData.comments.length; i++) {
@@ -198,7 +198,7 @@ function createCommentTextbox (parent) {
                             programData.comments[i].comments.push(commentObj);
                             programData.comments[i].replyCount ++;
                             var el = programData.comments[i].element.getElementsByClassName("show-hide-comments")[0];
-                            el.innerText = el.innerText.replace(/\(\d+\)/, "(" + programData.comments[i].replyCount + ")")
+                            el.innerText = el.innerText.replace(/\(\d+\)/, "(" + programData.comments[i].replyCount + ")");
                             break;
                         }
                     }
@@ -238,7 +238,7 @@ function createCommentTextbox (parent) {
         com.classList.add("comment-comment");
     }
 
-    textbox.classList.add("comment-content")
+    textbox.classList.add("comment-content");
 
     content.appendChild(textbox);
     com.appendChild(t).appendChild(row);
@@ -262,7 +262,7 @@ function jumpToComment(commentEl) {
 function unfoldComment (comment, scrollTarget) {
     //If we've already loaded
     if (comment.comments) {
-        comment.element.parentElement.insertBefore(createCommentTextbox(comment.id), comment.element.nextSibling)
+        comment.element.parentElement.insertBefore(createCommentTextbox(comment.id), comment.element.nextSibling);
         for (var i = comment.comments.length-1; i >= 0; i--) {
             comment.element.parentElement.insertBefore(displayComment(comment.comments[i]), comment.element.nextSibling);
         }
@@ -278,7 +278,7 @@ function unfoldComment (comment, scrollTarget) {
                 comment.comments = data.comments;
                 comment.replyCount = data.comments.length; //Reset local value to the correct number
                 var el = comment.element.getElementsByClassName("show-hide-comments")[0];
-                el.innerText = el.innerText.replace(/\(\d+\)/, "(" + comment.replyCount + ")")
+                el.innerText = el.innerText.replace(/\(\d+\)/, "(" + comment.replyCount + ")");
 
                 unfoldComment(comment);
 
@@ -318,7 +318,7 @@ function initMd () {
         var str = url.trim().toLowerCase();
         //If it includes a protocol, stop it.
         return !(/^[a-z][a-z0-9+.-]*:/.test(str));
-    };
+    }
 
     //Definitly hacky, but we add a rule before parsing non-masked links that lossens the requirements of the validator
     md.core.ruler.before("linkify", "lenientLinkValidation", function () {
@@ -446,7 +446,7 @@ function displayComment (comment) {
                         alert("Failed with error: " + d.error);
                     }
                 });
-                req.setRequestHeader("X-CSRFToken", csrf_token)
+                req.setRequestHeader("X-CSRFToken", csrf_token);
                 req.send(JSON.stringify({
                     "content": textbox.value
                 }));
@@ -530,7 +530,7 @@ function displayComment (comment) {
                                     }
 
                                     var el = parentComment.element.getElementsByClassName("show-hide-comments")[0];
-                                    el.innerText = el.innerText.replace(/\(\d+\)/, "(" + parentComment.replyCount + ")")
+                                    el.innerText = el.innerText.replace(/\(\d+\)/, "(" + parentComment.replyCount + ")");
                                     break;
                                 }
                             }
@@ -556,7 +556,7 @@ function displayComment (comment) {
                         alert("Failed with error: " + data.error);
                     }
                 });
-                req.setRequestHeader("X-CSRFToken", csrf_token)
+                req.setRequestHeader("X-CSRFToken", csrf_token);
                 req.send();
             });
             commentDeleteConfirm.appendChild(commentDeleteDelete);
@@ -631,7 +631,7 @@ function hashUpdated() {
         });
         req.send();
     }
-};
+}
 
 function vote () {
     var el = this;
@@ -662,7 +662,7 @@ function vote () {
         }
     });
     req.send();
-};
+}
 
 function save (fork) {
     //Update programData with the lastest textbox code
@@ -689,7 +689,7 @@ function save (fork) {
         }else if (programData.unsaved || fork) {
             window.location.href = this.getResponseHeader("Location")
         }
-    })
+    });
     if (fork) {
         req.open("POST", "/api/program/" + programData.id + "/forks");
     }else if (programData.id) {
@@ -735,31 +735,36 @@ document.addEventListener("DOMContentLoaded", function() {
                 e.preventDefault() && e.stopPropagation();
             }
         }
-    })
+    });
 
     document.getElementById("editor-settings").appendChild(initEditorSettings(document.getElementById("editor-settings-button"), [jsEditor, cssEditor, htmlEditor]));
 
-    // Together Button
-    document.getElementById("btnTogether").addEventListener("click", function(event) {
-      event.preventDefault();
+    // Collaborate Button
+    document.getElementById("collaborate-button").addEventListener("click", function(e) {
+      e.preventDefault();
 
-      TogetherJS(this);
-      return false;
+
+      document.getElementById("collaborate-popup").style.display = "block";
+
+
+
+      //TogetherJS(this);
+      //return false;
     });
 
-    document.getElementById("btnRun").addEventListener("click", runProgram);
-    document.getElementById("btnSave").addEventListener("click", function (e) {
+    document.getElementById("run-button").addEventListener("click", runProgram);
+    document.getElementById("save-button").addEventListener("click", function (e) {
         e.preventDefault();
         save(false);
     });
-    document.getElementById("btnFork").addEventListener("click", function (e) {
+    document.getElementById("fork-button").addEventListener("click", function (e) {
         e.preventDefault();
         save(true);
     });
-    document.getElementById("btnDelete").addEventListener("click", function (e) {
+    document.getElementById("delete-button").addEventListener("click", function (e) {
         openConfirm(e, "delete-confirm");
     });
-    document.getElementById("btnPublish").addEventListener("click", function (e) {
+    document.getElementById("publish-button").addEventListener("click", function (e) {
         document.getElementById("preview").contentWindow.postMessage(JSON.stringify({
             type: "thumbnail-request"
         }), "*");
@@ -798,15 +803,15 @@ document.addEventListener("DOMContentLoaded", function() {
 
     //TODO: Maybe add a login check/pop-up here
     if (programData.canEditProgram) {
-        document.getElementById("btnSave").style.display = "block";
+        document.getElementById("save-button").style.display = "block";
     }
     if (!programData.unsaved) {
-        document.getElementById("btnFork").style.display = "block";
+        document.getElementById("fork-button").style.display = "block";
         if (programData.canEditProgram) {
-            document.getElementById("btnPublish").style.display = "block";
+            document.getElementById("publish-button").style.display = "block";
         }
         if (programData.author.id === userData.id) {
-            document.getElementById("btnDelete").style.display = "block";
+            document.getElementById("delete-button").style.display = "block";
         }
     }
 
