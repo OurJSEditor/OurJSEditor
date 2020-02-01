@@ -35,12 +35,35 @@
         <!-- Collect the nav links, forms, and other content for toggling -->
         <div id="toolbar">
             <ul class="nav navbar-nav">
-                <li id="btnRun"><a>Run</a></li>
-                <li id="btnTogether"><a>Collaborate</a></li>
-                <li id="btnSave"><a>Save</a></li>
-                <li id="btnPublish"><a>Publish</a></li>
-                <li id="btnFork"><a>Fork</a></li>
-                <li id="btnDelete"><a>Delete</a></li>
+                <li id="run-button"><a>Run</a></li>
+                <li id="collaborate-button">
+                    <a>Collaborate</a>
+                    <div id="collaborate-popup" class="popup" style="display: none">
+                        <div class="close-button-wrap"><span class="icon icon-cancel"></span></div>
+                        <span class="left">
+                            <div class="header">Manage Collaborators</div>
+                            <ul>
+                                <li>
+                                    <span class="icon icon-cancel"></span> @Test12
+                                </li>
+                                <li>
+                                    <span class="icon icon-cancel"></span> @Test123
+                                </li>
+                            </ul>
+
+                        </span><!--
+                        --><span class="divider"></span><!--
+                        --><span class="right">
+                        <div class="header">Start a live session</div>
+                        <div class="sub-header">Powered by Together.js</div>
+                            <button class="button">Start</button>
+                        </span>
+                    </div>
+                </li>
+                <li id="save-button"><a>Save</a></li>
+                <li id="publish-button"><a>Publish</a></li>
+                <li id="fork-button"><a>Fork</a></li>
+                <li id="delete-button"><a>Delete</a></li>
             </ul>
         </div><!-- /.navbar-collapse -->
     </nav>

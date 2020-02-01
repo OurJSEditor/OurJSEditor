@@ -18,6 +18,7 @@ body {
     padding: 10px;
     position: relative;
     background: #F6F6F6;
+    z-index: 0; /*Make sure Ace components always render behind ours*/
 }
 
 .top, .bottom {
@@ -158,6 +159,61 @@ body {
 
 #program-title.editable:hover {
     cursor: pointer;
+}
+
+#collaborate-button {
+    position: relative;
+}
+
+#collaborate-popup {
+    position: absolute;
+    background: white;
+    border: 1px solid #CCC;
+    box-shadow: 0 2px 3px 1px rgba(0, 0, 0, 0.25);
+    z-index: 2;
+    min-width: 450px;
+    font-size: 15px;
+}
+
+#collaborate-popup .close-button-wrap {
+    position: absolute;
+    margin: 5px;
+    width: 1em;
+    height: 1em;
+    line-height: 1em;
+}
+
+#collaborate-popup .left, #collaborate-popup .right {
+    width: 50%;
+    display: inline-block;
+    padding: 15px;
+    box-sizing: border-box;
+    vertical-align: top;
+    margin-right: -2px;
+    text-align: center;
+}
+
+#collaborate-popup .divider {
+    width: 2px;
+    background: #b5b5b5;
+    margin: 5px 0;
+    height: 150px;
+    display: inline-block;
+}
+
+#collaborate-popup .header {
+    font-weight: bold;
+}
+
+#collaborate-popup ul {
+    padding: 0;
+    text-align: left;
+}
+
+#collaborate-popup li {
+    background: none;
+    list-style: inside none;
+    float: none;
 }
 
 /*Things hidden initially by CSS, then revealed by Javascript*/
