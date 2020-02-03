@@ -112,19 +112,3 @@ var my_func =function ( a )
 	//a tab
 }
 ```
-
-#### Style/Brand guidelines
-
-Color
- - Button type #1
-    - Lots of padding, ~10-15px for 14px font in both directions
-    - Background #4176a9 <span style="background: #4176a9; display: inline-block; width: 20px; height: 20px"></span>
-    - Color white <span style="background: #white; display: inline-block; width: 20px; height: 20px"></span>
-    - Hover, color becomes #cecece <span style="background: #cecece; display: inline-block; width: 20px; height: 20px"></span>
- - Header/highlight
-    - Background #487eb3 <span style="background: #487eb3; display: inline-block; width: 20px; height: 20px"></span>
- - Button type #2
-    -  
-    
-    
-

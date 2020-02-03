@@ -1,6 +1,7 @@
 var jsEditor, htmlEditor, cssEditor;
 
 function makeRequest(method, url, listener, options) {
+    //This function is not ready to be used everywhere, yet
     //Method is a string, GET/POST, etc
     //url is a string, url
     //listener is a function to be called after the request has returned without errors. The one parameter will be the parsed object returned from the server
@@ -48,12 +49,16 @@ function makeRequest(method, url, listener, options) {
                 alert(options.action + " failed without an error message. Please report this.");
             }
         }else {
-            listener(JSON.parse(this.responseText));
+            var data = JSON.parse(this.responseText);
+            console.assert(data.success, "Data returned successfully without success: true.\n" + this.responseText);
+            listener(data);
         }
     });
     req.open(method, url);
     req.setRequestHeader("X-CSRFToken", csrf_token);
+    req.setRequestHeader("Accept", "application/json");
     if (typeof options.data === "object") {
+        req.setRequestHeader("Content-Type", "application/json");
         req.send(JSON.stringify(options.data))
     }else {
         req.send();
