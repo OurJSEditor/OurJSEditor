@@ -779,6 +779,12 @@ function createCollaboratePopup() {
         });
     }
 
+    var liveCollabButton = document.getElementById("live-collab-button");
+    liveCollabButton.addEventListener("click", function (e) {
+        TogetherJS(this);
+        liveCollabButton.textContent = liveCollabButton.textContent === "Start" ? "End" : "Start";
+    });
+
     document.getElementById("close-button-wrap").addEventListener("click", function () {
         collaboratePopup.style.display = "none";
     });
@@ -917,9 +923,6 @@ document.addEventListener("DOMContentLoaded", function() {
         }else {
             collaboratePopup.style.display = "block";
         }
-
-        //TogetherJS(this);
-        //return false;
     });
 
     document.getElementById("run-button").addEventListener("click", runProgram);
