@@ -1,5 +1,65 @@
 var jsEditor, htmlEditor, cssEditor;
 
+function makeRequest(method, url, listener, options) {
+    //Method is a string, GET/POST, etc
+    //url is a string, url
+    //listener is a function to be called after the request has returned without errors. The one parameter will be the parsed object returned from the server
+    //options is an object with additional settings
+        //options.data is an object to be JSON-stringified and sent
+        //options.action is the action that was attempting to be preformed. In the case of an error, the user will see `${options.action} failed with the error ${/*The error message from the server*/}.`
+        //options.onfail will be called if the request fails
+    if (typeof options === "undefined") {
+        options = {};
+    }
+    var req = new XMLHttpRequest();
+    req.addEventListener("load", function (e) {
+        //Something went wrong:
+        if (this.status >= 400) {
+            var contentType = this.getResponseHeader("content-type").toLowerCase();
+
+            console.log(this.responseText);
+            if (typeof options.onfail === "function") {
+                options.onfail();
+            }
+
+            if (typeof options.action === "undefined") {
+                options.action = "Something";
+            }
+
+            if (contentType.indexOf("json") > -1) {
+                try {
+                    var response = JSON.parse(this.responseText);
+                    if (typeof response.success === "boolean" && !response.success) {
+                        alert(options.action + " failed with the error \"" + response.error + "\"");
+                    }else {
+                        throw new TypeError("Incorrect `response.success`.");
+                    }
+                }catch (e) {
+                    //This means something returned JSON, but it wasn't us. As far as I know, we never return a status >= 400 without a success: false
+                    alert(options.action + " failed. And then the error handling code failed. Please report this, thanks.\n\n" + this.responseText);
+                }
+            }else if (contentType.indexOf("html") > -1) { //This is a server internal error
+                alert(options.action + " failed with an internal server error. Please report this. If popups are enabled, an error page will be opened.");
+                var errorWindow = window.open();
+                errorWindow.document.open();
+                errorWindow.document.write(this.responseText);
+                errorWindow.document.close();
+            }else {
+                alert(options.action + " failed without an error message. Please report this.");
+            }
+        }else {
+            listener(JSON.parse(this.responseText));
+        }
+    });
+    req.open(method, url);
+    req.setRequestHeader("X-CSRFToken", csrf_token);
+    if (typeof options.data === "object") {
+        req.send(JSON.stringify(options.data))
+    }else {
+        req.send();
+    }
+}
+
 var titleLabel;
 var titleInput = document.createElement("input");
 titleInput.setAttribute("maxlength", "45");
@@ -633,6 +693,113 @@ function hashUpdated() {
     }
 }
 
+//Creates and returns a DOM element representing a row in the collaborator popup, with buttons and stuff
+function makeCollaboratorRow(identifier) {
+    var item = document.createElement("li");
+
+    //Create the remove icon/button if we can edit the program
+    if (programData.canEditProgram ) {
+        var removeIcon = document.createElement("span");
+        removeIcon.classList.add("icon", "icon-delete", "clickable");
+        removeIcon.addEventListener("click", function () {
+            //Double check if they're about to remove themselves
+            if (userData.id === item.dataset.userId) {
+                if (!confirm("You're about to remove yourself from the collaborators on this program.\nYou can't undo this action.")) {
+                    return;
+                }
+            }
+
+            //Make a request to remove the user
+            makeRequest("DELETE", "/api/program/" + programData.id + "/collaborators", function (data) {
+                //Mutate programData
+                for (var i = 0; i < programData.collaborators.length; i++) {
+                    if (programData.collaborators[i] === item.dataset.userId) {
+                        programData.collaborators.splice(i, 1);
+                    }
+                }
+                //If you just removed yourself, refresh everything
+                if (userData.id === item.dataset.userId) {
+                    window.location.reload();
+                }else {
+                    //Remove from the DOM
+                    item.parentElement.removeChild(item);
+                }
+            }, {action: "Removing collaborator " + identifier, data: {user: {id: item.dataset.userId}}});
+        });
+        item.appendChild(removeIcon);
+    }
+
+    makeRequest("GET", "/api/user/" + identifier, function (data) {
+        item.appendChild(document.createTextNode("@" + data.username));
+        item.dataset.userId = data.id;
+    }, {action: "Displaying collaborator " + identifier});
+    return item;
+}
+
+function addCollaborator(username) {
+    //Silently ignore empty textbox/input
+    if (username.length === 0) {
+        return;
+    }
+    //Make a request to add the user (backend verifies user)
+    makeRequest("POST", "/api/program/" + programData.id + "/collaborators", function (data) {
+        var collaboratorsList = document.getElementById("collaborators");
+        collaboratorsList.insertBefore(makeCollaboratorRow(username), collaboratorsList.firstElementChild.nextElementSibling);
+
+        //Add the new collaborator to the local list
+        programData.collaborators.push(data.id);
+    }, {
+        data: {user: {username: username}},
+        action: "Adding collaborator \"" + username + "\"",
+    });
+
+}
+
+function createCollaboratePopup() {
+    var collaboratePopup = document.getElementById("collaborate-popup");
+
+    //If we're not the program owner or a collaborator, remove the textbox to add collaborators
+    //Collaborators can add or remove any other collaborators
+    if (!programData.canEditProgram || programData.unsaved) {
+        var addCollaboratorLi = document.getElementById("add-collaborator");
+        addCollaboratorLi.parentElement.removeChild(addCollaboratorLi);
+    }else {
+        var collaboratorTextbox = document.getElementById("add-collaborator-textbox");
+        collaboratorTextbox.addEventListener("keypress", function (e) {
+            if (e.key === "Enter" || e.keyCode === 13) {
+                addCollaborator(collaboratorTextbox.value);
+                collaboratorTextbox.value = "";
+            }
+        });
+
+        var addCollaboratorButton = document.getElementById("add-collaborator-button");
+        addCollaboratorButton.addEventListener("click", function () {
+            addCollaborator(collaboratorTextbox.value);
+            collaboratorTextbox.value = "";
+        });
+    }
+
+    document.getElementById("close-button-wrap").addEventListener("click", function () {
+        collaboratePopup.style.display = "none";
+    });
+
+    //The popup actually lives inside the button in the DOM tree. This stops clicks on the popup from propagating up to the button
+    collaboratePopup.addEventListener("click", function (e) { e.stopImmediatePropagation(); });
+
+    var collaboratorsList = document.getElementById("collaborators");
+    if (programData.unsaved) {
+        var unsavedMessage = document.createElement("span");
+        unsavedMessage.classList.add("sub-header");
+        unsavedMessage.appendChild(document.createTextNode("You can add collaborators once you've saved the program."));
+        collaboratorsList.appendChild(unsavedMessage);
+    }else {
+        var collaborators = programData.collaborators;
+        for (var i = 0; i < collaborators.length; i++) {
+            collaboratorsList.appendChild(makeCollaboratorRow(collaborators[i]));
+        }
+    }
+}
+
 function vote () {
     var el = this;
     var voteType = el.id.substring(0, el.id.indexOf("-"));
@@ -739,17 +906,20 @@ document.addEventListener("DOMContentLoaded", function() {
 
     document.getElementById("editor-settings").appendChild(initEditorSettings(document.getElementById("editor-settings-button"), [jsEditor, cssEditor, htmlEditor]));
 
+    createCollaboratePopup();
     // Collaborate Button
     document.getElementById("collaborate-button").addEventListener("click", function(e) {
-      e.preventDefault();
+        e.preventDefault();
 
+        var collaboratePopup = document.getElementById("collaborate-popup");
+        if (collaboratePopup.style.display === "block") {
+            collaboratePopup.style.display = "none";
+        }else {
+            collaboratePopup.style.display = "block";
+        }
 
-      document.getElementById("collaborate-popup").style.display = "block";
-
-
-
-      //TogetherJS(this);
-      //return false;
+        //TogetherJS(this);
+        //return false;
     });
 
     document.getElementById("run-button").addEventListener("click", runProgram);

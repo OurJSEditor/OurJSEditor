@@ -172,10 +172,11 @@ body {
     box-shadow: 0 2px 3px 1px rgba(0, 0, 0, 0.25);
     z-index: 2;
     min-width: 450px;
+    height: 200px;
     font-size: 15px;
 }
 
-#collaborate-popup .close-button-wrap {
+#collaborate-popup #close-button-wrap {
     position: absolute;
     margin: 5px;
     width: 1em;
@@ -196,18 +197,27 @@ body {
 #collaborate-popup .divider {
     width: 2px;
     background: #b5b5b5;
-    margin: 5px 0;
-    height: 150px;
+    margin: 0;
+    height: 100%;
     display: inline-block;
+    /*Simulate space at above and below the divider, while keeping it the height of its container*/
+    box-sizing: border-box;
+    border-top: 5px solid white;
+    border-bottom: 5px solid white;
 }
 
 #collaborate-popup .header {
+    margin-bottom: 5px;
     font-weight: bold;
 }
 
 #collaborate-popup ul {
     padding: 0;
     text-align: left;
+    height: 156px;
+    overflow-x: hidden;
+    overflow-y: scroll;
+
 }
 
 #collaborate-popup li {
@@ -216,8 +226,41 @@ body {
     float: none;
 }
 
+#collaborate-popup ul .icon {
+    margin-right: 5px;
+}
+
+.sub-header {
+    font-size: 12px;
+    text-align: center;
+    display: inline-block;
+}
+
+/* .button CSS from confirm-buttons */
+.button {
+    font-size: 13px;
+    border: none;
+    padding: 6px 10px;
+    margin: 15px;
+    background: rgb(65, 118, 169);
+    color: #FFFFFF;
+}
+.button:hover, .button:active {
+    cursor: pointer;
+    color: #f0f0f0;
+}
+
+.icon.clickable {
+    cursor: pointer;
+}
+
+#add-collaborator-textbox {
+    width: 160px;
+    margin-right: -5px;
+}
+
 /*Things hidden initially by CSS, then revealed by Javascript*/
-#btnSave, #btnDelete, #btnPublish, #btnFork, #back-cover, .confirm {
+#save-button, #delete-button, #publish-button, #fork-button, #back-cover, .confirm {
     display: none;
 }
 
@@ -258,7 +301,7 @@ body {
     background: rgb(65, 118, 169);
     color: #FFFFFF;
 }
-.confirm-buttons a:active,  .confirm-buttons a:hover{
+.confirm-buttons a:active,  .confirm-buttons a:hover {
     color: #f0f0f0;
     cursor: pointer;
 }

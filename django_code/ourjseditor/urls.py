@@ -46,6 +46,7 @@ api_urls = [
         url(r'^/([-\w]{6})', include([
             url(r'^$', program_api.program, name="program-api"),
             url(r'^/forks$', program_api.forks, name="program-forks-api"),
+            url(r'^/collaborators$', program_api.collaborators, name="program-collaborators-api"),
             url(r'^/comments$', comment_api.program_comments, name="progrom-comments-api"),
             url(r'^/comment/', include([
                 url(r'^new$', comment_api.new_comment, name="new-comment-api"),

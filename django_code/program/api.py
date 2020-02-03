@@ -66,22 +66,23 @@ def forks(request, program_id):
         response = api.succeed({ "id": program.program_id }, status=201)
         response["Location"] = "/program/" + program.program_id
         return response
-        
+
 #/api/program/PROG_ID/collaborators
 @api.standardAPIErrors("POST", "DELETE")
 def collaborators(request, program_id):
     requested_program = Program.objects.get(program_id=program_id)
-    
+
     #Any collaborator can add or remove other collaborators
     if (not requested_program.can_user_edit(request.user)):
         return api.error("Not authorized.", status=401)
-    
+
     # Payload:
     # {user:{id:""}}
     # {user:{username:""}}
+    # TODO: Allow getting a user by username *or* id?
     requested_user_identifier = json.loads(request.body)["user"]
     try:
-        user = Profile.objects.get(profile_id=requested_user_identifier["id"])
+        user = Profile.objects.get(profile_id=requested_user_identifier["id"]).user
     except KeyError:
         user = User.objects.get(username=requested_user_identifier["username"])
 
@@ -90,13 +91,14 @@ def collaborators(request, program_id):
         # or is the author
         if (requested_program.can_user_edit(user)):
             return api.error("That user can already edit this program.")
-        
+
         requested_program.collaborators.add(user)
-        return api.succeed()
-        
+        return api.succeed({ "username": user.username, "id": user.profile.profile_id })
+
     elif (request.method == "DELETE"):
         if (requested_program.collaborators.filter(id=user.id).exists()):
             requested_program.collaborators.remove(user)
+            return api.succeed()
         return api.error("User isn't a collaborator on this program.")
 
 

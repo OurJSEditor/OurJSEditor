@@ -39,25 +39,21 @@
                 <li id="collaborate-button">
                     <a>Collaborate</a>
                     <div id="collaborate-popup" class="popup" style="display: none">
-                        <div class="close-button-wrap"><span class="icon icon-cancel"></span></div>
-                        <span class="left">
-                            <div class="header">Manage Collaborators</div>
-                            <ul>
-                                <li>
-                                    <span class="icon icon-cancel"></span> @Test12
-                                </li>
-                                <li>
-                                    <span class="icon icon-cancel"></span> @Test123
+                        <div id="close-button-wrap"><span class="icon icon-cancel clickable"></span></div>
+                        <div class="left">
+                            <div class="header">Collaborators</div>
+                            <ul id="collaborators">
+                                <li id="add-collaborator">
+                                    <span class="icon icon-user-plus clickable" id="add-collaborator-button"></span> <input type="text" id="add-collaborator-textbox"  placeholder="Add collaborator by username">
                                 </li>
                             </ul>
-
-                        </span><!--
-                        --><span class="divider"></span><!--
-                        --><span class="right">
+                        </div><!--
+                        --><div class="divider"></div><!--
+                        --><div class="right">
                         <div class="header">Start a live session</div>
                         <div class="sub-header">Powered by Together.js</div>
                             <button class="button">Start</button>
-                        </span>
+                        </div>
                     </div>
                 </li>
                 <li id="save-button"><a>Save</a></li>

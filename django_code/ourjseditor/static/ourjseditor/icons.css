@@ -39,6 +39,8 @@
 .icon-run:before { content: '\e805'; } /* '' */
 .icon-collaborate:before { content: '\e806'; } /* '' */
 .icon-flow-split:before { content: '\e807'; } /* '' */
+.icon-plus:before { content: '\e808'; } /* '' */
+.icon-up-open:before { content: '\e809'; } /* '' */
 .icon-bell:before { content: '\f0f3'; } /* '' */
 .icon-gamepad:before { content: '\f11b'; } /* '' */
 .icon-terminal:before { content: '\f120'; } /* '' */
@@ -46,3 +48,4 @@
 .icon-file-image:before { content: '\f1c5'; } /* '' */
 .icon-delete:before { content: '\f1f8'; } /* '' */
 .icon-brush:before { content: '\f1fc'; } /* '' */
+.icon-user-plus:before { content: '\f234'; } /* '' */
