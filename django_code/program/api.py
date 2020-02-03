@@ -92,11 +92,49 @@ def collaborators(request, program_id):
         if (requested_program.can_user_edit(user)):
             return api.error("That user can already edit this program.")
 
+        # Send a notification to the program owner, if it wasn't the author who did the adding
+        if (request.user != requested_program.user):
+            Notif.objects.create(
+                target_user=requested_program.user,
+                link="/program/" + requested_program.program_id,
+                description="<strong>{0}</strong> added <strong>{1}</strong> to the list of collaborators on your program, <strong>{2}</strong>.".format(
+                    escape(request.user.profile.display_name), escape(user.profile.display_name), escape(requested_program.title)),
+            )
+
+        # Send a notification to the user who has been added
+        # if (request.user != user):
+        Notif.objects.create(
+            target_user=user,
+            link="/program/" + requested_program.program_id,
+            description="<strong>{0}</strong> added you as a collaborator on the program, <strong>{1}</strong>.".format(
+                escape(request.user.profile.display_name), escape(requested_program.title)),
+        )
+
         requested_program.collaborators.add(user)
         return api.succeed({ "username": user.username, "id": user.profile.profile_id })
 
     elif (request.method == "DELETE"):
         if (requested_program.collaborators.filter(id=user.id).exists()):
+            # Send a notification to the program owner, if it wasn't the author who did the removing
+            if (request.user != requested_program.user):
+                Notif.objects.create(
+                    target_user=requested_program.user, # Program author
+                    link="/program/" + requested_program.program_id,
+                    description="<strong>{0}</strong> removed <strong>{1}</strong> from the list of collaborators on your program, <strong>{2}</strong>.".format(
+                        escape(request.user.profile.display_name), escape(user.profile.display_name), escape(requested_program.title)),
+                )
+
+            # Send a notification to the user who was removed, unless they removed themselves
+            if (request.user != user):
+                Notif.objects.create(
+                    target_user=user,
+                    link="/program/" + requested_program.program_id,
+                    description="<strong>{0}</strong> removed you from the list of collaborators on the program, <strong>{1}</strong>.".format(
+                        escape(request.user.profile.display_name), escape(requested_program.title)),
+                )
+
+            # Other, 3rd-party, collaborators don't get notifications
+
             requested_program.collaborators.remove(user)
             return api.succeed()
         return api.error("User isn't a collaborator on this program.")
