@@ -1,5 +1,70 @@
 var jsEditor, htmlEditor, cssEditor;
 
+function makeRequest(method, url, listener, options) {
+    //This function is not ready to be used everywhere, yet
+    //Method is a string, GET/POST, etc
+    //url is a string, url
+    //listener is a function to be called after the request has returned without errors. The one parameter will be the parsed object returned from the server
+    //options is an object with additional settings
+        //options.data is an object to be JSON-stringified and sent
+        //options.action is the action that was attempting to be preformed. In the case of an error, the user will see `${options.action} failed with the error ${/*The error message from the server*/}.`
+        //options.onfail will be called if the request fails
+    if (typeof options === "undefined") {
+        options = {};
+    }
+    var req = new XMLHttpRequest();
+    req.addEventListener("load", function (e) {
+        //Something went wrong:
+        if (this.status >= 400) {
+            var contentType = this.getResponseHeader("content-type").toLowerCase();
+
+            console.log(this.responseText);
+            if (typeof options.onfail === "function") {
+                options.onfail();
+            }
+
+            if (typeof options.action === "undefined") {
+                options.action = "Something";
+            }
+
+            if (contentType.indexOf("json") > -1) {
+                try {
+                    var response = JSON.parse(this.responseText);
+                    if (typeof response.success === "boolean" && !response.success) {
+                        alert(options.action + " failed with the error \"" + response.error + "\"");
+                    }else {
+                        throw new TypeError("Incorrect `response.success`.");
+                    }
+                }catch (e) {
+                    //This means something returned JSON, but it wasn't us. As far as I know, we never return a status >= 400 without a success: false
+                    alert(options.action + " failed. And then the error handling code failed. Please report this, thanks.\n\n" + this.responseText);
+                }
+            }else if (contentType.indexOf("html") > -1) { //This is a server internal error
+                alert(options.action + " failed with an internal server error. Please report this. If popups are enabled, an error page will be opened.");
+                var errorWindow = window.open();
+                errorWindow.document.open();
+                errorWindow.document.write(this.responseText);
+                errorWindow.document.close();
+            }else {
+                alert(options.action + " failed without an error message. Please report this.");
+            }
+        }else {
+            var data = JSON.parse(this.responseText);
+            console.assert(data.success, "Data returned successfully without success: true.\n" + this.responseText);
+            listener(data);
+        }
+    });
+    req.open(method, url);
+    req.setRequestHeader("X-CSRFToken", csrf_token);
+    req.setRequestHeader("Accept", "application/json");
+    if (typeof options.data === "object") {
+        req.setRequestHeader("Content-Type", "application/json");
+        req.send(JSON.stringify(options.data))
+    }else {
+        req.send();
+    }
+}
+
 var titleLabel;
 var titleInput = document.createElement("input");
 titleInput.setAttribute("maxlength", "45");
@@ -37,8 +102,8 @@ function removeTitleInput () {
                 alert(outputMessage);
             }
         });
-        req.open("PATCH", "/api/program/" + programData.id)
-        req.setRequestHeader("X-CSRFToken", csrf_token)
+        req.open("PATCH", "/api/program/" + programData.id);
+        req.setRequestHeader("X-CSRFToken", csrf_token);
         req.send(JSON.stringify({ "title" : titleInput.value }))
     }
     programData.title = document.getElementById("program-title").innerText;
@@ -78,7 +143,7 @@ function deleteProgram () {
         }else {
             window.location.href = "/user/" + programData.author.username;
         }
-    })
+    });
     req.open("DELETE", "/api/program/" + programData.id);
     req.setRequestHeader("X-CSRFToken", csrf_token);
     req.send();
@@ -140,7 +205,7 @@ function runProgram (event) {
     var html = ace.edit("html-editor").getSession().getValue();
     html = html.replace(/\/\*\[OurJSEditor insert:(js|css)\]\*\//gi, function (comment, language, position, code) {
         return ace.edit(language.toLowerCase() + "-editor").getSession().getValue();
-    })
+    });
 
     document.getElementById("preview").contentWindow.postMessage(JSON.stringify({
         type: "execute",
@@ -172,7 +237,7 @@ function createCommentTextbox (parent) {
 
         var req = new XMLHttpRequest();
         req.open("POST", "/api/program/" + programData.id + "/comment/new");
-        req.setRequestHeader("X-CSRFToken", csrf_token)
+        req.setRequestHeader("X-CSRFToken", csrf_token);
         req.setRequestHeader("Content-Type", "application/json");
         req.addEventListener("load", function () {
             var data = JSON.parse(this.response);
@@ -190,7 +255,7 @@ function createCommentTextbox (parent) {
                     "edited": null,
                     "created": (new Date()).toISOString().replace(/\.\d\d\dZ/, "Z"),
                     "id": data.id,
-                }
+                };
 
                 if (parent) {
                     for (var i = 0; i < programData.comments.length; i++) {
@@ -198,7 +263,7 @@ function createCommentTextbox (parent) {
                             programData.comments[i].comments.push(commentObj);
                             programData.comments[i].replyCount ++;
                             var el = programData.comments[i].element.getElementsByClassName("show-hide-comments")[0];
-                            el.innerText = el.innerText.replace(/\(\d+\)/, "(" + programData.comments[i].replyCount + ")")
+                            el.innerText = el.innerText.replace(/\(\d+\)/, "(" + programData.comments[i].replyCount + ")");
                             break;
                         }
                     }
@@ -238,7 +303,7 @@ function createCommentTextbox (parent) {
         com.classList.add("comment-comment");
     }
 
-    textbox.classList.add("comment-content")
+    textbox.classList.add("comment-content");
 
     content.appendChild(textbox);
     com.appendChild(t).appendChild(row);
@@ -262,7 +327,7 @@ function jumpToComment(commentEl) {
 function unfoldComment (comment, scrollTarget) {
     //If we've already loaded
     if (comment.comments) {
-        comment.element.parentElement.insertBefore(createCommentTextbox(comment.id), comment.element.nextSibling)
+        comment.element.parentElement.insertBefore(createCommentTextbox(comment.id), comment.element.nextSibling);
         for (var i = comment.comments.length-1; i >= 0; i--) {
             comment.element.parentElement.insertBefore(displayComment(comment.comments[i]), comment.element.nextSibling);
         }
@@ -278,7 +343,7 @@ function unfoldComment (comment, scrollTarget) {
                 comment.comments = data.comments;
                 comment.replyCount = data.comments.length; //Reset local value to the correct number
                 var el = comment.element.getElementsByClassName("show-hide-comments")[0];
-                el.innerText = el.innerText.replace(/\(\d+\)/, "(" + comment.replyCount + ")")
+                el.innerText = el.innerText.replace(/\(\d+\)/, "(" + comment.replyCount + ")");
 
                 unfoldComment(comment);
 
@@ -318,7 +383,7 @@ function initMd () {
         var str = url.trim().toLowerCase();
         //If it includes a protocol, stop it.
         return !(/^[a-z][a-z0-9+.-]*:/.test(str));
-    };
+    }
 
     //Definitly hacky, but we add a rule before parsing non-masked links that lossens the requirements of the validator
     md.core.ruler.before("linkify", "lenientLinkValidation", function () {
@@ -446,7 +511,7 @@ function displayComment (comment) {
                         alert("Failed with error: " + d.error);
                     }
                 });
-                req.setRequestHeader("X-CSRFToken", csrf_token)
+                req.setRequestHeader("X-CSRFToken", csrf_token);
                 req.send(JSON.stringify({
                     "content": textbox.value
                 }));
@@ -530,7 +595,7 @@ function displayComment (comment) {
                                     }
 
                                     var el = parentComment.element.getElementsByClassName("show-hide-comments")[0];
-                                    el.innerText = el.innerText.replace(/\(\d+\)/, "(" + parentComment.replyCount + ")")
+                                    el.innerText = el.innerText.replace(/\(\d+\)/, "(" + parentComment.replyCount + ")");
                                     break;
                                 }
                             }
@@ -556,7 +621,7 @@ function displayComment (comment) {
                         alert("Failed with error: " + data.error);
                     }
                 });
-                req.setRequestHeader("X-CSRFToken", csrf_token)
+                req.setRequestHeader("X-CSRFToken", csrf_token);
                 req.send();
             });
             commentDeleteConfirm.appendChild(commentDeleteDelete);
@@ -631,7 +696,120 @@ function hashUpdated() {
         });
         req.send();
     }
-};
+}
+
+//Creates and returns a DOM element representing a row in the collaborator popup, with buttons and stuff
+function makeCollaboratorRow(identifier) {
+    var item = document.createElement("li");
+
+    //Create the remove icon/button if we can edit the program
+    if (programData.canEditProgram ) {
+        var removeIcon = document.createElement("span");
+        removeIcon.classList.add("icon", "icon-delete", "clickable");
+        removeIcon.addEventListener("click", function () {
+            //Double check if they're about to remove themselves
+            if (userData.id === item.dataset.userId) {
+                if (!confirm("You're about to remove yourself from the collaborators on this program.\nYou can't undo this action.")) {
+                    return;
+                }
+            }
+
+            //Make a request to remove the user
+            makeRequest("DELETE", "/api/program/" + programData.id + "/collaborators", function (data) {
+                //Mutate programData
+                for (var i = 0; i < programData.collaborators.length; i++) {
+                    if (programData.collaborators[i] === item.dataset.userId) {
+                        programData.collaborators.splice(i, 1);
+                    }
+                }
+                //If you just removed yourself, refresh everything
+                if (userData.id === item.dataset.userId) {
+                    window.location.reload();
+                }else {
+                    //Remove from the DOM
+                    item.parentElement.removeChild(item);
+                }
+            }, {action: "Removing collaborator " + identifier, data: {user: {id: item.dataset.userId}}});
+        });
+        item.appendChild(removeIcon);
+    }
+
+    makeRequest("GET", "/api/user/" + identifier, function (data) {
+        item.appendChild(document.createTextNode("@" + data.username));
+        item.dataset.userId = data.id;
+    }, {action: "Displaying collaborator " + identifier});
+    return item;
+}
+
+function addCollaborator(username) {
+    //Silently ignore empty textbox/input
+    if (username.length === 0) {
+        return;
+    }
+    //Make a request to add the user (backend verifies user)
+    makeRequest("POST", "/api/program/" + programData.id + "/collaborators", function (data) {
+        var collaboratorsList = document.getElementById("collaborators");
+        collaboratorsList.insertBefore(makeCollaboratorRow(username), collaboratorsList.firstElementChild.nextElementSibling);
+
+        //Add the new collaborator to the local list
+        programData.collaborators.push(data.id);
+    }, {
+        data: {user: {username: username}},
+        action: "Adding collaborator \"" + username + "\"",
+    });
+
+}
+
+function createCollaboratePopup() {
+    var collaboratePopup = document.getElementById("collaborate-popup");
+
+    //If we're not the program owner or a collaborator, remove the textbox to add collaborators
+    //Collaborators can add or remove any other collaborators
+    if (!programData.canEditProgram || programData.unsaved) {
+        var addCollaboratorLi = document.getElementById("add-collaborator");
+        addCollaboratorLi.parentElement.removeChild(addCollaboratorLi);
+    }else {
+        var collaboratorTextbox = document.getElementById("add-collaborator-textbox");
+        collaboratorTextbox.addEventListener("keypress", function (e) {
+            if (e.key === "Enter" || e.keyCode === 13) {
+                addCollaborator(collaboratorTextbox.value);
+                collaboratorTextbox.value = "";
+            }
+        });
+
+        var addCollaboratorButton = document.getElementById("add-collaborator-button");
+        addCollaboratorButton.addEventListener("click", function () {
+            addCollaborator(collaboratorTextbox.value);
+            collaboratorTextbox.value = "";
+        });
+    }
+
+    var liveCollabButton = document.getElementById("live-collab-button");
+    liveCollabButton.addEventListener("click", function (e) {
+        TogetherJS(this);
+        liveCollabButton.textContent = liveCollabButton.textContent === "Start" ? "End" : "Start";
+    });
+
+    document.getElementById("close-button-wrap").addEventListener("click", function () {
+        collaboratePopup.style.display = "none";
+    });
+
+    //The popup actually lives inside the button in the DOM tree. This stops clicks on the popup from propagating up to the button
+    collaboratePopup.addEventListener("click", function (e) { e.stopImmediatePropagation(); });
+
+    var collaboratorsList = document.getElementById("collaborators");
+    if (programData.unsaved) {
+        var unsavedMessage = document.createElement("span");
+        unsavedMessage.classList.add("sub-header");
+        unsavedMessage.appendChild(document.createTextNode("You can add collaborators once you've saved the program."));
+        collaboratorsList.appendChild(unsavedMessage);
+    }else {
+        var collaborators = programData.collaborators;
+        for (var i = 0; i < collaborators.length; i++) {
+            collaboratorsList.appendChild(makeCollaboratorRow(collaborators[i]));
+        }
+    }
+}
 
 function vote () {
     var el = this;
@@ -662,7 +840,7 @@ function vote () {
         }
     });
     req.send();
-};
+}
 
 function save (fork) {
     //Update programData with the lastest textbox code
@@ -689,7 +867,7 @@ function save (fork) {
         }else if (programData.unsaved || fork) {
             window.location.href = this.getResponseHeader("Location")
         }
-    })
+    });
     if (fork) {
         req.open("POST", "/api/program/" + programData.id + "/forks");
     }else if (programData.id) {
@@ -735,31 +913,36 @@ document.addEventListener("DOMContentLoaded", function() {
                 e.preventDefault() && e.stopPropagation();
             }
         }
-    })
+    });
 
     document.getElementById("editor-settings").appendChild(initEditorSettings(document.getElementById("editor-settings-button"), [jsEditor, cssEditor, htmlEditor]));
 
-    // Together Button
-    document.getElementById("btnTogether").addEventListener("click", function(event) {
-      event.preventDefault();
+    createCollaboratePopup();
+    // Collaborate Button
+    document.getElementById("collaborate-button").addEventListener("click", function(e) {
+        e.preventDefault();
 
-      TogetherJS(this);
-      return false;
+        var collaboratePopup = document.getElementById("collaborate-popup");
+        if (collaboratePopup.style.display === "block") {
+            collaboratePopup.style.display = "none";
+        }else {
+            collaboratePopup.style.display = "block";
+        }
     });
 
-    document.getElementById("btnRun").addEventListener("click", runProgram);
-    document.getElementById("btnSave").addEventListener("click", function (e) {
+    document.getElementById("run-button").addEventListener("click", runProgram);
+    document.getElementById("save-button").addEventListener("click", function (e) {
         e.preventDefault();
         save(false);
     });
-    document.getElementById("btnFork").addEventListener("click", function (e) {
+    document.getElementById("fork-button").addEventListener("click", function (e) {
         e.preventDefault();
         save(true);
     });
-    document.getElementById("btnDelete").addEventListener("click", function (e) {
+    document.getElementById("delete-button").addEventListener("click", function (e) {
         openConfirm(e, "delete-confirm");
     });
-    document.getElementById("btnPublish").addEventListener("click", function (e) {
+    document.getElementById("publish-button").addEventListener("click", function (e) {
         document.getElementById("preview").contentWindow.postMessage(JSON.stringify({
             type: "thumbnail-request"
         }), "*");
@@ -797,15 +980,17 @@ document.addEventListener("DOMContentLoaded", function() {
     document.getElementById("program-title").innerText = programData.title;
 
     //TODO: Maybe add a login check/pop-up here
-    if (!programData.unsaved) {
-        document.getElementById("btnFork").style.display = "block";
-    }
     if (programData.canEditProgram) {
-        document.getElementById("btnSave").style.display = "block";
+        document.getElementById("save-button").style.display = "block";
     }
-    if (programData.canEditProgram && !programData.unsaved) {
-        document.getElementById("btnDelete").style.display = "block";
-        document.getElementById("btnPublish").style.display = "block";
+    if (!programData.unsaved) {
+        document.getElementById("fork-button").style.display = "block";
+        if (programData.canEditProgram) {
+            document.getElementById("publish-button").style.display = "block";
+        }
+        if (programData.author.id === userData.id) {
+            document.getElementById("delete-button").style.display = "block";
+        }
     }
 
     titleLabel = document.getElementById("program-title");

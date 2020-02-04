@@ -6,9 +6,12 @@ import datetime
 
 from django.template.defaultfilters import escape
 
+from django.contrib.auth.models import User
+
 from .models import Program, get_programs
 from vote.models import vote_types
 from notification.models import Notif
+from user_profile.models import Profile
 
 #/api/program/new
 @api.standardAPIErrors("POST")
@@ -64,6 +67,79 @@ def forks(request, program_id):
         response["Location"] = "/program/" + program.program_id
         return response
 
+#/api/program/PROG_ID/collaborators
+@api.standardAPIErrors("POST", "DELETE")
+def collaborators(request, program_id):
+    requested_program = Program.objects.get(program_id=program_id)
+
+    #Any collaborator can add or remove other collaborators
+    if (not requested_program.can_user_edit(request.user)):
+        return api.error("Not authorized.", status=401)
+
+    # Payload:
+    # {user:{id:""}}
+    # {user:{username:""}}
+    # TODO: Allow getting a user by username *or* id?
+    requested_user_identifier = json.loads(request.body)["user"]
+    try:
+        user = Profile.objects.get(profile_id=requested_user_identifier["id"]).user
+    except KeyError:
+        user = User.objects.get(username=requested_user_identifier["username"])
+
+    if (request.method == "POST"):
+        # Check if collaborators is already a collab
+        # or is the author
+        if (requested_program.can_user_edit(user)):
+            return api.error("That user can already edit this program.")
+
+        # Send a notification to the program owner, if it wasn't the author who did the adding
+        if (request.user != requested_program.user):
+            Notif.objects.create(
+                target_user=requested_program.user,
+                link="/program/" + requested_program.program_id,
+                description="<strong>{0}</strong> added <strong>{1}</strong> to the list of collaborators on your program, <strong>{2}</strong>.".format(
+                    escape(request.user.profile.display_name), escape(user.profile.display_name), escape(requested_program.title)),
+            )
+
+        # Send a notification to the user who has been added
+        # if (request.user != user):
+        Notif.objects.create(
+            target_user=user,
+            link="/program/" + requested_program.program_id,
+            description="<strong>{0}</strong> added you as a collaborator on the program, <strong>{1}</strong>.".format(
+                escape(request.user.profile.display_name), escape(requested_program.title)),
+        )
+
+        requested_program.collaborators.add(user)
+        return api.succeed({ "username": user.username, "id": user.profile.profile_id })
+
+    elif (request.method == "DELETE"):
+        if (requested_program.collaborators.filter(id=user.id).exists()):
+            # Send a notification to the program owner, if it wasn't the author who did the removing
+            if (request.user != requested_program.user):
+                Notif.objects.create(
+                    target_user=requested_program.user, # Program author
+                    link="/program/" + requested_program.program_id,
+                    description="<strong>{0}</strong> removed <strong>{1}</strong> from the list of collaborators on your program, <strong>{2}</strong>.".format(
+                        escape(request.user.profile.display_name), escape(user.profile.display_name), escape(requested_program.title)),
+                )
+
+            # Send a notification to the user who was removed, unless they removed themselves
+            if (request.user != user):
+                Notif.objects.create(
+                    target_user=user,
+                    link="/program/" + requested_program.program_id,
+                    description="<strong>{0}</strong> removed you from the list of collaborators on the program, <strong>{1}</strong>.".format(
+                        escape(request.user.profile.display_name), escape(requested_program.title)),
+                )
+
+            # Other, 3rd-party, collaborators don't get notifications
+
+            requested_program.collaborators.remove(user)
+            return api.succeed()
+        return api.error("User isn't a collaborator on this program.")
+
+
 #/api/program/PRO_ID
 @api.standardAPIErrors("GET","PATCH","DELETE")
 def program(request, program_id):
@@ -74,7 +150,7 @@ def program(request, program_id):
         data = json.loads(request.body)
         return_data = {}
 
-        if request.user != requested_program.user:
+        if not requested_program.can_user_edit(request.user):
             return api.error("Not authorized.", status=401)
 
         if "title" in data and len(data["title"]) > 45:
@@ -109,7 +185,7 @@ def program(request, program_id):
                     target_user = subscriber.user,
                     link = "/program/" + requested_program.program_id,
                     description = "<strong>{0}</strong> just published a new program, <strong>{1}</strong>".format(
-                        escape(request.user.profile.display_name), escape(requested_program.title)),
+                        escape(request.user.profile.display_name), escape(requested_program.title)), #Uses username of person publishing, not necessarily the program owner
                     source_program = requested_program
                 )
 

@@ -35,12 +35,31 @@
         <!-- Collect the nav links, forms, and other content for toggling -->
         <div id="toolbar">
             <ul class="nav navbar-nav">
-                <li id="btnRun"><a>Run</a></li>
-                <li id="btnTogether"><a>Collaborate</a></li>
-                <li id="btnSave"><a>Save</a></li>
-                <li id="btnPublish"><a>Publish</a></li>
-                <li id="btnFork"><a>Fork</a></li>
-                <li id="btnDelete"><a>Delete</a></li>
+                <li id="run-button"><a>Run</a></li>
+                <li id="collaborate-button">
+                    <a>Collaborate</a>
+                    <div id="collaborate-popup" class="popup" style="display: none">
+                        <div id="close-button-wrap"><span class="icon icon-cancel clickable"></span></div>
+                        <div class="left">
+                            <div class="header">Collaborators</div>
+                            <ul id="collaborators">
+                                <li id="add-collaborator">
+                                    <span class="icon icon-user-plus clickable" id="add-collaborator-button"></span> <input type="text" id="add-collaborator-textbox"  placeholder="Add collaborator by username">
+                                </li>
+                            </ul>
+                        </div><!--
+                        --><div class="divider"></div><!--
+                        --><div class="right">
+                        <div class="header">Start a live session</div>
+                        <div class="sub-header">Powered by Together.js</div>
+                            <button class="button" id="live-collab-button">Start</button>
+                        </div>
+                    </div>
+                </li>
+                <li id="save-button"><a>Save</a></li>
+                <li id="publish-button"><a>Publish</a></li>
+                <li id="fork-button"><a>Fork</a></li>
+                <li id="delete-button"><a>Delete</a></li>
             </ul>
         </div><!-- /.navbar-collapse -->
     </nav>
