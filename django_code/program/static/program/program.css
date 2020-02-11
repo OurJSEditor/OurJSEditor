@@ -14,7 +14,7 @@ body {
 }
 
 .editors {
-    margin: 0px 0px 0 217px;
+    margin: 0 0 0 217px;
     padding: 10px;
     position: relative;
     background: #F6F6F6;
@@ -27,21 +27,38 @@ body {
     overflow: hidden;
 }
 
-.editorContainer {
-    width: 49%;
-    float: left;
+.editor-container {
+    /*width: 49%;*/
+    /*float: left;*/
     margin-right: 5px;
     margin-bottom: 5px;
 }
 
-.editorContainer, .editorContainer > * {
-    box-sizing: border-box;
+.editor-container, .editor-container > * {
+    /*box-sizing: border-box;*/
+}
+
+#preview-container, #preview {
+    width: 500px;
+}
+#preview {
+    display: block;
+}
+
+.top .editor {
+    height: 500px;
+}
+.bottom .editor {
+    height: 350px;
 }
 
 .editor {
-    height: 400px;
     width: 100%;
     border: 1px #cecece solid;
+}
+
+.editor-table {
+    width: 100%;
 }
 
 .editor-header {

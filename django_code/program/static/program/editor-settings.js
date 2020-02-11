@@ -5,10 +5,11 @@ var DEFAULT_SETTINGS = {
     useSoftTabs: true,
     tabSize: 4,
     showInvisibles: false,
-    indentedSoftWrap: true, // Unimplimented
-    highlightActiveLine: true, // Unimplimented
-    highlightGutterLine: true, // Unimplimented
-    displayIndentGuides: true, // Unimplimented
+    indentedSoftWrap: true, // Unimplemented
+    highlightActiveLine: true, // Unimplemented
+    highlightGutterLine: true, // Unimplemented
+    displayIndentGuides: true, // Unimplemented
+    showPrintMargin: false, // Unimplemented
     useWorker: false,
     enableBasicAutocompletion: false,
     enableLiveAutocompletion: true,
@@ -103,9 +104,19 @@ function parseValue (type, value) {
 
 function loadOptions () {
     try {
-        return JSON.parse(window.localStorage.editorSettings);
+        var userSettings = JSON.parse(window.localStorage.editorSettings);
     }catch (e) {
         return DEFAULT_SETTINGS;
+    }
+
+    //The list of all keys that should be set
+    let settings = Object.keys(DEFAULT_SETTINGS);
+
+    //Fill in the default values for any keys that aren't in the user's data
+    for (var i = 0; i < settings.length; i++) {
+        if (!userSettings.hasOwnProperty(settings[i])) {
+            userSettings[settings[i]] = DEFAULT_SETTINGS[settings[i]];
+        }
     }
 }
 
@@ -153,7 +164,7 @@ return function (toggleButton, editors) {
         for (var option in POSSIBLE_OPTIONS) {
             if (!POSSIBLE_OPTIONS.hasOwnProperty(option)) continue;
 
-            var optionObj = POSSIBLE_OPTIONS[option]
+            var optionObj = POSSIBLE_OPTIONS[option];
             var rowEl = document.createElement("tr");
             rowEl.dataset.editorOption = option;
 
@@ -247,7 +258,7 @@ return function (toggleButton, editors) {
                 "ace/mode/javascript": js_beautify,
                 "ace/mode/html": html_beautify,
                 "ace/mode/css": css_beautify
-            }
+            };
 
             for (var i = 0; i < editors.length; i++) {
                 var mode = editors[i].getSession().$modeId;
