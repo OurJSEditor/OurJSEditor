@@ -1,14 +1,30 @@
 from __future__ import unicode_literals
 
+import re
+
 from django.db import models
 from django.contrib.auth.models import User
 from django.db.models.signals import post_save
 from django.dispatch import receiver
 
-def generate_id():
-    from ourjseditor.funcs import get_id
+from program.models import Program
+from ourjseditor.util import get_id
 
+def generate_id():
     return get_id()
+
+
+# Validates a username
+def check_username(test_username, current_username):
+    return (
+        len(test_username) <= 45 and
+        test_username != '' and
+        not re.search(r"\W", test_username) and
+        (test_username == current_username or not User.objects.filter(username=test_username).exists()) and
+        not Program.objects.filter(program_id=test_username).exists() and
+        not Profile.objects.filter(profile_id=test_username).exists()
+    )
+
 
 class Profile(models.Model):
     user = models.OneToOneField(User, on_delete=models.CASCADE)
@@ -20,10 +36,12 @@ class Profile(models.Model):
     profile_id = models.CharField(primary_key=True, max_length=6, default=generate_id)
     subscriptions = models.ManyToManyField("self", symmetrical=False)
 
+
 @receiver(post_save, sender=User)
 def create_user_profile(sender, instance, created, **kwargs):
     if created:
         Profile.objects.create(user=instance)
+
 
 @receiver(post_save, sender=User)
 def save_user_profile(sender, instance, **kwargs):

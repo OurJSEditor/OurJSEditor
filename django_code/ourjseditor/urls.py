@@ -18,8 +18,6 @@ from django.conf.urls import url, include
 from django.conf import settings
 from django.conf.urls.static import static
 
-from . import views
-
 from notification import api as notif_api
 from user_profile import api as user_api
 from account import api as account_api
@@ -29,11 +27,13 @@ from vote import api as vote_api
 
 from program.views import new_program as new_program_view
 
+from . import views
+
 api_urls = [
     url(r'^user/', include([
-        url(r'^new$', account_api.new_user, name='new-user-api'), #account
-        url(r'^login$', account_api.login, name='login-api'), #account
-        url(r'^forgot-password$', account_api.forgot_password, name='forgot-password-api'), #account
+        url(r'^new$', account_api.new_user, name='new-user-api'), # account
+        url(r'^login$', account_api.login, name='login-api'), # account
+        url(r'^forgot-password$', account_api.forgot_password, name='forgot-password-api'), # account
         url(r'^username-valid/(.+)$', user_api.username_valid, name='username-valid'),
         url(r'^([\w-]+)', include([
             url(r'^$', user_api.user, name='user-api'),

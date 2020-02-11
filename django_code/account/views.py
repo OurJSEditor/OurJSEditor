@@ -1,16 +1,11 @@
 from django.shortcuts import render, redirect
-from django.http import HttpResponse
-
-import json, re
 
 from django.contrib import auth
-from django.contrib.auth.models import User
-from django.contrib.auth.decorators import login_required
 from django.contrib.auth.tokens import default_token_generator as token_generator
 from django.views.decorators.csrf import ensure_csrf_cookie
 
-from ourjseditor.funcs import check_username
 from user_profile.models import Profile
+
 
 # Create your views here.
 @ensure_csrf_cookie
@@ -21,8 +16,10 @@ def login(request):
         else:
             return render(request, "account/login.html")
 
+
 def forgot_password(request):
     return render(request, 'account/forgotPassword.html')
+
 
 def reset_password(request):
     if (request.method == "GET"):
@@ -43,6 +40,7 @@ def reset_password(request):
 
         except Profile.DoesNotExist:
             return render(request, 'account/resetPassword.html', {"error": "Invalid user."})
+
 
 def logout(request):
     auth.logout(request)

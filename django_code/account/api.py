@@ -13,10 +13,12 @@ try:
 except ImportError:
     from urllib import urlencode
 
-from ourjseditor.funcs import check_username
+from user_profile.models import check_username
 from ourjseditor import api
 
-@api.standardAPIErrors("POST")
+
+# /api/user/login
+@api.StandardAPIErrors("POST")
 def login(request):
     data = json.loads(request.body)
     user = auth.authenticate(
@@ -31,19 +33,21 @@ def login(request):
         # At this point, error should be handled by Javascript
         return api.error("Username or password incorrect.", status=401)
 
-@api.standardAPIErrors("POST")
+
+# /api/user/forget-password
+@api.StandardAPIErrors("POST")
 def forgot_password(request):
     email = json.loads(request.body)["email"]
     username = json.loads(request.body)["username"]
     try:
         user = User.objects.get(email=email, username=username)
     except User.DoesNotExist:
-        #Other DoesNotExist errors 404, but we need this one to 400
+        # Other DoesNotExist errors 404, but we need this one to 400
         return api.error("No user found with matching email and username.", status=400)
 
     timezone = int(json.loads(request.body)["timezone"])
 
-    #Not perfect, but checks for a reasonable time value.
+    # Not perfect, but checks for a reasonable time value.
     if (timezone > 840 or timezone < -840):
         timezone = 0
 
@@ -72,7 +76,9 @@ def forgot_password(request):
 
     return api.succeed({"user": {"id": user.profile.profile_id}})
 
-@api.standardAPIErrors("POST")
+
+# /api/user/new
+@api.StandardAPIErrors("POST")
 def new_user(request):
     data = json.loads(request.body)
 

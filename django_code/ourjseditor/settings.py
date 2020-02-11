@@ -23,10 +23,9 @@ BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 # Get secret key from the .env file, using decouple
 SECRET_KEY = config('SECRET_KEY')
 
-# SECURITY WARNING: don't run with debug turned on in production!
-DEBUG = True
+DEBUG = config("DEBUG", cast=bool)
 
-ALLOWED_HOSTS = ['www.ourjseditor.com', 'ourjseditor.com','45.56.88.22','localhost','127.0.0.1']
+ALLOWED_HOSTS = ['www.ourjseditor.com', 'ourjseditor.com', '45.56.88.22', 'localhost', '127.0.0.1']
 
 # Application definition
 
@@ -93,7 +92,7 @@ DATABASES = {
     }
 }
 
-if (DATABASES["default"]["ENGINE"] == "django.db.backends.mysql"):
+if DATABASES["default"]["ENGINE"] == "django.db.backends.mysql":
     DATABASES["default"]["OPTIONS"] = {
         "charset": "utf8mb4"
     }
@@ -104,7 +103,7 @@ EMAIL_BACKEND = config('EMAIL_BACKEND')
 EMAIL_HOST = config('EMAIL_HOST')
 EMAIL_PORT = config('EMAIL_PORT', default=0, cast=int)
 EMAIL_HOST_USER = config('EMAIL_USER', '')
-EMAIL_HOST_PASSWORD = config('EMAIL_PASSWORD','')
+EMAIL_HOST_PASSWORD = config('EMAIL_PASSWORD', '')
 EMAIL_USE_TLS = config('EMAIL_TLS', default=False, cast=bool)
 
 # Password validation
@@ -131,9 +130,11 @@ AUTH_PASSWORD_VALIDATORS = [
 
 TIME_ZONE = 'UTC'
 
-USE_I18N = False # Translation
+# Translation
+USE_I18N = False
 
-USE_L10N = False # Localization
+# Localization
+USE_L10N = False
 
 APPEND_SLASH = False
 
@@ -145,9 +146,9 @@ STATICFILES_STORAGE = 'django.contrib.staticfiles.storage.ManifestStaticFilesSto
 
 STATIC_URL = '/static/'
 
-STATIC_ROOT = os.path.join(os.path.dirname(BASE_DIR), "static/") #Doesn't exist until we run collectstatic
+STATIC_ROOT = os.path.join(os.path.dirname(BASE_DIR), "static/") # Doesn't exist until we run collectstatic
 
-STATICFILES_DIRS = ( os.path.join(os.path.dirname(BASE_DIR), "js/build/"), )
+STATICFILES_DIRS = (os.path.join(os.path.dirname(BASE_DIR), "js/build/"), )
 
 # User uploaded files
 

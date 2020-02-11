@@ -7,9 +7,8 @@ from django.http import HttpResponse
 from django.db.models import Q
 
 from program.models import get_programs
-from ourjseditor.funcs import check_username
+from user_profile.models import check_username
 
-# Create your views here.
 
 # username was captured by the regular expression that matched the url.
 # It's passed to the function automatically.
@@ -17,20 +16,20 @@ def index(request, username):
     try:
         user = User.objects.select_related('profile').get(username=username)
 
-        listOptions = {
+        list_options = {
             'perPage': 50,
-            'sort': 'new' if user == request.user else 'top' #If you're looking at your own profile, show new programs
+            'sort': 'new' if user == request.user else 'top' # If you're looking at your own profile, show new programs
         }
 
-        programs = get_programs(listOptions['sort'], Q(user=user), published_only=False, limit=listOptions['perPage'] + 1)
+        programs = get_programs(list_options['sort'], Q(user=user), published_only=False, limit=list_options['perPage'] + 1)
         program_dicts = [p.to_dict(include_code=False) for p in programs]
 
-        listOptions["initialPrograms"] = program_dicts
+        list_options["initialPrograms"] = program_dicts
         user_data = {
             'user': user,
             'currentUser': request.user,
             'editing': False,
-            'listOptions': json.dumps(listOptions)
+            'listOptions': json.dumps(list_options)
         }
 
         if request.user.is_authenticated:
@@ -40,30 +39,31 @@ def index(request, username):
     except User.DoesNotExist:
         return render(request, 'user_profile/does-not-exist.html', {'username': username}, status=404)
 
+
 def edit(request, username):
-    if (request.method == 'POST'):
-       username = request.POST.get('username', '')
-       display_name = request.POST.get('display_name', '')
-       bio = re.sub(r'\r', '', request.POST.get('bio', ''))
-       if (not check_username(username, request.user.username)):
-           return HttpResponse('null', content_type="application/json", status=400)
-       if (len(display_name) > 45):
-           return HttpResponse('null', content_type="application/json", status=400)
-       if (len(bio) > 500):
-           return HttpResponse('null', content_type="application/json", status=400)
-       if (display_name == ''):
-           display_name = username
-       request.user.username = username
-       request.user.profile.display_name = display_name
-       request.user.profile.bio = bio
-       request.user.save()
-       return redirect("/user/" + username)
+    if request.method == 'POST':
+        username = request.POST.get('username', '')
+        display_name = request.POST.get('display_name', '')
+        bio = re.sub(r'\r', '', request.POST.get('bio', ''))
+        if not check_username(username, request.user.username):
+            return HttpResponse('null', content_type="application/json", status=400)
+        if len(display_name) > 45:
+            return HttpResponse('null', content_type="application/json", status=400)
+        if len(bio) > 500:
+            return HttpResponse('null', content_type="application/json", status=400)
+        if display_name == '':
+            display_name = username
+        request.user.username = username
+        request.user.profile.display_name = display_name
+        request.user.profile.bio = bio
+        request.user.save()
+        return redirect("/user/" + username)
     else:
         try:
             user = User.objects.select_related('profile').get(username=username)
-            if (user.username == request.user.username):
+            if user.username == request.user.username:
                 return render(request, 'user_profile/user-profile.html', {'editing': True})
-            else:
-                return render(request, 'user_profile/access-denied.html', {'username': username}, status=403)
+
+            return render(request, 'user_profile/access-denied.html', {'username': username}, status=403)
         except User.DoesNotExist:
             return render(request, 'user_profile/does-not-exist.html', {'username': username}, status=404)
