@@ -139,7 +139,7 @@ return function (toggleButton, editors, settingChanged) {
     var container = createContainer();
 
     function updateAceSetting(settingKey, newValue) {
-        var isDummy = !!POSSIBLE_OPTIONS[settingKey].dummy;
+        var isDummy = POSSIBLE_OPTIONS.hasOwnProperty(settingKey) && POSSIBLE_OPTIONS[settingKey].dummy;
 
         // Call the callback
         if (typeof settingChanged === "function") {
@@ -318,9 +318,9 @@ return function (toggleButton, editors, settingChanged) {
     });
 
     //Set ace options on init
-    var possibleOptionsKeys = Object.keys(POSSIBLE_OPTIONS);
-    for (var i = 0; i < possibleOptionsKeys.length; i++) {
-        updateAceSetting(possibleOptionsKeys[i], currentOptions[possibleOptionsKeys[i]]);
+    var optionKeys = Object.keys(currentOptions);
+    for (var i = 0; i < optionKeys.length; i++) {
+        updateAceSetting(optionKeys[i], currentOptions[optionKeys[i]]);
     }
 
     return container;

@@ -846,6 +846,18 @@ function switchEditorLayout (newLayout) {
     }else {
         throw new Error("Invalid layout");
     }
+
+    //Add or remove the rowspan attribute
+    var conts = document.querySelectorAll(".editor-container:not(#preview-container)");
+    for (var i = 0; i < conts.length; i++) {
+        console.log(conts[i]);
+        conts[i].setAttribute("rowspan", (newLayout === "tabbed" ? "2" : "1"));
+    }
+
+    //Resize everything
+    jsEditor.resize();
+    htmlEditor.resize();
+    cssEditor.resize();
 }
 
 function switchEditorTabs(event) {
@@ -854,16 +866,23 @@ function switchEditorTabs(event) {
         return; //Do nothing if clicking a selected tab
     }
 
-    /*var tabButtons = document.getElementById("tab-row").children;
+    var tabRow = document.getElementById("tab-row");
+    var tabButtons = tabRow.children;
     for (var i = 0; i < tabButtons.length; i++) {
         //Find the associated element
         var editor = document.getElementById(tabButtons[i].dataset.tabId + "-editor").parentElement;
 
+        //Add the selected class to the button that we clicked, and remove it from the others
         var addSelected = tabButtons[i] === clickedButton;
-
         tabButtons[i].classList.toggle("selected", addSelected);
         editor.classList.toggle("selected", addSelected);
-    }*/
+        if (addSelected) { //If this is the thing we're switching to
+            //Move the tab row inside of it
+            tabRow.parentElement.removeChild(tabRow);
+            editor.insertBefore(tabRow, editor.firstElementChild);
+        }
+    }
+
 }
 
 function vote () {
