@@ -109,12 +109,18 @@
         </div>
     </div><!-- /sidebar -->
 
-    <div class="editors">
+    <div id="editors" class="section split">
         <table class="editor-table"><tbody>
             <tr class="top">
                 <!-- JS Editor -->
-                <td class="editor-container">
+                <td class="editor-container selected" id="main-editor">
                     <h3 class="editor-header">JS Editor</h3>
+                    <div id="tab-row">
+                        <button data-tab-id="js" class="selected">JS</button><!--
+                        --><button data-tab-id="html">HTML</button><!--
+                        --><button data-tab-id="css">CSS</button>
+                    </div>
+
                     <div class="editor" id="js-editor"></div>
                 </td>
                 <!-- Preview -->
@@ -138,7 +144,7 @@
         </tbody></table>
     </div>
 
-    <div id="comment-wrap" class="editors"></div>
+    <div id="comment-wrap" class="section"></div>
 
     <div id="back-cover"></div>
     <div class="confirm" id="delete-confirm">
