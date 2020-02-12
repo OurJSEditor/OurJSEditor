@@ -92,6 +92,7 @@ body {
     cursor: pointer;
     position: relative;
     z-index: 1;
+    outline: none;
 }
 #editors.tabbed #tab-row button:last-child {
     border-right-style: solid;
