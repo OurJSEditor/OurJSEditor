@@ -882,6 +882,10 @@ function switchEditorTabs(event) {
         }
     }
 
+    //Resize everything (ideally we just need to resize the new tab, but we don't know what editor that is
+    jsEditor.resize();
+    htmlEditor.resize();
+    cssEditor.resize();
 }
 
 function vote () {
