@@ -850,7 +850,6 @@ function switchEditorLayout (newLayout) {
     //Add or remove the rowspan attribute
     var conts = document.querySelectorAll(".editor-container:not(#preview-container)");
     for (var i = 0; i < conts.length; i++) {
-        console.log(conts[i]);
         conts[i].setAttribute("rowspan", (newLayout === "tabbed" ? "2" : "1"));
     }
 
@@ -986,6 +985,44 @@ document.addEventListener("DOMContentLoaded", function() {
                 save(false);
                 e.preventDefault() && e.stopPropagation();
             }
+        }
+    });
+
+    //Make the bottom row draggable/resizeable
+    //Bugs:
+    //Scrolling down is weird
+    //Scrolling up makes the page shorter, causing the mouse to move up 2 pixels for every pixel moved
+    //~~Releasing over the output canvas causes the release to be dropped~~
+    //Can't resize in split mode
+    var bottomDragger = document.getElementById("bottom-dragger");
+    var bottomRow = document.querySelector("#editors tr.bottom");
+    var bottomDraggingState = {
+        isDragging: false,
+        lastY: undefined,
+        currentHeight: bottomRow.getBoundingClientRect().height
+    };
+    bottomDragger.addEventListener("mousedown", function (event) {
+        bottomDraggingState.isDragging = true;
+        bottomDraggingState.lastY = event.clientY;
+    });
+    window.addEventListener("mouseup", function () {
+        bottomDraggingState.isDragging = false;
+    });
+    document.addEventListener("mousemove", function (event) {
+        if (bottomDraggingState.isDragging) {
+            if (event.buttons === 0) {
+                //Prevent the dragger from ever being stuck down
+                bottomDraggingState.isDragging = false;
+                return;
+            }
+            bottomDraggingState.currentHeight += event.clientY - bottomDraggingState.lastY;
+            bottomRow.style.height = bottomDraggingState.currentHeight + "px";
+            bottomDraggingState.lastY = event.clientY;
+
+            //Resize everything
+            jsEditor.resize();
+            htmlEditor.resize();
+            cssEditor.resize();
         }
     });
 
