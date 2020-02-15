@@ -5,10 +5,11 @@ var DEFAULT_SETTINGS = {
     useSoftTabs: true,
     tabSize: 4,
     showInvisibles: false,
-    indentedSoftWrap: true, // Unimplimented
-    highlightActiveLine: true, // Unimplimented
-    highlightGutterLine: true, // Unimplimented
-    displayIndentGuides: true, // Unimplimented
+    indentedSoftWrap: true, // Unimplemented
+    highlightActiveLine: true, // Unimplemented
+    highlightGutterLine: true, // Unimplemented
+    displayIndentGuides: true, // Unimplemented
+    showPrintMargin: false, // Unimplemented
     useWorker: false,
     enableBasicAutocompletion: false,
     enableLiveAutocompletion: true,
@@ -16,6 +17,7 @@ var DEFAULT_SETTINGS = {
     wrapBehavioursEnabled: false,
     theme: "ace/theme/textmate",
     fontFamily: "'Monaco', 'Menlo', 'Ubuntu Mono', 'Consolas', 'source-code-pro', monospace",
+    editorLayout: "tabbed", // tabbed (IDE-style) or split (JSFiddle-style) editing, not an Ace setting
 };
 
 var POSSIBLE_OPTIONS = {
@@ -89,6 +91,15 @@ var POSSIBLE_OPTIONS = {
         type: "TEXT_INPUT",
         placeholder: "fontFamily css"
     },
+
+    editorLayout: {
+        label: "Editor Layout",
+        dummy: true, // Not an Ace setting, and shouldn't be set as such
+        values: {
+            "Split": "split",
+            "Tabbed": "tabbed",
+        }
+    },
 };
 
 function parseValue (type, value) {
@@ -103,17 +114,46 @@ function parseValue (type, value) {
 
 function loadOptions () {
     try {
-        return JSON.parse(window.localStorage.editorSettings);
+        var userSettings = JSON.parse(window.localStorage.editorSettings);
     }catch (e) {
         return DEFAULT_SETTINGS;
     }
+
+    //The list of all keys that should be set
+    let settings = Object.keys(DEFAULT_SETTINGS);
+
+    //Fill in the default values for any keys that aren't in the user's data
+    for (var i = 0; i < settings.length; i++) {
+        if (!userSettings.hasOwnProperty(settings[i])) {
+            userSettings[settings[i]] = DEFAULT_SETTINGS[settings[i]];
+        }
+    }
+
+    return userSettings;
 }
 
-return function (toggleButton, editors) {
+return function (toggleButton, editors, settingChanged) {
     var currentOptions = loadOptions();
 
     var toggledOn = false;
     var container = createContainer();
+
+    function updateAceSetting(settingKey, newValue) {
+        var isDummy = POSSIBLE_OPTIONS.hasOwnProperty(settingKey) && POSSIBLE_OPTIONS[settingKey].dummy;
+
+        // Call the callback
+        if (typeof settingChanged === "function") {
+            settingChanged(settingKey, newValue, isDummy);
+        }
+
+        // If it's not a dummy value
+        if (!isDummy) {
+            // Change the value in all 3 editors
+            for (var j = 0; j < editors.length; j++) {
+                editors[j].setOption(settingKey, newValue);
+            }
+        }
+    }
 
     function editorSettingsUpdate () {
         var row = this.parentNode.parentNode;
@@ -127,18 +167,14 @@ return function (toggleButton, editors) {
             var options = option.split(" ");
 
             for (var i = 0; i < values.length; i++) {
-                for (var j = 0; j < editors.length; j++) {
-                    editors[j].setOption(options[i], values[i] === "true");
-                }
+                updateAceSetting(options[i], values[i] === "true");
 
                 currentOptions[options[i]] = values[i] === "true";
             }
         }else {
             var value = parseValue(type, this.value);
 
-            for (var i = 0; i < editors.length; i++) {
-                editors[i].setOption(option, value);
-            }
+            updateAceSetting(option, value);
 
             currentOptions[option] = value;
         }
@@ -153,7 +189,7 @@ return function (toggleButton, editors) {
         for (var option in POSSIBLE_OPTIONS) {
             if (!POSSIBLE_OPTIONS.hasOwnProperty(option)) continue;
 
-            var optionObj = POSSIBLE_OPTIONS[option]
+            var optionObj = POSSIBLE_OPTIONS[option];
             var rowEl = document.createElement("tr");
             rowEl.dataset.editorOption = option;
 
@@ -205,7 +241,7 @@ return function (toggleButton, editors) {
                     }
                     selectEl.selectedIndex = selectedIndex;
                     rowEl.appendChild(document.createElement("td")).appendChild(selectEl);
-                }else if (optionObj.type === "TEXT_INPUT"){
+                }else if (optionObj.type === "TEXT_INPUT") {
                     var inputEl = document.createElement("input");
                     inputEl.type = "text";
                     inputEl.placeholder = optionObj.placeholder;
@@ -247,7 +283,7 @@ return function (toggleButton, editors) {
                 "ace/mode/javascript": js_beautify,
                 "ace/mode/html": html_beautify,
                 "ace/mode/css": css_beautify
-            }
+            };
 
             for (var i = 0; i < editors.length; i++) {
                 var mode = editors[i].getSession().$modeId;
@@ -269,20 +305,22 @@ return function (toggleButton, editors) {
 
     container.style.display = "none";
 
-    toggleArrow = document.getElementById("editor-settings-arrow");
+    var toggleArrow = document.getElementById("editor-settings-arrow");
     toggleButton.addEventListener("click", function () {
         toggledOn = !toggledOn;
         if (toggledOn) {
             container.style.display = "block";
             toggleArrow.innerHTML = "&#x25BC;";
-        }else {
+        } else {
             container.style.display = "none";
             toggleArrow.innerHTML = "&#x25B6;";
         }
     });
 
-    for (var i = 0; i < editors.length; i++) {
-        editors[i].setOptions(currentOptions);
+    //Set ace options on init
+    var optionKeys = Object.keys(currentOptions);
+    for (var i = 0; i < optionKeys.length; i++) {
+        updateAceSetting(optionKeys[i], currentOptions[optionKeys[i]]);
     }
 
     return container;

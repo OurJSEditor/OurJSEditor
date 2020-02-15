@@ -13,8 +13,8 @@ body {
     height: 100%;
 }
 
-.editors {
-    margin: 0px 0px 0 217px;
+.section {
+    margin: 0 0 0 217px;
     padding: 10px;
     position: relative;
     background: #F6F6F6;
@@ -23,25 +23,65 @@ body {
 
 .top, .bottom {
     width: 100%;
-    height: 50%;
+    /*height: 50%;*/
     overflow: hidden;
 }
 
-.editorContainer {
-    width: 49%;
-    float: left;
+.editor-container {
+    /*width: 49%;*/
+    /*float: left;*/
     margin-right: 5px;
     margin-bottom: 5px;
+    height: 100%;
 }
 
-.editorContainer, .editorContainer > * {
-    box-sizing: border-box;
+.bottom .editor-container {
+    height: auto;
+}
+
+.editor-container, .editor-container > * {
+    /*box-sizing: border-box;*/
+}
+
+#preview-container, #preview {
+    width: 500px;
+}
+#preview {
+    height: 500px;
+    display: block;
+}
+
+.top .editor {
+    height: calc(100% - 21px); /* This is right in Chrome, 2px off in FF */
+}
+.bottom .editor {
+    height: calc(100% - 20px);
+}
+.bottom {
+    height: 350px; /*Default, JS will change with dragging*/
+}
+
+#bottom-dragger {
+    height: 12px;
+    cursor: ns-resize;
+    box-shadow: /* Draw 3 lines through the box */
+            inset #f6f6f6 0 -3px 0 0, inset #8a8a8a 0 -4px 0 0,
+            inset #f6f6f6 0 -7px 0 0, inset #8a8a8a 0 -8px 0 0,
+            inset #f6f6f6 0 -11px 0 0, inset #8a8a8a 0 -12px 0 0;
+    /* Cut the lines off on the sides */
+    border: 2px solid #f6f6f6;
+    border-top-style: none;
+    border-bottom-style: none;
 }
 
 .editor {
-    height: 400px;
     width: 100%;
     border: 1px #cecece solid;
+}
+
+.editor-table {
+    width: 100%;
+    height: 1px; /* Hack for Chrome to allow child elements to have % heights */
 }
 
 .editor-header {
@@ -51,6 +91,49 @@ body {
     margin: 0;
     font-weight: bold;
 }
+
+#tab-row {
+    height: 21px;
+}
+
+/* -- Tabbed Editor rules -- */
+#editors.tabbed #tab-row button {
+    font-size: 12px;
+    font-weight: bold;
+    box-sizing: border-box;
+    background: #EEEEEE;
+    border: solid 1px #c3c3c3;
+    height: 100%;
+    border-bottom: none;
+    border-right-style: none;
+    cursor: pointer;
+    position: relative;
+    z-index: 1;
+    outline: none;
+}
+#editors.tabbed #tab-row button:last-child {
+    border-right-style: solid;
+}
+#editors.tabbed #tab-row button.selected {
+    color: #f4f9ff;
+    background: #2a6aa9;
+    bottom: -1px;
+}
+#editors.tabbed #tab-row button:not(.selected):hover {
+    background: #e1e1e1;
+}
+#editors.tabbed .editor-container:not(#preview-container) .editor-header {
+    display: none;
+}
+#editors.tabbed .editor-container:not(.selected):not(#preview-container) {
+    display: none;
+}
+
+/* -- Split editor rules -- */
+#editors.split #tab-row {
+    display: none;
+}
+
 
 #sidebar {
     padding: 0;

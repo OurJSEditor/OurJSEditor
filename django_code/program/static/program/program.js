@@ -757,7 +757,6 @@ function addCollaborator(username) {
         data: {user: {username: username}},
         action: "Adding collaborator \"" + username + "\"",
     });
-
 }
 
 function createCollaboratePopup() {
@@ -809,6 +808,84 @@ function createCollaboratePopup() {
             collaboratorsList.appendChild(makeCollaboratorRow(collaborators[i]));
         }
     }
+}
+
+//Takes a string, either `tabbed` or `split`
+function switchEditorLayout (newLayout) {
+    // If the layout matches, do nothing (console.warn?)
+    var editorWrap = document.getElementById("editors");
+    if (editorWrap.classList.contains(newLayout)) {
+        return;
+    }
+
+    if (newLayout === "tabbed") {
+        editorWrap.classList.replace("split", "tabbed");
+
+        //Move things from place to other place
+        var bottomWrap = document.getElementsByClassName("bottom")[0];
+        var mainEditor = document.getElementById("main-editor");
+        var bottomEditors = bottomWrap.children;
+        while (bottomEditors.length) {
+            var removedEditor = bottomWrap.removeChild(bottomEditors[0]);
+
+            mainEditor.parentElement.insertBefore(removedEditor, mainEditor);
+        }
+    }else if (newLayout === "split") {
+        editorWrap.classList.replace("tabbed", "split");
+
+        //Move things from place to other place
+        var topWrap = document.getElementsByClassName("top")[0];
+        var bottomWrap = document.getElementsByClassName("bottom")[0];
+        var htmlEditorElmt = document.getElementById("html-editor").parentElement;
+        var cssEditorElmt = document.getElementById("css-editor").parentElement;
+
+        topWrap.removeChild(htmlEditorElmt);
+        topWrap.removeChild(cssEditorElmt);
+        bottomWrap.appendChild(htmlEditorElmt);
+        bottomWrap.appendChild(cssEditorElmt);
+    }else {
+        throw new Error("Invalid layout");
+    }
+
+    //Add or remove the rowspan attribute
+    var conts = document.querySelectorAll(".editor-container:not(#preview-container)");
+    for (var i = 0; i < conts.length; i++) {
+        conts[i].setAttribute("rowspan", (newLayout === "tabbed" ? "2" : "1"));
+    }
+
+    //Resize everything
+    jsEditor.resize();
+    htmlEditor.resize();
+    cssEditor.resize();
+}
+
+function switchEditorTabs(event) {
+    var clickedButton = event.target;
+    if (clickedButton.classList.contains("selected")) {
+        return; //Do nothing if clicking a selected tab
+    }
+
+    var tabRow = document.getElementById("tab-row");
+    var tabButtons = tabRow.children;
+    for (var i = 0; i < tabButtons.length; i++) {
+        //Find the associated element
+        var editor = document.getElementById(tabButtons[i].dataset.tabId + "-editor").parentElement;
+
+        //Add the selected class to the button that we clicked, and remove it from the others
+        var addSelected = tabButtons[i] === clickedButton;
+        tabButtons[i].classList.toggle("selected", addSelected);
+        editor.classList.toggle("selected", addSelected);
+        if (addSelected) { //If this is the thing we're switching to
+            //Move the tab row inside of it
+            tabRow.parentElement.removeChild(tabRow);
+            editor.insertBefore(tabRow, editor.firstElementChild);
+        }
+    }
+
+    //Resize everything (ideally we just need to resize the new tab, but we don't know what editor that is
+    jsEditor.resize();
+    htmlEditor.resize();
+    cssEditor.resize();
 }
 
 function vote () {
@@ -915,7 +992,67 @@ document.addEventListener("DOMContentLoaded", function() {
         }
     });
 
-    document.getElementById("editor-settings").appendChild(initEditorSettings(document.getElementById("editor-settings-button"), [jsEditor, cssEditor, htmlEditor]));
+    //Make the bottom row draggable/resizeable
+    //Dragging far enough that the page gets resized is wonky :(
+    var bottomDragger = document.getElementById("bottom-dragger");
+    var bottomRow = document.querySelector("#editors tr.bottom");
+
+    //Fix styles in Firefox
+    if (document.getElementById("html-editor").getBoundingClientRect().height < 5) { //Something's probably wrong
+        var bottomConts = bottomRow.querySelectorAll(".editor-container");
+        for (var i = 0; i < bottomConts.length; i++) {
+            bottomConts[i].style.height = "100%"; //Go get em!
+        }
+    }
+
+
+    var bottomDraggingState = {
+        isDragging: false,
+        lastY: undefined,
+        currentHeight: bottomRow.getBoundingClientRect().height
+    };
+    bottomDragger.addEventListener("mousedown", function (event) {
+        bottomDraggingState.isDragging = true;
+        bottomDraggingState.lastY = event.clientY;
+    });
+    window.addEventListener("mouseup", function () {
+        bottomDraggingState.isDragging = false;
+    });
+    document.addEventListener("mousemove", function (event) {
+        if (bottomDraggingState.isDragging) {
+            if (event.buttons === 0) {
+                //Prevent the dragger from ever being stuck down
+                bottomDraggingState.isDragging = false;
+                return;
+            }
+            bottomDraggingState.currentHeight += event.clientY - bottomDraggingState.lastY;
+            bottomRow.style.height = bottomDraggingState.currentHeight + "px";
+            bottomDraggingState.lastY = event.clientY;
+
+            //Resize everything
+            jsEditor.resize();
+            htmlEditor.resize();
+            cssEditor.resize();
+        }
+    });
+
+    //Add event listeners to the editor tab buttons
+    var tabButtons = document.getElementById("tab-row").children;
+    for (var i = 0; i < tabButtons.length; i++) {
+        tabButtons[i].addEventListener("click", switchEditorTabs);
+    }
+
+    document.getElementById("editor-settings").appendChild(
+        initEditorSettings(
+            document.getElementById("editor-settings-button"), // The element to make the toggle button
+            [jsEditor, cssEditor, htmlEditor], // The editors to control
+            function(settingKey, newValue) { // A callback to run whenever a setting is changed
+                if (settingKey === "editorLayout") {
+                    switchEditorLayout(newValue);
+                }
+            }
+        )
+    );
 
     createCollaboratePopup();
     // Collaborate Button

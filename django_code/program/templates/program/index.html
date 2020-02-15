@@ -109,34 +109,45 @@
         </div>
     </div><!-- /sidebar -->
 
-    <div class="editors">
-        <div class="top">
-            <!-- JS Editor -->
-            <div class="editorContainer">
-                <h3 class="editor-header">JS Editor</h3>
-                <div class="editor" id="js-editor"></div>
-            </div>
-            <!-- Preview -->
-            <div class="editorContainer">
-                <h3 class="editor-header">Preview</h3>
-                <iframe class="editor" id="preview" name="result" src="{{ MEDIA_URL }}index.html" sandbox="allow-forms allow-scripts allow-same-origin" frameborder="0"></iframe>
-            </div>
-        </div>
-        <div class="bottom">
-            <!-- HTML Editor -->
-            <div class="editorContainer">
-                <h3 class="editor-header">HTML Editor</h3>
-                <div class="editor" id="html-editor"></div>
-            </div>
-            <!-- CSS Editor -->
-            <div class="editorContainer">
-                <h3 class="editor-header">CSS Editor</h3>
-                <div class="editor" id="css-editor"></div>
-            </div>
-        </div>
+    <div id="editors" class="section split">
+        <table class="editor-table"><tbody>
+            <tr class="top">
+                <!-- JS Editor -->
+                <td class="editor-container selected" id="main-editor">
+                    <h3 class="editor-header">JS Editor</h3>
+                    <div id="tab-row">
+                        <button data-tab-id="js" class="selected">JS</button><!--
+                        --><button data-tab-id="html">HTML</button><!--
+                        --><button data-tab-id="css">CSS</button>
+                    </div>
+
+                    <div class="editor" id="js-editor"></div>
+                </td>
+                <!-- Preview -->
+                <td class="editor-container" id="preview-container">
+                    <h3 class="editor-header">Preview</h3>
+                    <iframe class="editor" id="preview" name="result" src="{{ MEDIA_URL }}index.html" sandbox="allow-forms allow-scripts allow-same-origin" frameborder="0"></iframe>
+                </td>
+            </tr>
+            <tr class="bottom">
+                <!-- HTML Editor -->
+                <td class="editor-container">
+                    <h3 class="editor-header">HTML Editor</h3>
+                    <div class="editor" id="html-editor"></div>
+                </td>
+                <!-- CSS Editor -->
+                <td class="editor-container">
+                    <h3 class="editor-header">CSS Editor</h3>
+                    <div class="editor" id="css-editor"></div>
+                </td>
+            </tr>
+            <tr>
+                <td id="bottom-dragger" colspan="2"></td>
+            </tr>
+        </tbody></table>
     </div>
 
-    <div id="comment-wrap" class="editors"></div>
+    <div id="comment-wrap" class="section"></div>
 
     <div id="back-cover"></div>
     <div class="confirm" id="delete-confirm">
