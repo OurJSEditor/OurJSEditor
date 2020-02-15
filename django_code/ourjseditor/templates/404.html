@@ -1,0 +1,28 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    {% load static %}
+    <meta charset="UTF-8">
+    <link rel="stylesheet" href="{% static 'ourjseditor/404.css' %}">
+    <title id="title-tag">404 Page not found</title>
+</head>
+<body>
+
+{% include "ourjseditor/user-info.html" %}
+
+<div class="error-pg">
+    <div class="error-message">
+        <h2><strong>Error 404:</strong></h2>
+        <p>
+            Sorry, this page doesn't exist. Maybe try
+        <ul class="link-list">
+            <li><a href="https://ourjseditor.com/">the home page</a></li>
+            <li><a href="https://ourjseditor.com/programs">recent programs</a></li>
+            <li><a href="https://ourjseditor.com/new">a new program</a></li>
+        </ul>
+        </p>
+    </div>
+</div>
+
+</body>
+</html>
