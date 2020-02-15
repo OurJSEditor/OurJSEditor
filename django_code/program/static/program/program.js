@@ -993,13 +993,19 @@ document.addEventListener("DOMContentLoaded", function() {
     });
 
     //Make the bottom row draggable/resizeable
-    //Bugs:
-    //Scrolling down is weird
-    //Scrolling up makes the page shorter, causing the mouse to move up 2 pixels for every pixel moved
-    //~~Releasing over the output canvas causes the release to be dropped~~
-    //Can't resize in split mode
+    //Dragging far enough that the page gets resized is wonky :(
     var bottomDragger = document.getElementById("bottom-dragger");
     var bottomRow = document.querySelector("#editors tr.bottom");
+
+    //Fix styles in Firefox
+    if (document.getElementById("html-editor").getBoundingClientRect().height < 5) { //Something's probably wrong
+        var bottomConts = bottomRow.querySelectorAll(".editor-container");
+        for (var i = 0; i < bottomConts.length; i++) {
+            bottomConts[i].style.height = "100%"; //Go get em!
+        }
+    }
+
+
     var bottomDraggingState = {
         isDragging: false,
         lastY: undefined,
