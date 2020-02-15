@@ -254,7 +254,7 @@ body {
     border: 1px solid #CCC;
     box-shadow: 0 2px 3px 1px rgba(0, 0, 0, 0.25);
     z-index: 2;
-    min-width: 450px;
+    min-width: 500px;
     height: 200px;
     font-size: 15px;
 }
