@@ -2,4 +2,4 @@ import Preact from "preact";
 
 import HomePage from "../components/home"
 
-Preact.render(<HomePage loggedIn={userData.loggedIn} />, document.getElementById("main-content"));
+Preact.render(<HomePage loggedIn={window.userData.loggedIn} programs={window.programs}/>, document.getElementById("main-content"));

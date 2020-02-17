@@ -31,14 +31,15 @@ export default class ProgramList extends Preact.Component {
 
         this.state.numCols = 4;
 
+        this.fallback = props.fallback;
+
         this.state.sort = props.listOptions.sort;
         this.state.programList = props.listOptions.initialPrograms;
         this.perPage = props.listOptions.perPage;
         cachedProgramLists[this.state.sort] = this.state.programList;
 
         if (this.state.programList.length === 0) {
-            console.error("Just loaded with no programs. This shouldn't happen.");
-            this.loadMorePrograms();
+            console.info("Assuming no programs.");
         }
 
         if (this.state.programList.length <= this.perPage) {
@@ -102,8 +103,23 @@ export default class ProgramList extends Preact.Component {
     }
 
     render () {
-        const programRows = [];
+        /*Doesn't have any programs*/
+        if (this.state.programList.length === 0) {
+            return (
+                <div id="program-list">
+                    <PageSection title={this.title}>
 
+                        <div className="copy">
+                            {this.fallback}
+                        </div>
+
+                    </PageSection>
+                </div>
+            );
+        }
+
+
+        const programRows = [];
 
         //Ignore the last program (which we use to keep track of if we have more programs), if we haven't completed the current list
         let numPrograms = this.state.programList.length - (this.state.programList.complete ? 0 : 1);
