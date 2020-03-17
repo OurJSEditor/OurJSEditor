@@ -19,7 +19,7 @@ def notif(request, notif_id):
         if request.user != requested_notif.target_user:
             return api.error("Not authorized", status=401)
 
-        if isinstance(read, bool):
+        if not isinstance(read, bool):
             return api.error("Invalid type for key \"isRead\"")
 
         requested_notif.is_read = read
