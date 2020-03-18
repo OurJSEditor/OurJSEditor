@@ -52,18 +52,14 @@
             outputDoc.write(data.code);
             outputDoc.close();
         }else if (data.type === "thumbnail-request") {
-            var s = document.createElement("script");
-            s.setAttribute("src", "html2canvas.min.js");
-            s.addEventListener("load", function () {
-                var outputFrame = document.getElementById("output-frame");
-                outputFrame.style.width = SIZE + "px";
-                outputFrame.style.height = SIZE + "px";
-
-                //Once the resize has applied
-                //Isn't going to run if the window size is already 500x500 by some coincidence
-                outputFrame.contentWindow.addEventListener("resize", saveScreenshot);
-            });
-            document.head.appendChild(s);
+            if (typeof html2canvas === "undefined") {
+                var s = document.createElement("script");
+                s.setAttribute("src", "html2canvas.min.js");
+                s.addEventListener("load", saveScreenshot);
+                document.head.appendChild(s);
+            }else {
+                saveScreenshot();
+            }
         }
     });
 
