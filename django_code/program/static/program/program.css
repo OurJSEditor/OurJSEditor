@@ -543,11 +543,14 @@ a.comment-cancel {
     cursor: default;
 }
 
-.comment-content code,
-.comment-content pre {
+.comment-content code {
+	display: inline-block;
     background-color: #F6F6F6;
     border-radius: 3px;
-    padding: 4px
+    padding: 0px 4px;
+}
+.comment-content pre > code {
+    padding: 6px;
 }
 
 .comment-content blockquote {
