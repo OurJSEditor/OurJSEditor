@@ -55,7 +55,7 @@
     width: 400px;
     overflow: scroll;
     background: white;
-    border-left: 2px solid #999999;
+    box-shadow: 0px 0px 10px 10px rgba(0, 0, 0, 0.1);
     text-align: left;
     overflow-x: hidden;
 }
@@ -74,21 +74,26 @@
     background: #f6f6f6;
     width: 100%;
     text-align: right;
-    border-bottom: solid 1px #cecece;
+    box-shadow: 0px 0px 10px 7px rgba(0, 0, 0, 0.1);
+    height: 56px;
 }
 
 #notif-panel .notif-button {
     background: inherit;
     color: black;
+    transition: all 0.2s;
+    border-bottom: 3px solid #f6f6f6;
 }
 
 #notif-panel .notif-button:hover {
     background: #eeeeee;
     cursor: pointer;
+    border-bottom: 3px solid #487EB3;
 }
 
 .notif:hover {
     background: #eeeeee;
+    transition: all 0.2s;
 }
 
 .notif-preview {

@@ -35,8 +35,7 @@ export default class Home extends Preact.Component {
                     title={<img src="/static/images/logo-text.png" />}
                     headerRight={
                         <span className="button-wrap">
-                            <a className="button" href="https://discord.gg/WSHpEPa">DISCORD</a>
-                            <a className="button" href="https://github.com/OurJSEditor/OurJSEditor">GITHUB</a>
+
                         </span>
                     }/>
 

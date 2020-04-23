@@ -4,7 +4,13 @@
     {% load static %}
     <meta charset="UTF-8">
     <link rel="stylesheet" href="{% static 'ourjseditor/404.css' %}">
+    <link rel="stylesheet" type="text/css" href="{% static 'program/navbar.css' %}">
     <title id="title-tag">404 User not found</title>
+    <style>
+        body {
+            margin-top: 100px;
+        }
+    </style>
 </head>
 <body>
 
@@ -12,12 +18,9 @@
 
 <div class="error-pg">
     <div class="error-message">
-        <h2><strong>Error 404:</strong></h2>
+        <h2><strong>Sorry, that user does not exist.</strong></h2>
         <p>
-            This user doesn't exist.
-        </p>
-        <p>
-            Sorry. Unless you want to <a href="/user/logout">create an account</a> with this username, in which case go right ahead.
+            You can <a href="/user/logout">create a new account</a> using this username<br>or go back to the <a href="/">home page</a>
         </p>
     </div>
 </div>

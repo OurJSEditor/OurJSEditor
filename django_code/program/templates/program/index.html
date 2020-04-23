@@ -24,20 +24,19 @@
     <script src="{% static 'program/program.js' %}"></script>
     <!-- Program Style -->
     <link rel="stylesheet" href="{% static 'program/program.css' %}" type="text/css">
+
+    <link rel="stylesheet" type="text/css" href="{% static 'program/navbar.css' %}">
 </head>
 <body>
     <nav class="navbar navbar-default">
-        <!-- Brand and toggle get grouped for better mobile display -->
-        <div class="navbar-header">
-            <a class="navbar-brand" href="/"><img src="{% static 'images/logo-text.png' %}" height="20px"></a>
-        </div>
+        <br><br><br><br>
 
         <!-- Collect the nav links, forms, and other content for toggling -->
         <div id="toolbar">
             <ul class="nav navbar-nav">
-                <li id="run-button"><a>Run</a></li>
+                <li id="run-button"><a>&#x2BC8; Run</a></li>
                 <li id="collaborate-button">
-                    <a>Collaborate</a>
+                    <a><span class="icon icon-user-plus"></span> Collaborate</a>
                     <div id="collaborate-popup" class="popup" style="display: none">
                         <div id="close-button-wrap"><span class="icon icon-cancel clickable"></span></div>
                         <div class="left">
@@ -56,10 +55,10 @@
                         </div>
                     </div>
                 </li>
-                <li id="save-button"><a>Save</a></li>
-                <li id="publish-button"><a>Publish</a></li>
+                <li id="save-button"><a><span class="icon icon-save"></span> Save</a></li>
+                <li id="publish-button"><a><span class="icon icon-bell"></span> Publish</a></li>
                 <li id="fork-button"><a>Fork</a></li>
-                <li id="delete-button"><a>Delete</a></li>
+                <li id="delete-button"><a><span class="icon icon-delete"></span> Delete</a></li>
             </ul>
         </div><!-- /.navbar-collapse -->
     </nav>
@@ -70,33 +69,24 @@
         <div class="panel-body">
             <div class="sidebar-element">
                 <div id="program-title">Name your program</div>
-                <div id="program-author">Created by <a class="sidebar-link" id="program-author-link"></a>.</div>
+                <div id="program-author">Created by <a class="sidebar-link" id="program-author-link"></a></div>
+                <div id="updated-date" class="sidebar-element">
+                    <div>Created <span id="created-date"></span></div>
+                    <div id="published">
+                        Last Published <span id="published-date"></span>
+                    </div>
+                </div>
                 <div id="parent-program">Based on <a class="sidebar-link" id="parent-program-link"></a>.</div>
             </div>
 
-            <table id="vote-table" class="sidebar-element">
-                <tr>
-                    <td>Entertaining:</td>
-                    <td id="entertaining-vote-count"  class="vote-count">0</td>
-                    <td id="entertaining-vote-button" class="vote-button">&#x2b06;</td>
-                </tr>
-                <tr>
-                    <td>Artistic:</td>
-                    <td id="artistic-vote-count"  class="vote-count">0</td>
-                    <td id="artistic-vote-button" class="vote-button">&#x2b06;</td>
-                </tr>
-                <tr>
-                    <td>Informative:</td>
-                    <td id="informative-vote-count"  class="vote-count">0</td>
-                    <td id="informative-vote-button" class="vote-button">&#x2b06;</td>
-                </tr>
-            </table>
-
-            <div id="updated-date" class="sidebar-element">
-                <div>Created <span id="created-date"></span></div>
-                <div id="published">
-                    Last Published <span id="published-date"></span>
-                </div>
+            <div class="vote-button" id="entertaining-vote-button">
+                <span class="icon icon-gamepad"></span> Entertaining: <span id="entertaining-vote-count"  class="vote-count">0</span>
+            </div>
+            <div class="vote-button" id="artistic-vote-button">
+                <span class="icon icon-brush"></span> Artistic: <span id="artistic-vote-count"  class="vote-count">0</span>
+            </div>
+            <div class="vote-button" id="informative-vote-button">
+                <span class="icon icon-graduation-cap"></span> Informative: <span id="informative-vote-count"  class="vote-count">0</span>
             </div>
 
             <div id="editor-settings" class="sidebar-element">

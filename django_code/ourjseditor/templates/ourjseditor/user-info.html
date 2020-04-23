@@ -15,22 +15,18 @@
     document.head.appendChild(link);
 </script>
 
+<ul id="nav">
+  <li style="float:Left"><a class="active" href="/"><img src="/static/images/logo-text.png" height="20px"></a></li>
+  <li style="float:Left"><a href="/new"><span class="icon icon-plus"></span> New Program</a></li>
+  <li><a href='/user/{{ request.user.username|default:"login" }}{% if not request.user.username %}?next={{ request.path|urlencode:"" }}{% endif %}'><span class="icon icon-user"></span> {{ request.user.profile.display_name|default:"Login" }}</a></li>
+  <li><a id="notif-panel-button"><span class="icon icon-bell"></span> Notifications (<span id="notif-count">0</span>)</a></li>
+  <li><a target="_blank" href="https://github.com/OurJSEditor/OurJSEditor">Github</a></li>
+  <li><a target="_blank" href="https://discord.gg/WSHpEPa">Discord</a></li>
+</ul>
+
+<!-- notification panel -->
 <div id="user-info" style="display: none">
     <span class="user-info-element">
-        <a class="user-info-button" href="/">Home</a>
-    </span><!--
-
-    --><span class="user-info-element">
-        <a class="user-info-button" href="/new">New</a>
-    </span>
-
-    <span class="user-info-element">
-        <a class="user-info-button" href='/user/{{ request.user.username|default:"login" }}{% if not request.user.username %}?next={{ request.path|urlencode:"" }}{% endif %}'><span class="icon icon-user"></span> {{ request.user.profile.display_name|default:"Login" }}</a>
-    </span><!--
-
-    --><span class="user-info-element">
-        <button id="notif-panel-button" class="user-info-button"><span class="icon icon-bell"></span> Notifs (<span id="notif-count">0</span>)</button>
-
         <div id="notif-panel" class="closed">
             <div class="notif-buttons-wrap">
                 <button class="user-info-button notif-button" id="notif-all-read">Mark All Read</button><button class="user-info-button notif-button" id="notif-panel-close-button">Close</button>
@@ -40,7 +36,7 @@
             </div>
 
             <div class="notif-end-msg">
-                There are no more notifications below this.
+                You have no new notifications.
             </div>
         </div>
     </span>
