@@ -8,7 +8,7 @@ body {
 .main-table {
     width: 100%;
     background: white;
-    border: 2px solid rgb(240, 240, 240);
+    box-shadow: 0px 0px 10px 1px rgba(0, 0, 0, 0.2);
     border-radius: 5px;
     padding: 20px;
 }
@@ -49,14 +49,14 @@ body {
 .button {
     font-size: 1.2em;
     background: #487EB3;
-    padding: 7px 15px;
+    padding: 10px 15px;
     margin: 0;
     display: inline-block;
     border-radius: 5px;
 }
 
 .logout:hover {
-    background: #6e312b;
+    background: #9a0505;
 }
 
 #subscribe-button.subscribed {

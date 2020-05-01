@@ -25,7 +25,7 @@ SECRET_KEY = config('SECRET_KEY')
 
 DEBUG = config("DEBUG", cast=bool)
 
-ALLOWED_HOSTS = ['www.ourjseditor.com', 'ourjseditor.com', '45.56.88.22', 'localhost', '127.0.0.1']
+ALLOWED_HOSTS = ['68.185.198.252', 'www.ourjseditor.com', 'ourjseditor.com', '45.56.88.22', 'localhost', '127.0.0.1']
 
 # Application definition
 

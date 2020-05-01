@@ -6,7 +6,7 @@ from django.db.models import Q
 from program.models import get_programs
 
 def index(request):
-    top_programs = get_programs("top", limit=3)
+    top_programs = get_programs("top", limit=4)
     programs = {
         "popular": [p.to_dict(include_code=False) for p in top_programs],
     }

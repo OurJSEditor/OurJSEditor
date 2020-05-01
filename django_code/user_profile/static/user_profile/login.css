@@ -74,13 +74,14 @@ body {
     -moz-box-sizing: border-box;
     background: rgb(241, 241, 244);
     font-family: "Open sans", sans-serif;
-    -webkit-transition: background 200ms, border 200ms;
-    transition: background 200ms, border 200ms;
+    transition: all 0.2s;
+    border: 1px solid rgba(0, 0, 0, 0);
 }
 
 .basic-form input:focus {
     outline: none;
-    border: 1px solid #111111;
+    border: 1px solid rgb(100, 100, 100);
+    transition: all 0.2s;
 }
 
 .basic-form input[type="submit"] {
