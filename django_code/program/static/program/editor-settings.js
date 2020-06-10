@@ -310,11 +310,14 @@ return function (toggleButton, editors, settingChanged) {
         toggledOn = !toggledOn;
         if (toggledOn) {
             container.style.display = "block";
+            // container.classList.toggle("editor-settings-transition");
             toggleArrow.innerHTML = "&#x25BC;";
         } else {
             container.style.display = "none";
+            // container.classList.toggle("editor-settings-transition");
             toggleArrow.innerHTML = "&#x25B6;";
         }
+        container.classList.toggle("editor-settings-transition");
     });
 
     //Set ace options on init

@@ -35,8 +35,7 @@ export default class Home extends Preact.Component {
                     title={<img src="/static/images/logo-text.png" />}
                     headerRight={
                         <span className="button-wrap">
-                            <a className="button" href="https://discord.gg/WSHpEPa">DISCORD</a>
-                            <a className="button" href="https://github.com/OurJSEditor/OurJSEditor">GITHUB</a>
+
                         </span>
                     }/>
 
@@ -55,26 +54,34 @@ export default class Home extends Preact.Component {
                                 </tr>
                             </table>
                         :
-                            <div className="welcome">
+                            <div>
+
+                                <div class="row">
+                                  <div class="column">
+                                  <img src="/static/images/ChatBubbles.png" />
+                                    <h2>Community Driven.</h2>
+                                    <p>OurJSE is centered around the community. You can see and vote on other peoples projects.</p>
+                                  </div>
+                                  <div class="column">
+                                  <img src="/static/images/pencilTriangle.png" />
+                                    <h2>lightweight & customizable</h2>
+                                    <p>OurJSE is incredibly lightweight and completely customizable.</p>
+                                  </div>
+                                  <div class="column">
+                                  <img src="/static/images/cogWrench.png" />
+                                    <h2>Open Source</h2>
+                                    <p>And it has a 100% open source backend, so if want a feature, you can add it!</p>
+                                  </div>
+                                </div>
+                                <br />
+                                <br />
                                 {
                                     this.loggedIn ?
-                                        <span className="button-wrap">
-                                            <a className="button" href="/new">Make your first program</a>
-                                        </span>
-                                            :
-                                        <span className="button-wrap">
-                                            <a className="button" href="/user/login">Sign Up</a>
-                                            <a className="button" href="https://github.com/OurJSEditor/OurJSEditor">Source on Github</a>
-                                        </span>
+                                    <a className="cta button" href="/new">Make your first program</a>
+                                    :
+                                    <a className="cta button" href="/user/login">Get Started!</a>
                                 }
-                                <span className="copy">
-                                    Our JS Editor is an online code editor. But it&#8217;s different.<br />
-                                    <ul>
-                                        <li>It&#8217;s community based, so you can see and vote on other people&#8217;s programs.</li>
-                                        <li>It&#8217;s lightweight and it&#8217;s customizable.</li>
-                                        <li>And it has a 100% open source backend, so if you want more, you can help add it.</li>
-                                    </ul>
-                                </span>
+                                <br />
                             </div>
                         }
                 </PageSection>
@@ -85,9 +92,7 @@ export default class Home extends Preact.Component {
                             {
                                 this.programs.popular.map(program => <Program program={program} />)
                             }
-                            <td className="button-wrap program">
-                                <a className="button full" href="/programs/top">See More</a>
-                            </td>
+                            <a id="showMore" href="/programs/top"><span>Browse Programs &#10095;</span></a>
                         </tr>
                     </table>
                 </PageSection>

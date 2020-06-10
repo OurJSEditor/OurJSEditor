@@ -1,0 +1,85 @@
+/* * {
+  box-sizing: border-box;
+} */
+
+/* Create three equal columns that floats next to each other */
+.column {
+  box-sizing: border-box;
+  float: left;
+  width: 33.33%;
+  padding: 10px;
+  height: 200px; /* Should be removed. Only for demonstration */
+  text-align: center;
+}
+
+.row {
+    margin-bottom: 20px;
+}
+
+.column img {
+    margin-top: 30px;
+    height: 100px;
+}
+
+/* Clear floats after the columns */
+.row:after {
+  content: "";
+  display: block;
+  clear: both;
+  text-align: center;
+}
+
+/* Responsive layout - makes the three columns stack on top of each other instead of next to each other */
+@media screen and (max-width: 600px) {
+  .column {
+    width: 100%;
+  }
+}
+
+.page-section {
+    /* width: 1400px; */
+}
+
+.cta {
+    /* Call to Action */
+    display:block;
+    width: 20%;
+    margin:0 auto;
+    margin-top: 30px;
+    margin-bottom: 30px;
+}
+
+.section-content {
+    position: relative;
+}
+
+#showMore {
+    position: absolute;
+    float: right;
+    text-decoration: none;
+    color: black;
+    height: 375px;
+    width: 300px;
+    top: 0;
+    background-image: linear-gradient(to right, rgba(255, 255, 255, 0.3), rgba(255, 255, 255, 1));
+    margin:0 auto;
+    text-align: center;
+    right: 0;
+    vertical-align: middle;
+    line-height: 375px;
+}
+
+#showMore span {
+    background: white;
+    color: #487EB3;
+    padding: 10px;
+    border-radius: 5px;
+    box-shadow: 0px 0px 30px 10px rgba(0, 0, 0, 0.2);
+    transition: all 0.2s;
+}
+
+#showMore span:hover {
+    background: #487EB3;
+    color: white;
+    transition: all 0.2s;
+}

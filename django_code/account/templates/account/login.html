@@ -6,8 +6,11 @@
         Login &mdash; OurJSEditor
     </title>
     <link rel="stylesheet" type="text/css" href="{% static 'user_profile/login.css' %}">
+    <link rel="stylesheet" type="text/css" href="{% static 'program/navbar.css' %}">
 </head>
 <body>
+    {% include "ourjseditor/user-info.html" %}
+    <br>
     <div id="inner-wrapper">
         <div class="two-panel collapse-700">
             <div id="login-form"></div>

@@ -11,6 +11,7 @@
         <title id="title-tag">Profile for {{ user.username }} &mdash; OurJSEditor</title>
     {% endif %}
     <link rel="stylesheet" type="text/css" href="{% static 'program/program-sections.css' %}">
+    <link rel="stylesheet" type="text/css" href="{% static 'program/navbar.css' %}">
     <link rel="stylesheet" type="text/css" href="{% static 'user_profile/user-profile.css' %}">
 </head>
 <body>
@@ -21,7 +22,7 @@
                 <form method="POST" id="profileForm" onsubmit="return checkForm()">
                 {% csrf_token %}
             {% endif %}
-            <tbody>
+            <!-- <tbody> -->
                 <tr>
                     <td class="name">
                         <div class="display-name">
@@ -39,17 +40,18 @@
                                 {{ user.username }}
                             {% endif %}
                         </div>
-                    </td>
-                </tr>
-                <tr>
-                    <td>
-                        <p class="bio">
-                            {% if editing %}
-                                <textarea class="bio-edit" name="bio" placeholder="Tell everyone about yourself." maxlength="500">{{ user.profile.bio }}</textarea>
-                            {% else %}
-                                {{ user.profile.bio|linebreaksbr }}
-                            {% endif %}
-                        </p>
+                        <br>
+                        <hr>
+                        <br>
+                        <div>
+                            <p class="bio">
+                                {% if editing %}
+                                    <textarea class="bio-edit" name="bio" placeholder="Tell everyone about yourself." maxlength="500">{{ user.profile.bio }}</textarea>
+                                {% else %}
+                                    {{ user.profile.bio|linebreaksbr }}
+                                {% endif %}
+                            </p>
+                        </div>
                     </td>
                 </tr>
                 <tr>
@@ -66,7 +68,7 @@
                         {% endif %}
                     </td>
                 </tr>
-            </tbody>
+            <!-- </tbody> -->
             {% if editing %}
                 </form>
             {% endif %}

@@ -249,20 +249,16 @@ function draw() {\
 ***\
 ",
         "css": "html, body {\
-    line-height: 1.42857143;\
     margin: 10px;\
     padding: 0;\
     background: #FFFFFF;\
 }\
 \
-code {\
-    display: inline-block;\
+code,\
+pre {\
     background-color: #F6F6F6;\
     border-radius: 3px;\
-    padding: 0 4px\
-}\
-pre > code {\
-    padding: 6px;\
+    padding: 4px\
 }\
 \
 blockquote {\
