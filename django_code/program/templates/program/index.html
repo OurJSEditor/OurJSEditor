@@ -29,12 +29,10 @@
 </head>
 <body>
     <nav class="navbar navbar-default">
-        <br><br><br><br>
-
         <!-- Collect the nav links, forms, and other content for toggling -->
         <div id="toolbar">
             <ul class="nav navbar-nav">
-                <li id="run-button"><a>&#x2BC8; Run</a></li>
+                <li id="run-button"><a><span class="icon icon-run"></span> Run</a></li>
                 <li id="collaborate-button">
                     <a><span class="icon icon-user-plus"></span> Collaborate</a>
                     <div id="collaborate-popup" class="popup" style="display: none">
@@ -57,7 +55,7 @@
                 </li>
                 <li id="save-button"><a><span class="icon icon-save"></span> Save</a></li>
                 <li id="publish-button"><a><span class="icon icon-bell"></span> Publish</a></li>
-                <li id="fork-button"><a>Fork</a></li>
+                <li id="fork-button"><a><span class="icon icon-flow-split"></span>Fork</a></li>
                 <li id="delete-button"><a><span class="icon icon-delete"></span> Delete</a></li>
             </ul>
         </div><!-- /.navbar-collapse -->
@@ -79,14 +77,16 @@
                 <div id="parent-program">Based on <a class="sidebar-link" id="parent-program-link"></a>.</div>
             </div>
 
-            <div class="vote-button" id="entertaining-vote-button">
-                <span class="icon icon-gamepad"></span> Entertaining: <span id="entertaining-vote-count"  class="vote-count">0</span>
-            </div>
-            <div class="vote-button" id="artistic-vote-button">
-                <span class="icon icon-brush"></span> Artistic: <span id="artistic-vote-count"  class="vote-count">0</span>
-            </div>
-            <div class="vote-button" id="informative-vote-button">
-                <span class="icon icon-graduation-cap"></span> Informative: <span id="informative-vote-count"  class="vote-count">0</span>
+            <div id="vote-table">
+                <div class="vote-button" id="entertaining-vote-button">
+                    <span class="icon icon-gamepad"></span> Entertaining: <span id="entertaining-vote-count"  class="vote-count">0</span>
+                </div>
+                <div class="vote-button" id="artistic-vote-button">
+                    <span class="icon icon-brush"></span> Artistic: <span id="artistic-vote-count"  class="vote-count">0</span>
+                </div>
+                <div class="vote-button" id="informative-vote-button">
+                    <span class="icon icon-graduation-cap"></span> Informative: <span id="informative-vote-count"  class="vote-count">0</span>
+                </div>
             </div>
 
             <div id="editor-settings" class="sidebar-element">

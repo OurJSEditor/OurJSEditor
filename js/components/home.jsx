@@ -92,7 +92,7 @@ export default class Home extends Preact.Component {
                             {
                                 this.programs.popular.map(program => <Program program={program} />)
                             }
-                            <a id="showMore" href="/programs/top"><span>Browse Programs &#10095;</span></a>
+                            <span id="showMore"><a href="/programs/top">Browse Programs &#10095;</a></span>
                         </tr>
                     </table>
                 </PageSection>

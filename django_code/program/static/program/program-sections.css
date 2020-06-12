@@ -96,11 +96,6 @@ table.program-list {
     transition: all 0.3s;
 }
 
-.program:hover {
-    box-shadow: 0px 0px 10px 2px rgba(0, 0, 0, 0.1);
-    transition: all 0.3s;
-}
-
 .program img {
     width: 200px;
     height: 200px;
@@ -215,6 +210,8 @@ table.program-list {
 
 #banner .section-header {
     height: 100px;
+    border-bottom-left-radius: 5px;
+    border-bottom-right-radius: 5px;
 }
 
 #banner img {

@@ -59,9 +59,9 @@
     text-decoration: none;
     color: black;
     height: 375px;
-    width: 300px;
+    width: 250px;
     top: 0;
-    background-image: linear-gradient(to right, rgba(255, 255, 255, 0.3), rgba(255, 255, 255, 1));
+    background-image: linear-gradient(to right, rgba(255, 255, 255, 0.75), rgba(255, 255, 255, 0.85));
     margin:0 auto;
     text-align: center;
     right: 0;
@@ -69,16 +69,17 @@
     line-height: 375px;
 }
 
-#showMore span {
+#showMore a {
     background: white;
     color: #487EB3;
     padding: 10px;
     border-radius: 5px;
     box-shadow: 0px 0px 30px 10px rgba(0, 0, 0, 0.2);
     transition: all 0.2s;
+    text-decoration: none;
 }
 
-#showMore span:hover {
+#showMore a:hover {
     background: #487EB3;
     color: white;
     transition: all 0.2s;

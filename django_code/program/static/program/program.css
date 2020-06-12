@@ -15,8 +15,8 @@ body {
 
 .section {
     margin: 0 0 0 217px;
-    padding: 10px;
-    margin-left: 320px;
+    padding: 25px;
+    margin-left: 251px;
     position: relative;
     background: white;
     z-index: 0; /*Make sure Ace components always render behind ours*/
@@ -108,6 +108,7 @@ body {
     cursor: pointer;
     position: relative;
     transition: all 0.3s;
+    outline: none;
 }
 
 #editors.tabbed #tab-row button.selected {
@@ -119,12 +120,24 @@ body {
     background: #e1e1e1;
     transition: all 0.3s;
 }
+#editors.tabbed #tab-row button:first-child {
+    border-top-left-radius: 5px;
+}
+#editors.tabbed #tab-row button:last-child {
+    border-top-right-radius: 5px;
+}
+
 #editors.tabbed .editor-container:not(#preview-container) .editor-header {
     display: none;
 }
 #editors.tabbed .editor-container:not(.selected):not(#preview-container) {
     display: none;
 }
+#editors.tabbed .editor-container.selected .editor { /* Blend the editor to the tab bar */
+    border: none;
+    border-top-left-radius: 0;
+}
+
 
 /* -- Split editor rules -- */
 #editors.split #tab-row {
@@ -133,7 +146,7 @@ body {
 
 
 #sidebar {
-    padding: 30px;
+    padding: 0px;
     margin: 0;
     font-size: 15px;
     width: 247px;
@@ -199,7 +212,8 @@ body {
 .navbar-default {
     height: 44px;
     min-height: 50px;
-    margin-left: 290px;
+    margin-top: 65px;
+    margin-left: 251px;
     position: relative;
     z-index: 3;
 }
@@ -216,6 +230,7 @@ body {
 
 .navbar-nav {
     margin: 0;
+    padding: 0 25px;
 }
 
 .navbar-default ul li {
@@ -463,7 +478,7 @@ input, textarea {
 }
 
 .comment {
-    margin: 15px;
+    margin: 15px 0;
     background: #FFFFFF;
     border: none;
     transition: box-shadow 0.25s ease;
@@ -501,7 +516,6 @@ input, textarea {
     background: #F0F0F0;
     padding: 10px;
     font-size: 13px;
-    border-radius: 5px;
     border-top-right-radius: 0px;
     border-top-left-radius: 0px;
 }

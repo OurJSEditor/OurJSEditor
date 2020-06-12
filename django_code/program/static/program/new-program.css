@@ -12,14 +12,13 @@ body {
 #inner-wrapper {
     padding: 35px 5vw;
     max-width: 900px;
-    display: relative;
     margin: 3% auto;
     margin-top: 65px;
     background: #ffffff;
     text-align: center;
     border: none;
     border-radius: 5px;
-    box-shadow: 0px 0px 10px 10px rgba(0, 0, 0, 0.1);
+    box-shadow: 0px 0px 17px 1px rgba(0, 0, 0, 0.1);
 }
 
 .template {
@@ -29,18 +28,18 @@ body {
     padding: 0;
     margin: 20px;
     border-radius: 5px;
-    border: 2px solid #F7FAFF;
-    box-shadow: 0px 0px 10px 1px rgba(0, 0, 0, 0.1);
+    border: 2px solid #F0F0F0;
     text-decoration: none;
-    color: #487EB3;
+    color: black;
+    background-color: #FBFBFB;
     vertical-align: top;
     position: relative;
 }
 
 .template:hover {
-    transition: all 0.2s;
-    color: black;
-    box-shadow: 0px 0px 10px 5px rgba(0, 0, 0, 0.1);
+    transition: all 0.1s;
+    box-shadow: 1px 1px 4px 1px rgba(0, 0, 0, 0.05);
+    transform: translate(-1px, -1px);
 }
 
 .template .title {

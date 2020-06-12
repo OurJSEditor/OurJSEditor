@@ -1,6 +1,5 @@
-@import url('https://fonts.googleapis.com/css2?family=Roboto:wght@300;400&display=swap');
 body {
-    font-family: 'Roboto', sans-serif;
+    font-family: Helvetica, Arial, sans-serif;
 }
 
 #nav {
@@ -30,6 +29,7 @@ body {
     transition: all 0.2s;
     height: 20px;
     border-bottom: 3px solid rgba(0, 0, 0, 0.0);
+    border-top: 3px solid rgba(0, 0, 0, 0.0);
 }
 #nav li button {
     background: #F7FAFF;

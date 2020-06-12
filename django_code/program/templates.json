@@ -254,11 +254,14 @@ function draw() {\
     background: #FFFFFF;\
 }\
 \
-code,\
-pre {\
+code {\
+    display: inline-block;\
     background-color: #F6F6F6;\
     border-radius: 3px;\
-    padding: 4px\
+    padding: 0 4px;\
+}\
+pre > code {\
+    padding: 6px;\
 }\
 \
 blockquote {\

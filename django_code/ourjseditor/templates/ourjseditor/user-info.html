@@ -25,156 +25,152 @@
 </ul>
 
 <!-- notification panel -->
-<div id="user-info" style="display: none">
-    <span class="user-info-element">
-        <div id="notif-panel" class="closed">
-            <div class="notif-buttons-wrap">
-                <button class="user-info-button notif-button" id="notif-all-read">Mark All Read</button><button class="user-info-button notif-button" id="notif-panel-close-button">Close</button>
-            </div>
+<div id="notif-panel" class="closed">
+    <div class="notif-buttons-wrap">
+        <button class="user-info-button notif-button" id="notif-all-read">Mark All Read</button><button class="user-info-button notif-button" id="notif-panel-close-button">Close</button>
+    </div>
 
-            <div id="notifs-wrap">
-            </div>
+    <div id="notifs-wrap">
+    </div>
 
-            <div class="notif-end-msg">
-                You have no new notifications.
-            </div>
-        </div>
-    </span>
-
-    <script>
-        {% load notifications %}
-
-        var userData = {
-            {% if request.user.is_authenticated %}
-                "loggedIn": true,
-                "username": "{{ request.user.username|escapejs }}",
-                "id": "{{ request.user.profile.profile_id|escapejs }}",
-                "displayName": "{{ request.user.profile.display_name|escapejs }}",
-                "notifications": JSON.parse('{% notifs_as_json request.user %}')
-            {% else %}
-                "loggedIn": false,
-            {% endif %}
-        };
-
-        var csrf_token = "{{ csrf_token }}"
-
-        //Everything in the <title> tag, before the &mdash;
-        var pageTitle = document.getElementById("title-tag").innerText.split("\u2014")[0];
-        function updateUnreadCount () {
-            var countEl = document.getElementById("notif-count");
-            var count = userData.notifications.filter(function (n) {
-                return n.isRead === false;
-            }).length;
-            countEl.innerText = count;
-            userData.notifCount = count;
-
-            var titleString = count ? "(" + count + ") " : "";
-            titleString += (window.programData ? programData.title : pageTitle) + " \u2014 OurJSEditor";
-            document.getElementById("title-tag").innerText = titleString;
-        }
-
-        function setNotifRead (notifElId, state, callback) {
-            var notifEl = document.getElementById(notifElId);
-            var readIndicator = notifEl.querySelector(".read-indicator");
-            var notifs = userData.notifications;
-
-            for (var j = 0; j < notifs.length; j++) {
-                if (notifs[j].id === notifEl.id.slice(6)) {
-                    break;
-                }
-            }
-
-            var newValue = (state === "toggle") ? !notifs[j].isRead : state;
-
-            if (notifs[j].isRead !== newValue) {
-                notifs[j].isRead = newValue;
-
-                updateUnreadCount();
-
-                var req = new XMLHttpRequest();
-                req.open("PATCH", "/api/notif/" + notifs[j].id);
-                req.setRequestHeader("X-CSRFToken", csrf_token);
-                req.addEventListener("load", function () {
-                    readIndicator.classList.toggle("read", (state === "toggle") ? undefined : state);
-                    if (typeof callback === "function") {
-                        callback();
-                    }
-                });
-                req.send(JSON.stringify({ isRead: notifs[j].isRead }));
-            }else if (typeof callback === "function") {
-                callback();
-            }
-        }
-
-        document.addEventListener("DOMContentLoaded", function () {
-            if (userData.loggedIn) {
-                var notifPanel = document.getElementById("notif-panel");
-                document.getElementById("notif-panel-button").addEventListener("click", function () {
-                    notifPanel.classList.toggle("closed");
-                });
-                document.getElementById("notif-panel-close-button").addEventListener("click", function () {
-                    notifPanel.classList.toggle("closed");
-                });
-
-                document.getElementById("notif-all-read").addEventListener("click", function () {
-                    var notifs = userData.notifications;
-                    for (var i = 0; i < notifs.length; i++) {
-                        if (!notifs[i].isRead) {
-                            setNotifRead("notif-" + notifs[i].id, true);
-                        }
-                    }
-                });
-
-                updateUnreadCount();
-
-                var notifs = userData.notifications;
-                var notifsWrap = document.getElementById("notifs-wrap");
-                for (var i = 0; i < notifs.length; i++) {
-                    var notifEl = document.createElement("div");
-                    notifEl.classList.add("notif");
-                    notifEl.setAttribute("id", "notif-" + notifs[i].id)
-
-                    var readIndicator = document.createElement("span");
-                    readIndicator.classList.add("read-indicator");
-                    if (notifs[i].isRead) {
-                        readIndicator.classList.add("read");
-                    }
-
-                    readIndicator.addEventListener("click", function (e) {
-                        setNotifRead(this.parentNode.id, "toggle");
-                    });
-
-                    var notifInfo = document.createElement("a");
-                    notifInfo.setAttribute("href", notifs[i].link);
-                    notifInfo.classList.add("notif-info-wrap");
-                    notifInfo.addEventListener("click", function (e) {
-                        e.preventDefault(); //Stop page from navigating
-
-                        var href = this.href;
-                        setNotifRead(this.parentNode.id, true, function () {
-                            window.location.href = href;
-                        });
-                    });
-
-                    var description = document.createElement("div");
-                    description.classList.add("notif-description");
-                    description.innerHTML = notifs[i].description;
-
-                    var preview = document.createElement("div");
-                    preview.classList.add("notif-preview")
-                    preview.innerText = notifs[i].preview;
-
-                    notifEl.appendChild(readIndicator);
-                    notifInfo.appendChild(description);
-                    notifInfo.appendChild(preview);
-                    notifsWrap.appendChild(notifEl).appendChild(notifInfo);
-                }
-            }else {
-                var b = document.getElementById("notif-panel-button");
-                b.parentNode.parentNode.removeChild(b.parentNode);
-            }
-            var footer = document.createElement("footer");
-            document.body.appendChild(footer);
-        });
-    </script>
+    <div class="notif-end-msg">
+        There are no notifications below this.
+    </div>
 </div>
+
+<script>
+    {% load notifications %}
+
+    var userData = {
+        {% if request.user.is_authenticated %}
+            "loggedIn": true,
+            "username": "{{ request.user.username|escapejs }}",
+            "id": "{{ request.user.profile.profile_id|escapejs }}",
+            "displayName": "{{ request.user.profile.display_name|escapejs }}",
+            "notifications": JSON.parse('{% notifs_as_json request.user %}')
+        {% else %}
+            "loggedIn": false,
+        {% endif %}
+    };
+
+    var csrf_token = "{{ csrf_token }}"
+
+    //Everything in the <title> tag, before the &mdash;
+    var pageTitle = document.getElementById("title-tag").innerText.split("\u2014")[0];
+    function updateUnreadCount () {
+        var countEl = document.getElementById("notif-count");
+        var count = userData.notifications.filter(function (n) {
+            return n.isRead === false;
+        }).length;
+        countEl.innerText = count;
+        userData.notifCount = count;
+
+        var titleString = count ? "(" + count + ") " : "";
+        titleString += (window.programData ? programData.title : pageTitle) + " \u2014 OurJSEditor";
+        document.getElementById("title-tag").innerText = titleString;
+    }
+
+    function setNotifRead (notifElId, state, callback) {
+        var notifEl = document.getElementById(notifElId);
+        var readIndicator = notifEl.querySelector(".read-indicator");
+        var notifs = userData.notifications;
+
+        for (var j = 0; j < notifs.length; j++) {
+            if (notifs[j].id === notifEl.id.slice(6)) {
+                break;
+            }
+        }
+
+        var newValue = (state === "toggle") ? !notifs[j].isRead : state;
+
+        if (notifs[j].isRead !== newValue) {
+            notifs[j].isRead = newValue;
+
+            updateUnreadCount();
+
+            var req = new XMLHttpRequest();
+            req.open("PATCH", "/api/notif/" + notifs[j].id);
+            req.setRequestHeader("X-CSRFToken", csrf_token);
+            req.addEventListener("load", function () {
+                readIndicator.classList.toggle("read", (state === "toggle") ? undefined : state);
+                if (typeof callback === "function") {
+                    callback();
+                }
+            });
+            req.send(JSON.stringify({ isRead: notifs[j].isRead }));
+        }else if (typeof callback === "function") {
+            callback();
+        }
+    }
+
+    document.addEventListener("DOMContentLoaded", function () {
+        if (userData.loggedIn) {
+            var notifPanel = document.getElementById("notif-panel");
+            document.getElementById("notif-panel-button").addEventListener("click", function () {
+                notifPanel.classList.toggle("closed");
+            });
+            document.getElementById("notif-panel-close-button").addEventListener("click", function () {
+                notifPanel.classList.toggle("closed");
+            });
+
+            document.getElementById("notif-all-read").addEventListener("click", function () {
+                var notifs = userData.notifications;
+                for (var i = 0; i < notifs.length; i++) {
+                    if (!notifs[i].isRead) {
+                        setNotifRead("notif-" + notifs[i].id, true);
+                    }
+                }
+            });
+
+            updateUnreadCount();
+
+            var notifs = userData.notifications;
+            var notifsWrap = document.getElementById("notifs-wrap");
+            for (var i = 0; i < notifs.length; i++) {
+                var notifEl = document.createElement("div");
+                notifEl.classList.add("notif");
+                notifEl.setAttribute("id", "notif-" + notifs[i].id)
+
+                var readIndicator = document.createElement("span");
+                readIndicator.classList.add("read-indicator");
+                if (notifs[i].isRead) {
+                    readIndicator.classList.add("read");
+                }
+
+                readIndicator.addEventListener("click", function (e) {
+                    setNotifRead(this.parentNode.id, "toggle");
+                });
+
+                var notifInfo = document.createElement("a");
+                notifInfo.setAttribute("href", notifs[i].link);
+                notifInfo.classList.add("notif-info-wrap");
+                notifInfo.addEventListener("click", function (e) {
+                    e.preventDefault(); //Stop page from navigating
+
+                    var href = this.href;
+                    setNotifRead(this.parentNode.id, true, function () {
+                        window.location.href = href;
+                    });
+                });
+
+                var description = document.createElement("div");
+                description.classList.add("notif-description");
+                description.innerHTML = notifs[i].description;
+
+                var preview = document.createElement("div");
+                preview.classList.add("notif-preview")
+                preview.innerText = notifs[i].preview;
+
+                notifEl.appendChild(readIndicator);
+                notifInfo.appendChild(description);
+                notifInfo.appendChild(preview);
+                notifsWrap.appendChild(notifEl).appendChild(notifInfo);
+            }
+        }else {
+            var b = document.getElementById("notif-panel-button");
+            b.parentNode.parentNode.removeChild(b.parentNode);
+        }
+        var footer = document.createElement("footer");
+        document.body.appendChild(footer);
+    });
+</script>
