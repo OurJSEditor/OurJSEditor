@@ -117,8 +117,8 @@ function draw() {\
 var angle = -Math.PI / 2;\
 \
 function update() {\
-    el.style.left = Math.cos(angle) * 125 + window.innerWidth / 2 + \"px\";\
-    el.style.top = Math.sin(angle) * 125 + 400 / 2 + \"px\";\
+    el.style.left = Math.cos(angle) * 125 + 500 / 2 + \"px\";\
+    el.style.top = Math.sin(angle) * 125 + 500 / 2 + \"px\";\
     angle += 0.02;\
 }\
 \
@@ -179,7 +179,7 @@ window.addEventListener(\"resize\", update);"
     overflow: hidden;\
 }",
         "js": "function setup() {\
-    var can = createCanvas(document.body.clientWidth, 400).canvas;\
+    var can = createCanvas(500, 500).canvas;\
     can.addEventListener(\"contextmenu\", function (e) {\
         e.preventDefault()\
     });\
