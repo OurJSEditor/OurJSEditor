@@ -12,7 +12,7 @@
     </style>\
 </head>\
 <body>\
-    <script src=\"https://cdnjs.cloudflare.com/ajax/libs/p5.js/0.5.12/p5.js\"></script>\
+    <script src=\"https://cdn.jsdelivr.net/npm/p5@1.1.9/lib/p5.min.js\"></script>\
     <script>\
         /*[OurJSEditor insert:JS]*/\
     </script>\
@@ -169,7 +169,7 @@ window.addEventListener(\"resize\", update);"
     </style>\
 </head>\
 <body>\
-    <script src=\"https://cdnjs.cloudflare.com/ajax/libs/p5.js/0.5.12/p5.js\"></script>\
+    <script src=\"https://cdn.jsdelivr.net/npm/p5@1.1.9/lib/p5.min.js\"></script>\
     <script>\
         /*[OurJSEditor insert:JS]*/\
     </script>\
