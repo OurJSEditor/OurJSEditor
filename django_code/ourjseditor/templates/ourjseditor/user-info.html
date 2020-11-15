@@ -13,6 +13,12 @@
     link.setAttribute("type", "text/css");
     link.setAttribute("href", "{% static 'ourjseditor/icons.css' %}");
     document.head.appendChild(link);
+
+    var link = document.createElement("link");
+    link.setAttribute("rel", "stylesheet");
+    link.setAttribute("type", "text/css");
+    link.setAttribute("href", "{% static 'program/navbar.css' %}");
+    document.head.appendChild(link);
 </script>
 
 <ul id="nav">
