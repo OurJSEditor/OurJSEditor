@@ -97,11 +97,21 @@
         </div>
     </div><!-- /sidebar -->
 
-    <div id="editors" class="section split">
+    <div id="editors" class="section tabbed">
         <table class="editor-table"><tbody>
             <tr class="top">
+                <!-- HTML Editor -->
+                <td class="editor-container" rowspan="2">
+                    <h3 class="editor-header">HTML Editor</h3>
+                    <div class="editor" id="html-editor"></div>
+                </td>
+                <!-- CSS Editor -->
+                <td class="editor-container" rowspan="2">
+                    <h3 class="editor-header">CSS Editor</h3>
+                    <div class="editor" id="css-editor"></div>
+                </td>
                 <!-- JS Editor -->
-                <td class="editor-container selected" id="main-editor">
+                <td class="editor-container selected" id="main-editor" rowspan="2">
                     <h3 class="editor-header">JS Editor</h3>
                     <div id="tab-row">
                         <button data-tab-id="js" class="selected">JS</button><!--
@@ -118,16 +128,7 @@
                 </td>
             </tr>
             <tr class="bottom">
-                <!-- HTML Editor -->
-                <td class="editor-container">
-                    <h3 class="editor-header">HTML Editor</h3>
-                    <div class="editor" id="html-editor"></div>
-                </td>
-                <!-- CSS Editor -->
-                <td class="editor-container">
-                    <h3 class="editor-header">CSS Editor</h3>
-                    <div class="editor" id="css-editor"></div>
-                </td>
+
             </tr>
             <tr>
                 <td id="bottom-dragger" colspan="2"></td>

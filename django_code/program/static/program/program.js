@@ -843,6 +843,15 @@ function switchEditorLayout (newLayout) {
         topWrap.removeChild(cssEditorElmt);
         bottomWrap.appendChild(htmlEditorElmt);
         bottomWrap.appendChild(cssEditorElmt);
+
+        var bottomRow = document.querySelector("#editors tr.bottom");
+        //Fix styles in Firefox
+        if (document.getElementById("html-editor").getBoundingClientRect().height < 5) { //Something's probably wrong
+            var bottomConts = bottomRow.querySelectorAll(".editor-container");
+            for (var i = 0; i < bottomConts.length; i++) {
+                bottomConts[i].style.height = "100%"; //Go get em!
+            }
+        }
     }else {
         throw new Error("Invalid layout");
     }
@@ -859,7 +868,7 @@ function switchEditorLayout (newLayout) {
     cssEditor.resize();
 }
 
-function switchEditorTabs(event) {
+function switchEditorTabs (event) {
     var clickedButton = event.target;
     if (clickedButton.classList.contains("selected")) {
         return; //Do nothing if clicking a selected tab
@@ -996,15 +1005,6 @@ document.addEventListener("DOMContentLoaded", function() {
     //Dragging far enough that the page gets resized is wonky :(
     var bottomDragger = document.getElementById("bottom-dragger");
     var bottomRow = document.querySelector("#editors tr.bottom");
-
-    //Fix styles in Firefox
-    if (document.getElementById("html-editor").getBoundingClientRect().height < 5) { //Something's probably wrong
-        var bottomConts = bottomRow.querySelectorAll(".editor-container");
-        for (var i = 0; i < bottomConts.length; i++) {
-            bottomConts[i].style.height = "100%"; //Go get em!
-        }
-    }
-
 
     var bottomDraggingState = {
         isDragging: false,
