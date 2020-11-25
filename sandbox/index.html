@@ -17,9 +17,49 @@
 <body>
     <iframe src="about:blank" id="output-frame"></iframe>
 
+    <script src="stringify.js"></script>
+
     <script>
-    var SIZE = 500;
     var outputFrame = document.getElementById("output-frame");
+
+    //Logs with this.type, needs to be used with .bind or similar
+    function logger() {
+        //Call the un-touched console.log with the arguments
+        console.log.apply(null, arguments);
+
+        var toLog = [];
+        for (var i = 0; i < arguments.length; i++) {
+            toLog.push(stringify(arguments[i]));
+        }
+
+        window.parent.postMessage(JSON.stringify({
+            type: this.type,
+            data: toLog,
+        }), "*");
+    }
+
+    function interceptLogs(frame) {
+        // When there's an error in the window, send it to the main window
+        frame.contentWindow.addEventListener("error", function (evt) {
+            window.parent.postMessage(JSON.stringify({
+                type: "error",
+                // Pass data from the error to the main page for displaying
+                data: {
+                    col: evt.error.columnNumber,
+                    line: evt.error.lineNumber,
+                    message: evt.error.message,
+                    name: evt.error.name,
+                    //Also have .fileName and .stack
+                },
+            }), "*");
+        })
+
+        //Intercept console.log and console.error
+        frame.contentWindow.console.log = logger.bind({type: "console.log"});
+        frame.contentWindow.console.error = logger.bind({type: "console.error"});
+    }
+
+    var SIZE = 500; // The size of the square screenshot
 
     function saveScreenshot () {
         html2canvas(outputFrame.contentDocument.body, {
@@ -45,12 +85,26 @@
     window.addEventListener("message", function (msg) {
         var data = JSON.parse(msg.data);
         if (data.type === "execute") {
-            //This removes the frame element from the DOM (and then replaces it), clearing the user's old code.
-            frame.parentNode.replaceChild(frame, frame);
+            frame.parentNode.removeChild(frame);
+            URL.revokeObjectURL(frame.src);
+            var blob = new Blob([data.code], {type: "text/html"});
+            frame.setAttribute("src", URL.createObjectURL(blob));
+            document.body.appendChild(frame);
+            interceptLogs(frame);
 
+
+            // This is the method used by JSBin, and that used to be used by us.
+            // I'm keeping it around since the above Blob code has not been stress-tested
+            // https://github.com/jsbin/jsbin/blob/6957ba399cf6a6afa3e46e1ca91c34bcbe707733/src/components/Result.js#L107
+            /*frame.parentNode.replaceChild(frame, frame); //This removes the frame element from the DOM (and then replaces it), clearing the user's old code.
             var outputDoc = frame.contentDocument;
+            outputDoc.write("");
+            frame.contentWindow.addEventListener("error", function (err) {
+                console.log("error!", err);
+            })
+
             outputDoc.write(data.code);
-            outputDoc.close();
+            outputDoc.close();*/
         }else if (data.type === "thumbnail-request") {
             if (typeof html2canvas === "undefined") {
                 var s = document.createElement("script");
