@@ -7,13 +7,19 @@ body {
     -o-background-size: cover;
     background-size: cover;
     margin-top: 90px;
+
+    width: 100%;
+    height: calc(100% - 58px);
+    padding-top: 58px;
+    position: fixed;
+    display: flex;
+    align-items: center;
 }
 
 #inner-wrapper {
     padding: 35px 5vw;
     max-width: 900px;
     margin: 3% auto;
-    margin-top: 65px;
     background: #ffffff;
     text-align: center;
     border: none;

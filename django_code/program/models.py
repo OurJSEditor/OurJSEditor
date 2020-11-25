@@ -93,6 +93,7 @@ class Program(models.Model):
 
         return program_dict
 
+
 # Called from:
 #   - program/view.program_list; get the first 20 programs by a sort
 #   - program/api.program_list; get programs with offset and limit

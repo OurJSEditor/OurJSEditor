@@ -6,6 +6,7 @@ body {
 .error-pg {
     padding: 25px;
     margin: 30px;
+    margin-top: 58px;
 }
 
 .error-message {

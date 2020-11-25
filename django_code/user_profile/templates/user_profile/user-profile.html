@@ -15,77 +15,81 @@
 </head>
 <body>
     {% include "../ourjseditor/user-info.html" %}
-    <section>
-        <table class="main-table profile">
-            {% if editing %}
-                <form method="POST" id="profileForm" onsubmit="return checkForm()">
-                {% csrf_token %}
-            {% endif %}
-            <!-- <tbody> -->
-                <tr>
-                    <td class="name">
-                        <div class="display-name">
-                            {% if editing %}
-                                <input class="name-edit" type="text" name="display_name" value="{{ user.profile.display_name }}" placeholder="Display Name" maxlength="45">
-                            {% else %}
-                                {{ user.profile.display_name }}
-                            {% endif %}
-                        </div>
-                        <div class="username">
-                            {% if editing %}
-                                <input class="name-edit" type="text" name="username" value="{{ user.username }}" placeholder="Username" onkeyup="checkUsername()" id="username" maxlength="45">
-                                <b id="available"></b><br>
-                            {% else %}
-                                {{ user.username }}
-                            {% endif %}
-                        </div>
-                        <br>
-                        <hr>
-                        <br>
-                        <div>
-                            <p class="bio">
+
+    <div id="main-content">
+        <section>
+            <table class="main-table profile">
+                {% if editing %}
+                    <form method="POST" id="profileForm" onsubmit="return checkForm()">
+                    {% csrf_token %}
+                {% endif %}
+                <!-- <tbody> -->
+                    <tr>
+                        <td class="name">
+                            <div class="display-name">
                                 {% if editing %}
-                                    <textarea class="bio-edit" name="bio" placeholder="Tell everyone about yourself." maxlength="500">{{ user.profile.bio }}</textarea>
+                                    <input class="name-edit" type="text" name="display_name" value="{{ user.profile.display_name }}" placeholder="Display Name" maxlength="45">
                                 {% else %}
-                                    {{ user.profile.bio|linebreaksbr }}
+                                    {{ user.profile.display_name }}
                                 {% endif %}
-                            </p>
-                        </div>
-                    </td>
-                </tr>
-                <tr>
-                    <td class="edit-wrap">
-                        {% if editing %}
-                            <i id="loginT" style="color:red;"></i>
-                            <a href="/user/{{ user.username }}" class="button profile-edit">Cancel changes</a>
-                            <input type="submit" value="Update Your Profile" class="button profile-edit">
-                        {% elif user.username == currentUser.username %}
-                            <a href="/user/{{ user.username }}/edit" class="button profile-edit">Edit Your Profile</a>
-                            <a href="/user/logout" class="button logout">Logout</a>
-                        {% else %}
-                            <button id="subscribe-button" class="button{% if subscribed %} subscribed{% endif %}">Subscribe</button>
-                        {% endif %}
-                    </td>
-                </tr>
-            <!-- </tbody> -->
-            {% if editing %}
-                </form>
-            {% endif %}
-        </table>
-    </section>
+                            </div>
+                            <div class="username">
+                                {% if editing %}
+                                    <input class="name-edit" type="text" name="username" value="{{ user.username }}" placeholder="Username" onkeyup="checkUsername()" id="username" maxlength="45">
+                                    <b id="available"></b><br>
+                                {% else %}
+                                    {{ user.username }}
+                                {% endif %}
+                            </div>
+                            <br>
+                            <hr>
+                            <br>
+                            <div>
+                                <p class="bio">
+                                    {% if editing %}
+                                        <textarea class="bio-edit" name="bio" placeholder="Tell everyone about yourself." maxlength="500">{{ user.profile.bio }}</textarea>
+                                    {% else %}
+                                        {{ user.profile.bio|linebreaksbr }}
+                                    {% endif %}
+                                </p>
+                            </div>
+                        </td>
+                    </tr>
+                    <tr>
+                        <td class="edit-wrap">
+                            {% if editing %}
+                                <i id="loginT" style="color:red;"></i>
+                                <a href="/user/{{ user.username }}" class="button profile-edit">Cancel changes</a>
+                                <input type="submit" value="Update Your Profile" class="button profile-edit">
+                            {% elif user.username == currentUser.username %}
+                                <a href="/user/{{ user.username }}/edit" class="button profile-edit">Edit Your Profile</a>
+                                <a href="/user/logout" class="button logout">Logout</a>
+                            {% else %}
+                                <button id="subscribe-button" class="button{% if subscribed %} subscribed{% endif %}">Subscribe</button>
+                            {% endif %}
+                        </td>
+                    </tr>
+                <!-- </tbody> -->
+                {% if editing %}
+                    </form>
+                {% endif %}
+            </table>
+        </section>
 
-    {% if not editing %}
-        <div class="programs" id="main-table"></div>
+        {% if not editing %}
+            <section class="programs" id="main-table"></section>
 
-        <script>
-            window.listOptions = JSON.parse("{{ listOptions|escapejs }}");
-            window.user = {
-                id: "{{ user.profile.profile_id }}"
-            };
-        </script>
+            <script>
+                window.listOptions = JSON.parse("{{ listOptions|escapejs }}");
+                window.user = {
+                    id: "{{ user.profile.profile_id }}"
+                };
+            </script>
 
-        <script src="{% static 'jsx-components/user-profile.js' %}"></script>
-    {% endif %}
+            <script src="{% static 'jsx-components/user-profile.js' %}"></script>
+        {% endif %}
+
+    </div>
 
     <script>
         var subscribeButton = document.getElementById("subscribe-button");
