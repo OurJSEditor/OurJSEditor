@@ -34,22 +34,25 @@
 
         window.parent.postMessage(JSON.stringify({
             type: this.type,
-            data: toLog,
+            messages: toLog,
         }), "*");
     }
 
     function interceptLogs(frame) {
         // When there's an error in the window, send it to the main window
         frame.contentWindow.addEventListener("error", function (evt) {
+            console.log(evt.error.stack);
             window.parent.postMessage(JSON.stringify({
                 type: "error",
                 // Pass data from the error to the main page for displaying
                 data: {
                     col: evt.error.columnNumber,
-                    line: evt.error.lineNumber,
+                    lineNum: evt.error.lineNumber,
+                    colNum: evt.error.columnNumber,
                     message: evt.error.message,
                     name: evt.error.name,
-                    //Also have .fileName and .stack
+                    fileName: evt.error.fileName,
+                    //Also have .stack
                 },
             }), "*");
         })

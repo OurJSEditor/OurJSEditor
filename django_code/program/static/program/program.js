@@ -196,20 +196,32 @@ function publishProgram () {
     document.getElementById("publish-confirm-button").removeEventListener("click", publishProgram);
 }
 
+//Defined as a string instead of a regex literal because regex objects remember state when used with .exec
+//Also lets us change flags
+var INSERT_REGEX = "/\\*\\[OurJSEditor insert:(js|css)]\\*/";
 function runProgram (event) {
     if (event) {
         event.preventDefault();
     }
 
     //Insert JS
-    var html = ace.edit("html-editor").getSession().getValue();
-    html = html.replace(/\/\*\[OurJSEditor insert:(js|css)\]\*\//gi, function (comment, language, position, code) {
+    var pageCode = htmlEditor.getSession().getValue();
+    pageCode = pageCode.replace(new RegExp(INSERT_REGEX, "gi"), function (comment, language, position, code) {
         return ace.edit(language.toLowerCase() + "-editor").getSession().getValue();
     });
 
+    programData.lastRunCode = {
+        js: jsEditor.getSession().getValue(),
+        css: cssEditor.getSession().getValue(),
+        html: htmlEditor.getSession().getValue(),
+        pageCode: pageCode,
+    };
+
+    clearConsole();
+
     document.getElementById("preview").contentWindow.postMessage(JSON.stringify({
         type: "execute",
-        code: html
+        code: pageCode
     }), "*");
 }
 
@@ -897,6 +909,113 @@ function switchEditorTabs (event) {
     cssEditor.resize();
 }
 
+function clearConsole () {
+    var consoleEl = document.getElementById("console-el");
+
+    while (consoleEl.firstChild) {
+        consoleEl.removeChild(consoleEl.firstChild);
+    }
+}
+
+// Finds a position in the 3 editors.
+function findLine (lineNum, colNum) {
+    var blocks = [];
+    var html = programData.lastRunCode.html;
+
+    var i = 30;
+    //While we have html left
+    while (html.length && i--) {
+        // If we have an insert regex
+        var match = html.match(new RegExp(INSERT_REGEX, "i"));
+        if (match) {
+            //Find where INSERT_REGEX is
+            var matchPos = html.search(new RegExp(INSERT_REGEX, "i"));
+            //Push a block from the start of html to the start of INSERT_REGEX
+            blocks.push({
+                content: html.slice(0, matchPos),
+                lang: "html",
+            });
+
+            //Push a block corresponding to the INSERT_REGEX
+            blocks.push({
+                content: programData.lastRunCode[match[1].toLowerCase()],
+                lang: match[1]
+            });
+
+            //Remove both bits from html
+            html = html.slice(matchPos + match[0].length);
+        } else {
+            // Push a block from the start of html to the end of html
+            blocks.push({
+                content: html,
+                lang: "html",
+            });
+            // That means we have nothing left
+            html = "";
+        }
+    }
+
+    var currentLineNum = 1; //Lines are 1-indexed
+    while (blocks.length) {
+        var block = blocks.shift();
+        var lines = block.content.split("\n");
+
+        //currentLineNum is now the line num of the last line of the block
+        currentLineNum += lines.length - 1;
+        var currentLine = lines[lines.length - 1];
+
+        //If the goal is the last line in the block
+        if (lineNum === currentLineNum) {
+            //Then we need to do logic to figure out if it's this block or the next one
+            // <= since it's 1-indexed
+            if (colNum <= currentLine.length) {
+                // Then we're in this block,
+                return {
+                    lang: block.lang,
+                    lineNum: lines.length, //  the length of the block (since we know we're on the last line),
+                    colNum: colNum, // and the colNum unchanged
+                };
+            }else {
+                // Then we're in the next block
+                // and the colNum minus the length of currentLine (in this block)
+                colNum -= currentLine.length;
+                continue;
+            }
+        // If we've passed the goal, then the goal was in this block
+        }else if (lineNum < currentLineNum) {
+            return {
+                lang: block.lang,
+                lineNum: lineNum - (currentLineNum - lines.length), // lineNum - the number of lines before this block.
+                colNum: colNum,
+            };
+        }
+    }
+
+    //If we get here, error
+    throw new Error("Error when attempting to resolve local error location.");
+}
+
+function logToConsole (type, data) {
+    var consoleEl = document.getElementById("console-el");
+
+    var newMessage = document.createElement("div");
+    if (type === "error") {
+        console.log(data);
+        //TODO: check that the error was in one of our files before calling this function
+        console.log(findLine(data.lineNum, data.colNum));
+
+        newMessage.appendChild(document.createTextNode(data.name + ": " + data.message));
+    }else {
+        newMessage.appendChild(document.createTextNode(data));
+        // if (type === "console.log") {
+        //
+        // } else if (type === "console.error") {
+        //
+        // }
+    }
+    consoleEl.appendChild(newMessage);
+}
+
 function vote () {
     var el = this;
     var voteType = el.id.substring(0, el.id.indexOf("-"));
@@ -1195,6 +1314,20 @@ document.addEventListener("DOMContentLoaded", function() {
     if (programData.unsaved || !programData.parent) {
         var p = document.getElementById("parent-program");
         p.parentNode.removeChild(p);
+    }
+});
+
+window.addEventListener("message", function (evt) {
+    // console.log(evt);
+    var data = JSON.parse(evt.data);
+    // Errors are sent 1 at a time
+    if (data.type === "error") {
+        logToConsole(data.type, data.data);
+    }else {
+        // But console. messages come in lists
+        for (var i = 0; i < data.messages.length; i++) {
+            logToConsole(data.type, data.messages[i]);
+        }
     }
 });
 
