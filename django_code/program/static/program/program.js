@@ -13,7 +13,7 @@ function makeRequest(method, url, listener, options) {
         options = {};
     }
     var req = new XMLHttpRequest();
-    req.addEventListener("load", function (e) {
+    req.addEventListener("load", function (evt) {
         //Something went wrong:
         if (this.status >= 400) {
             var contentType = this.getResponseHeader("content-type").toLowerCase();
@@ -85,7 +85,7 @@ function removeTitleInput () {
     titleInput.parentNode.removeChild(titleInput);
     if (programData.title !== titleLabel.innerText && !programData.unsaved) {
         var req = new XMLHttpRequest();
-        req.addEventListener("load", function (a) {
+        req.addEventListener("load", function (evt) {
             //Something went wrong:
             if (this.status >= 400) {
                 var contentType = this.getResponseHeader("content-type").toLowerCase();
@@ -125,7 +125,7 @@ function closeConfirm () {
 
 function deleteProgram () {
     var req = new XMLHttpRequest();
-    req.addEventListener("load", function (a) {
+    req.addEventListener("load", function (evt) {
         //Something went wrong:
         if (this.status >= 400) {
             var contentType = this.getResponseHeader("content-type").toLowerCase();
@@ -154,7 +154,7 @@ function imageReceived (event) {
 
     //Frame is potentially insecure.
     if (data.imageData.indexOf("data:image/png;base64,") !== 0) {
-        throw new Error("Image recived from iframe is not base64 png data.");
+        throw new Error("Image received from iframe is not base64 png data.");
     }
 
     programData.thumbnailData = data.imageData;
@@ -377,7 +377,7 @@ function initMd () {
 
     var lenientLinkValidator = md.inline.validateLink;
 
-    //We only want to allow masked links if they're to the same orgin, which we do by forbidding anything with a protocol.
+    //We only want to allow masked links if they're to the same origin, which we do by forbidding anything with a protocol.
     //Adapted from https://github.com/jonschlinkert/remarkable/blob/fa88dcac16832ab26f068c30f0c070c3fec0d9da/lib/parser_inline.js#L146
     function strictLinkValidator (url) {
         var str = url.trim().toLowerCase();
@@ -385,7 +385,7 @@ function initMd () {
         return !(/^[a-z][a-z0-9+.-]*:/.test(str));
     }
 
-    //Definitly hacky, but we add a rule before parsing non-masked links that lossens the requirements of the validator
+    //Definitely hacky, but we add a rule before parsing non-masked links that loosens the requirements of the validator
     md.core.ruler.before("linkify", "lenientLinkValidation", function () {
         md.inline.validateLink = lenientLinkValidator;
     }, {});
@@ -784,7 +784,7 @@ function createCollaboratePopup() {
     }
 
     var liveCollabButton = document.getElementById("live-collab-button");
-    liveCollabButton.addEventListener("click", function (e) {
+    liveCollabButton.addEventListener("click", function (evt) {
         TogetherJS(this);
         liveCollabButton.textContent = liveCollabButton.textContent === "Start" ? "End" : "Start";
     });
@@ -818,11 +818,12 @@ function switchEditorLayout (newLayout) {
         return;
     }
 
+    var bottomWrap = document.getElementsByClassName("bottom")[0];
+
     if (newLayout === "tabbed") {
         editorWrap.classList.replace("split", "tabbed");
 
         //Move things from place to other place
-        var bottomWrap = document.getElementsByClassName("bottom")[0];
         var mainEditor = document.getElementById("main-editor");
         var bottomEditors = bottomWrap.children;
         while (bottomEditors.length) {
@@ -835,7 +836,6 @@ function switchEditorLayout (newLayout) {
 
         //Move things from place to other place
         var topWrap = document.getElementsByClassName("top")[0];
-        var bottomWrap = document.getElementsByClassName("bottom")[0];
         var htmlEditorElmt = document.getElementById("html-editor").parentElement;
         var cssEditorElmt = document.getElementById("css-editor").parentElement;
 
@@ -929,13 +929,13 @@ function vote () {
 }
 
 function save (fork) {
-    //Update programData with the lastest textbox code
+    //Update programData with the latest textbox code
     programData.js = jsEditor.getValue();
     programData.css = cssEditor.getValue();
     programData.html = htmlEditor.getValue();
 
     var req = new XMLHttpRequest();
-    req.addEventListener("load", function (a) {
+    req.addEventListener("load", function (evt) {
         //Something went wrong:
         if (this.status >= 400) {
             var contentType = this.getResponseHeader("content-type").toLowerCase();
