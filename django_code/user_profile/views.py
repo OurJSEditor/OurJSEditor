@@ -17,7 +17,7 @@ def index(request, username):
         user = User.objects.select_related('profile').get(username=username)
 
         list_options = {
-            'perPage': 50,
+            'perPage': 20,
             'sort': 'new' if user == request.user else 'top' # If you're looking at your own profile, show new programs
         }
 
