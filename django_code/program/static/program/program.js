@@ -939,6 +939,7 @@ function findLine (lineNum, colNum) {
             //Push a block corresponding to the INSERT_REGEX
             blocks.push({
                 content: programData.lastRunCode[match[1].toLowerCase()],
+                match: match[0],
                 lang: match[1]
             });
 
@@ -955,39 +956,56 @@ function findLine (lineNum, colNum) {
         }
     }
 
-    var currentLineNum = 1; //Lines are 1-indexed
+    //Everything is 1-indexed
+    var currentLineNum = 1; //The line at the beginning of the current block
+    var currentColNum = 1;
+    var HTMLLineNum = 1;
+    var HTMLColNum = 1;
     while (blocks.length) {
         var block = blocks.shift();
         var lines = block.content.split("\n");
+        var linesChange = lines.length - 1; // If we have a block with one line, then we don't change the line number
 
-        //currentLineNum is now the line num of the last line of the block
-        currentLineNum += lines.length - 1;
-        var currentLine = lines[lines.length - 1];
+        // Move the col cursor if we're not at the first line
+        if (lineNum > currentLineNum) {
+            currentColNum = 1;
+            if (block.lang === "html") {
+                HTMLColNum = 1;
+            }
+        }
 
-        //If the goal is the last line in the block
-        if (lineNum === currentLineNum) {
-            //Then we need to do logic to figure out if it's this block or the next one
-            // <= since it's 1-indexed
-            if (colNum <= currentLine.length) {
-                // Then we're in this block,
+        // If we're in this block
+        if (lineNum < currentLineNum + linesChange ||  // line less than the last line of this block
+            // If the line is the last line in the block, we need to check the col num and the length of the last line
+            (lineNum === currentLineNum + linesChange && colNum < lines[lines.length - 1].length - 1 + currentColNum)) {
+            if (block.lang === "html") {
                 return {
                     lang: block.lang,
-                    lineNum: lines.length, //  the length of the block (since we know we're on the last line),
-                    colNum: colNum, // and the colNum unchanged
-                };
+                    colNum: (colNum - currentColNum) + HTMLColNum,
+                    lineNum: (lineNum - currentLineNum) + HTMLLineNum,
+                }
             }else {
-                // Then we're in the next block
-                // and the colNum minus the length of currentLine (in this block)
-                colNum -= currentLine.length;
-                continue;
+                return {
+                    lang: block.lang,
+                    colNum: colNum - currentColNum,
+                    lineNum: lineNum - currentLineNum + 1,
+                }
             }
-        // If we've passed the goal, then the goal was in this block
-        }else if (lineNum < currentLineNum) {
-            return {
-                lang: block.lang,
-                lineNum: lineNum - (currentLineNum - lines.length), // lineNum - the number of lines before this block.
-                colNum: colNum,
-            };
+        } else {
+            //else, we're in a later block, increment cursors
+            currentColNum += lines[lines.length - 1].length - 1;
+            currentLineNum += linesChange;
+
+            //If we were in an HTML block
+            if (block.lang === "html") {
+                //Move the HTML cursors through this block
+                HTMLColNum += lines[lines.length - 1].length - 1;
+                HTMLLineNum += linesChange;
+            }else {
+                //Move through the matched replacement string
+                //This assumes the replacement string does not contain any line breaks
+                HTMLColNum += block.match.length - 1;
+            }
         }
     }
 
@@ -1002,6 +1020,7 @@ function logToConsole (type, data) {
     if (type === "error") {
         console.log(data);
         //TODO: check that the error was in one of our files before calling this function
+        //TODO: In the case of a syntax error, colNum will be 0 (since columns are 1-indexed, this is a problem)
         console.log(findLine(data.lineNum, data.colNum));
 
         newMessage.appendChild(document.createTextNode(data.name + ": " + data.message));
@@ -1318,7 +1337,6 @@ document.addEventListener("DOMContentLoaded", function() {
 });
 
 window.addEventListener("message", function (evt) {
-    // console.log(evt);
     var data = JSON.parse(evt.data);
     // Errors are sent 1 at a time
     if (data.type === "error") {

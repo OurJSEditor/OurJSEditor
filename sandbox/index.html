@@ -46,12 +46,11 @@
                 type: "error",
                 // Pass data from the error to the main page for displaying
                 data: {
-                    col: evt.error.columnNumber,
-                    lineNum: evt.error.lineNumber,
-                    colNum: evt.error.columnNumber,
+                    lineNum: evt.lineno,
+                    colNum: evt.colno,
                     message: evt.error.message,
                     name: evt.error.name,
-                    fileName: evt.error.fileName,
+                    fileName: evt.filename,
                     //Also have .stack
                 },
             }), "*");
