@@ -41,7 +41,9 @@
     function interceptLogs(frame) {
         // When there's an error in the window, send it to the main window
         frame.contentWindow.addEventListener("error", function (evt) {
-            console.log(evt.error.stack);
+            console.log(evt.error);
+
+            // alert(evt.error.name + ", " + evt.error.columnNumber + ", " + evt.error.lineNum);
             window.parent.postMessage(JSON.stringify({
                 type: "error",
                 // Pass data from the error to the main page for displaying

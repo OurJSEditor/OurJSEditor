@@ -78,8 +78,7 @@ var stringify = (function () {
             return type;
         }
 
-        var typeStr = type + ' ',
-            newBuffer = buffer + '  ';
+        var newBuffer = buffer + ' ';
 
         // Dive down if we're less than 2 levels deep
         if (buffer.length / 2 < 2) {
@@ -102,9 +101,9 @@ var stringify = (function () {
         }
 
         // If nothing was gathered, return empty object
-        if (!parts.length) return typeStr + '{ ... }';
+        if (!parts.length) return '{}';
 
         // Return the indented object with new lines
-        return typeStr + '{\n' + parts.join(',\n') + '\n' + buffer + '}';
+        return '{\n' + parts.join(',\n') + '\n' + buffer + '}';
     };
 }());

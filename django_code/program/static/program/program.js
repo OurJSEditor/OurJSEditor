@@ -1025,20 +1025,26 @@ function logToConsole (type, data) {
     var consoleEl = document.getElementById("console-el");
 
     var newMessage = document.createElement("div");
+    var messageContents = document.createElement("pre");
+    var messageRight = document.createElement("span");
+    messageRight.classList.add("message-right");
+    newMessage.classList.add("message");
+    newMessage.appendChild(messageContents);
     if (type === "error") {
         console.log(data);
         //TODO: check that the error was in one of our files before calling this function
         //TODO: In the case of a syntax error, colNum will be 0 (since columns are 1-indexed, this is a problem)
-        console.log(findLine(data.lineNum, data.colNum));
+        var errorLine = findLine(data.lineNum, data.colNum);
 
-        newMessage.appendChild(document.createTextNode(data.name + ": " + data.message));
+        newMessage.classList.add("error");
+        messageContents.appendChild(document.createTextNode(data.name + ": " + data.message));
+        var errorLocation = errorLine.lang.toUpperCase() + ":" + errorLine.lineNum + ":" + errorLine.colNum;
+        messageRight.appendChild(document.createTextNode(errorLocation));
+        newMessage.appendChild(messageRight);
     }else {
-        newMessage.appendChild(document.createTextNode(data));
-        // if (type === "console.log") {
-        //
-        // } else if (type === "console.error") {
-        //
-        // }
+        newMessage.classList.add("message", type === "console.log" ? "log" : "error", "lang-js");
+        messageContents.appendChild(document.createTextNode(data));
+        hljs.highlightBlock(messageContents);
     }
     consoleEl.appendChild(newMessage);
 }
