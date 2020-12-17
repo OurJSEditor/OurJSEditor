@@ -922,9 +922,8 @@ function findLine (lineNum, colNum) {
     var blocks = [];
     var html = programData.lastRunCode.html;
 
-    var i = 30;
     //While we have html left
-    while (html.length && i--) {
+    while (html.length) {
         // If we have an insert regex
         var match = html.match(new RegExp(INSERT_REGEX, "i"));
         if (match) {
@@ -957,56 +956,65 @@ function findLine (lineNum, colNum) {
     }
 
     //Everything is 1-indexed
-    var currentLineNum = 1; //The line at the beginning of the current block
-    var currentColNum = 1;
-    var HTMLLineNum = 1;
-    var HTMLColNum = 1;
+    var codeStartLine = 1; //The line at the beginning of the current block, in code
+    var codeStartCol = 1; //The col of the first char of the current block , in code
+    var htmlStartLine = 1; //The line, in html, where this block/match starts
+    var htmlStartCol = 1; //The col, in html, where this block/match starts
     while (blocks.length) {
         var block = blocks.shift();
         var lines = block.content.split("\n");
-        var linesChange = lines.length - 1; // If we have a block with one line, then we don't change the line number
+        //The number of lines this block spans across
+        var numLinesSpanning = lines.length;
 
-        // Move the col cursor if we're not at the first line
-        if (lineNum > currentLineNum) {
-            currentColNum = 1;
-            if (block.lang === "html") {
-                HTMLColNum = 1;
-            }
+        //Calculate where this block ends in the code
+        var codeEndLine = codeStartLine + numLinesSpanning - 1; //Starting at 1, moving down lines - 1
+        var codeEndCol; //The col of the last char of this block
+        if (numLinesSpanning > 1) {
+            codeEndCol = lines[lines.length - 1].length; //Possibly 0, if the last char of this block is a newline
+        }else {
+            codeEndCol = codeStartCol + lines[0].length;
         }
 
-        // If we're in this block
-        if (lineNum < currentLineNum + linesChange ||  // line less than the last line of this block
-            // If the line is the last line in the block, we need to check the col num and the length of the last line
-            (lineNum === currentLineNum + linesChange && colNum < lines[lines.length - 1].length - 1 + currentColNum)) {
-            if (block.lang === "html") {
-                return {
-                    lang: block.lang,
-                    colNum: (colNum - currentColNum) + HTMLColNum,
-                    lineNum: (lineNum - currentLineNum) + HTMLLineNum,
-                }
+        //Calculate where this block ends in HTML
+        var htmlEndLine;
+        var htmlEndCol;
+        if (block.lang === "html") {
+            htmlEndLine = htmlStartLine + numLinesSpanning - 1;
+            if (numLinesSpanning > 1) {
+                htmlEndCol = lines[lines.length - 1].length; //Possibly 0, if the last char of this block is a newline
             }else {
-                return {
-                    lang: block.lang,
-                    colNum: colNum - currentColNum,
-                    lineNum: lineNum - currentLineNum + 1,
-                }
+                htmlEndCol = htmlStartCol + lines[0].length - 1; //e.g. start at 1, add 8, end at 8
             }
-        } else {
-            //else, we're in a later block, increment cursors
-            currentColNum += lines[lines.length - 1].length - 1;
-            currentLineNum += linesChange;
-
-            //If we were in an HTML block
-            if (block.lang === "html") {
-                //Move the HTML cursors through this block
-                HTMLColNum += lines[lines.length - 1].length - 1;
-                HTMLLineNum += linesChange;
-            }else {
-                //Move through the matched replacement string
-                //This assumes the replacement string does not contain any line breaks
-                HTMLColNum += block.match.length - 1;
-            }
+        }else {
+            htmlEndLine = htmlStartLine; //Doesn't change, no line breaks in match
+            htmlEndCol = htmlStartCol + block.match.length - 1;
         }
+
+        // Are we in this block?
+        if (lineNum < codeEndLine || (lineNum === codeEndLine && colNum < codeEndCol)) {
+            //Then we're in this block
+
+            var col;
+            if (lineNum === codeStartLine) { // If we're on the first line of this block
+                col = colNum - codeStartCol + (block.lang === "html" ? htmlStartCol : 1);
+            }else {
+                //If we're not on the first line, then code col is the same as the block col
+                col = colNum;
+            }
+
+            return {
+                lang: block.lang,
+                lineNum: lineNum - codeStartLine + (block.lang === "html" ? htmlStartLine : 1),
+                colNum: col
+            };
+        }
+
+        // Then we're not in this block, move on
+        codeStartLine = codeEndLine; //Update code line
+        codeStartCol = codeEndCol + 1; //Update code col
+
+        htmlStartLine = htmlEndLine; //Update html line
+        htmlStartCol = htmlEndCol + 1; //Update HTML col
     }
 
     //If we get here, error
