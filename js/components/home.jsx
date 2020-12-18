@@ -58,17 +58,17 @@ export default class Home extends Preact.Component {
 
                                 <div class="row">
                                   <div class="column">
-                                  <img src="/static/images/ChatBubbles.png" />
-                                    <h2>Community Driven.</h2>
+                                    <img src="/static/images/ChatBubbles.png" alt="Chat bubbles" />
+                                    <h2>Community Driven</h2>
                                     <p>OurJSE is centered around the community. You can see and vote on other peoples projects.</p>
                                   </div>
                                   <div class="column">
-                                  <img src="/static/images/pencilTriangle.png" />
-                                    <h2>lightweight & customizable</h2>
+                                  <img src="/static/images/pencilTriangle.png" alt="Pencil and paper" />
+                                    <h2>Lightweight & Customizable</h2>
                                     <p>OurJSE is incredibly lightweight and completely customizable.</p>
                                   </div>
                                   <div class="column">
-                                  <img src="/static/images/cogWrench.png" />
+                                  <img src="/static/images/cogWrench.png" alt="Wrench and cog" />
                                     <h2>Open Source</h2>
                                     <p>And it has a 100% open source backend, so if want a feature, you can add it!</p>
                                   </div>
