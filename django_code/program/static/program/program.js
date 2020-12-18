@@ -1022,7 +1022,6 @@ function findLine (lineNum, colNum) {
     throw new Error("Error when attempting to resolve local error location.");
 }
 
-//TODO: Remove split editor option
 function logToConsole (type, data) {
     var consoleEl = document.getElementById("console-el");
 
@@ -1237,7 +1236,7 @@ document.addEventListener("DOMContentLoaded", function() {
             [jsEditor, cssEditor, htmlEditor], // The editors to control
             function(settingKey, newValue) { // A callback to run whenever a setting is changed
                 if (settingKey === "editorLayout") {
-                    switchEditorLayout(newValue);
+                    // switchEditorLayout(newValue);
                 }
             }
         )
