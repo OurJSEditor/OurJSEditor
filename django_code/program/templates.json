@@ -38,7 +38,7 @@ from Processing.js or Khan Academy looking to make new Processing programs on Ou
  */\
 \
 function setup() {\
-    // Programs are fixed at 500x500px, but this may change in the future.\
+    // Programs are fixed at 500x500px, unless viewing in fullscreen.\
 \
     // After this the width and height variables work normally\
     var can = createCanvas(500, 500).canvas;\
@@ -218,7 +218,7 @@ function draw() {\
         let content = document.getElementById(\"text-data\").innerHTML;\
 \
         const md = new Remarkable({\
-            html: false, breaks: true, linkify: true, typographer: true,\
+            html: false, breaks: true, linkify: true, typographer: true, linkTarget: \"_top\",\
             highlight: function (str, lang) {\
                 if (lang && hljs.getLanguage(lang)) {\
                     return hljs.highlight(lang, str).value;\
