@@ -81,6 +81,10 @@ titleInput.addEventListener("keypress", function (e) {
 
 function removeTitleInput () {
     if (titleInput.parentNode === null) return;
+    if (titleInput.value.trim() === "") { //Only white-space titles
+        titleInput.focus(); //Make sure it stays focused
+        return;
+    }
     titleLabel.innerText = titleInput.value;
     titleInput.parentNode.insertBefore(titleLabel, titleInput);
     titleInput.parentNode.removeChild(titleInput);

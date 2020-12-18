@@ -17,8 +17,12 @@ from .models import Program, get_programs
 @api.login_required
 def new_program(request):
     data = json.loads(request.body)
+
+    data["title"] = data["title"].strip()
     if len(data["title"]) > 45:
         return api.error("Title length exceeds maximum characters.")
+    if len(data["title"]) == 0:
+        return api.error("Title is blank.")
 
     created_program = Program.objects.create(
         user=request.user,
@@ -43,8 +47,12 @@ def forks(request, program_id):
         parent_program = Program.objects.get(program_id=program_id)
 
         data = json.loads(request.body)
+
+        data["title"] = data["title"].strip()
         if len(data["title"]) > 45:
             return api.error("Title length exceeds maximum characters.")
+        if len(data["title"]) == 0:
+            return api.error("Title is blank.")
 
         created_program = Program.objects.create(
             user=request.user,
@@ -154,8 +162,12 @@ def program(request, program_id):
         if not requested_program.can_user_edit(request.user):
             return api.error("Not authorized.", status=401)
 
-        if "title" in data and len(data["title"]) > 45:
-            return api.error("Title length exceeds maximum characters.", status=400)
+        if "title" in data:
+            data["title"] = data["title"].strip()
+            if len(data["title"]) > 45:
+                return api.error("Title length exceeds maximum characters.", status=400)
+            if len(data["title"]) == 0:
+                return api.error("Title is blank.")
 
         if "publishedMessage" in data and len(data["publishedMessage"]) > 250:
             return api.error("Publish message can't exceed 250 characters")
