@@ -1039,7 +1039,10 @@ function logToConsole (type, data) {
         //Check if the error was in one of our files
         if (data.fileName.slice(0, blobOrigin.length) === blobOrigin) {
             if (data.colNum === 0) {
-                //TODO: In the case of a syntax error, colNum will be 0 (since columns are 1-indexed, this is a problem)
+                //In the case of a syntax error, colNum could be 0 (since columns are 1-indexed, this is a problem)
+                //We can't determine where the error occurred, so there's really no "right" way of handling it.
+                //We bring colNum back into the code to prevent errors later on, and let findLine have a guess at it.
+                data.colNum += 1;
             }
             errorLine = findLine(data.lineNum, data.colNum);
             errorLine.file = errorLine.lang.toUpperCase();
