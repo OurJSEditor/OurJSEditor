@@ -42,7 +42,6 @@
 
         // When there's an error in the window, send it to the main window
         frame.contentWindow.addEventListener("error", function (evt) {
-            console.log(evt);
             if (evt.error) {
                 window.parent.postMessage(JSON.stringify({
                     type: "error",
