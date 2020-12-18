@@ -1022,8 +1022,7 @@ function findLine (lineNum, colNum) {
     throw new Error("Error when attempting to resolve local error location.");
 }
 
-//TODO: Label above console
-//TODO: Less padding around run button
+//TODO: Remove split editor option
 function logToConsole (type, data) {
     var consoleEl = document.getElementById("console-el");
 
