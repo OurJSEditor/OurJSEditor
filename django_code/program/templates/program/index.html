@@ -97,11 +97,21 @@
         </div>
     </div><!-- /sidebar -->
 
-    <div id="editors" class="section split">
+    <div id="editors" class="section tabbed">
         <table class="editor-table"><tbody>
             <tr class="top">
+                <!-- HTML Editor -->
+                <td class="editor-container" rowspan="2">
+                    <h3 class="editor-header">HTML Editor</h3>
+                    <div class="editor" id="html-editor"></div>
+                </td>
+                <!-- CSS Editor -->
+                <td class="editor-container" rowspan="2">
+                    <h3 class="editor-header">CSS Editor</h3>
+                    <div class="editor" id="css-editor"></div>
+                </td>
                 <!-- JS Editor -->
-                <td class="editor-container selected" id="main-editor">
+                <td class="editor-container selected" id="main-editor" rowspan="2">
                     <h3 class="editor-header">JS Editor</h3>
                     <div id="tab-row">
                         <button data-tab-id="js" class="selected">JS</button><!--
@@ -114,19 +124,13 @@
                 <!-- Preview -->
                 <td class="editor-container" id="preview-container">
                     <h3 class="editor-header">Preview</h3>
-                    <iframe class="editor" id="preview" name="result" src="{{ MEDIA_URL }}index.html" sandbox="allow-forms allow-scripts allow-same-origin allow-pointer-lock allow-modals" allow="fullscreen" frameborder="0"></iframe>
+                    <iframe class="editor" id="preview" name="result" src="{{ MEDIA_URL }}index.html" sandbox="allow-forms allow-scripts allow-same-origin allow-pointer-lock allow-modals" allow="fullscreen"></iframe>
                 </td>
             </tr>
             <tr class="bottom">
-                <!-- HTML Editor -->
-                <td class="editor-container">
-                    <h3 class="editor-header">HTML Editor</h3>
-                    <div class="editor" id="html-editor"></div>
-                </td>
-                <!-- CSS Editor -->
-                <td class="editor-container">
-                    <h3 class="editor-header">CSS Editor</h3>
-                    <div class="editor" id="css-editor"></div>
+                <td>
+                    <h3 class="editor-header">Console</h3>
+                    <div id="console-el"></div>
                 </td>
             </tr>
             <tr>

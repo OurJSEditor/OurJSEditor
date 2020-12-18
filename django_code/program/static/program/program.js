@@ -1,3 +1,4 @@
+var sandboxOrigin;
 var jsEditor, htmlEditor, cssEditor;
 
 function makeRequest(method, url, listener, options) {
@@ -13,7 +14,7 @@ function makeRequest(method, url, listener, options) {
         options = {};
     }
     var req = new XMLHttpRequest();
-    req.addEventListener("load", function (e) {
+    req.addEventListener("load", function (evt) {
         //Something went wrong:
         if (this.status >= 400) {
             var contentType = this.getResponseHeader("content-type").toLowerCase();
@@ -85,7 +86,7 @@ function removeTitleInput () {
     titleInput.parentNode.removeChild(titleInput);
     if (programData.title !== titleLabel.innerText && !programData.unsaved) {
         var req = new XMLHttpRequest();
-        req.addEventListener("load", function (a) {
+        req.addEventListener("load", function (evt) {
             //Something went wrong:
             if (this.status >= 400) {
                 var contentType = this.getResponseHeader("content-type").toLowerCase();
@@ -125,7 +126,7 @@ function closeConfirm () {
 
 function deleteProgram () {
     var req = new XMLHttpRequest();
-    req.addEventListener("load", function (a) {
+    req.addEventListener("load", function (evt) {
         //Something went wrong:
         if (this.status >= 400) {
             var contentType = this.getResponseHeader("content-type").toLowerCase();
@@ -154,7 +155,7 @@ function imageReceived (event) {
 
     //Frame is potentially insecure.
     if (data.imageData.indexOf("data:image/png;base64,") !== 0) {
-        throw new Error("Image recived from iframe is not base64 png data.");
+        throw new Error("Image received from iframe is not base64 png data.");
     }
 
     programData.thumbnailData = data.imageData;
@@ -196,20 +197,32 @@ function publishProgram () {
     document.getElementById("publish-confirm-button").removeEventListener("click", publishProgram);
 }
 
+//Defined as a string instead of a regex literal because regex objects remember state when used with .exec
+//Also lets us change flags
+var INSERT_REGEX = "/\\*\\[OurJSEditor insert:(js|css)]\\*/";
 function runProgram (event) {
     if (event) {
         event.preventDefault();
     }
 
     //Insert JS
-    var html = ace.edit("html-editor").getSession().getValue();
-    html = html.replace(/\/\*\[OurJSEditor insert:(js|css)\]\*\//gi, function (comment, language, position, code) {
+    var pageCode = htmlEditor.getSession().getValue();
+    pageCode = pageCode.replace(new RegExp(INSERT_REGEX, "gi"), function (comment, language, position, code) {
         return ace.edit(language.toLowerCase() + "-editor").getSession().getValue();
     });
 
+    programData.lastRunCode = {
+        js: jsEditor.getSession().getValue(),
+        css: cssEditor.getSession().getValue(),
+        html: htmlEditor.getSession().getValue(),
+        pageCode: pageCode,
+    };
+
+    clearConsole();
+
     document.getElementById("preview").contentWindow.postMessage(JSON.stringify({
         type: "execute",
-        code: html
+        code: pageCode
     }), "*");
 }
 
@@ -377,7 +390,7 @@ function initMd () {
 
     var lenientLinkValidator = md.inline.validateLink;
 
-    //We only want to allow masked links if they're to the same orgin, which we do by forbidding anything with a protocol.
+    //We only want to allow masked links if they're to the same origin, which we do by forbidding anything with a protocol.
     //Adapted from https://github.com/jonschlinkert/remarkable/blob/fa88dcac16832ab26f068c30f0c070c3fec0d9da/lib/parser_inline.js#L146
     function strictLinkValidator (url) {
         var str = url.trim().toLowerCase();
@@ -385,7 +398,7 @@ function initMd () {
         return !(/^[a-z][a-z0-9+.-]*:/.test(str));
     }
 
-    //Definitly hacky, but we add a rule before parsing non-masked links that lossens the requirements of the validator
+    //Definitely hacky, but we add a rule before parsing non-masked links that loosens the requirements of the validator
     md.core.ruler.before("linkify", "lenientLinkValidation", function () {
         md.inline.validateLink = lenientLinkValidator;
     }, {});
@@ -784,7 +797,7 @@ function createCollaboratePopup() {
     }
 
     var liveCollabButton = document.getElementById("live-collab-button");
-    liveCollabButton.addEventListener("click", function (e) {
+    liveCollabButton.addEventListener("click", function (evt) {
         TogetherJS(this);
         liveCollabButton.textContent = liveCollabButton.textContent === "Start" ? "End" : "Start";
     });
@@ -818,11 +831,12 @@ function switchEditorLayout (newLayout) {
         return;
     }
 
+    var bottomWrap = document.getElementsByClassName("bottom")[0];
+
     if (newLayout === "tabbed") {
         editorWrap.classList.replace("split", "tabbed");
 
         //Move things from place to other place
-        var bottomWrap = document.getElementsByClassName("bottom")[0];
         var mainEditor = document.getElementById("main-editor");
         var bottomEditors = bottomWrap.children;
         while (bottomEditors.length) {
@@ -835,7 +849,6 @@ function switchEditorLayout (newLayout) {
 
         //Move things from place to other place
         var topWrap = document.getElementsByClassName("top")[0];
-        var bottomWrap = document.getElementsByClassName("bottom")[0];
         var htmlEditorElmt = document.getElementById("html-editor").parentElement;
         var cssEditorElmt = document.getElementById("css-editor").parentElement;
 
@@ -843,6 +856,15 @@ function switchEditorLayout (newLayout) {
         topWrap.removeChild(cssEditorElmt);
         bottomWrap.appendChild(htmlEditorElmt);
         bottomWrap.appendChild(cssEditorElmt);
+
+        var bottomRow = document.querySelector("#editors tr.bottom");
+        //Fix styles in Firefox
+        if (document.getElementById("html-editor").getBoundingClientRect().height < 5) { //Something's probably wrong
+            var bottomConts = bottomRow.querySelectorAll(".editor-container");
+            for (var i = 0; i < bottomConts.length; i++) {
+                bottomConts[i].style.height = "100%"; //Go get em!
+            }
+        }
     }else {
         throw new Error("Invalid layout");
     }
@@ -859,7 +881,7 @@ function switchEditorLayout (newLayout) {
     cssEditor.resize();
 }
 
-function switchEditorTabs(event) {
+function switchEditorTabs (event) {
     var clickedButton = event.target;
     if (clickedButton.classList.contains("selected")) {
         return; //Do nothing if clicking a selected tab
@@ -886,6 +908,162 @@ function switchEditorTabs(event) {
     jsEditor.resize();
     htmlEditor.resize();
     cssEditor.resize();
+}
+
+function clearConsole () {
+    var consoleEl = document.getElementById("console-el");
+
+    while (consoleEl.firstChild) {
+        consoleEl.removeChild(consoleEl.firstChild);
+    }
+}
+
+// Finds a position in the 3 editors.
+function findLine (lineNum, colNum) {
+    var blocks = [];
+    var html = programData.lastRunCode.html;
+
+    //While we have html left
+    while (html.length) {
+        // If we have an insert regex
+        var match = html.match(new RegExp(INSERT_REGEX, "i"));
+        if (match) {
+            //Find where INSERT_REGEX is
+            var matchPos = html.search(new RegExp(INSERT_REGEX, "i"));
+            //Push a block from the start of html to the start of INSERT_REGEX
+            blocks.push({
+                content: html.slice(0, matchPos),
+                lang: "html",
+            });
+
+            //Push a block corresponding to the INSERT_REGEX
+            blocks.push({
+                content: programData.lastRunCode[match[1].toLowerCase()],
+                match: match[0],
+                lang: match[1]
+            });
+
+            //Remove both bits from html
+            html = html.slice(matchPos + match[0].length);
+        } else {
+            // Push a block from the start of html to the end of html
+            blocks.push({
+                content: html,
+                lang: "html",
+            });
+            // That means we have nothing left
+            html = "";
+        }
+    }
+
+    //Everything is 1-indexed
+    var codeStartLine = 1; //The line at the beginning of the current block, in code
+    var codeStartCol = 1; //The col of the first char of the current block , in code
+    var htmlStartLine = 1; //The line, in html, where this block/match starts
+    var htmlStartCol = 1; //The col, in html, where this block/match starts
+    while (blocks.length) {
+        var block = blocks.shift();
+        var lines = block.content.split("\n");
+        //The number of lines this block spans across
+        var numLinesSpanning = lines.length;
+
+        //Calculate where this block ends in the code
+        var codeEndLine = codeStartLine + numLinesSpanning - 1; //Starting at 1, moving down lines - 1
+        var codeEndCol; //The col of the last char of this block
+        if (numLinesSpanning > 1) {
+            codeEndCol = lines[lines.length - 1].length; //Possibly 0, if the last char of this block is a newline
+        }else {
+            codeEndCol = codeStartCol + lines[0].length;
+        }
+
+        //Calculate where this block ends in HTML
+        var htmlEndLine;
+        var htmlEndCol;
+        if (block.lang === "html") {
+            htmlEndLine = htmlStartLine + numLinesSpanning - 1;
+            if (numLinesSpanning > 1) {
+                htmlEndCol = lines[lines.length - 1].length; //Possibly 0, if the last char of this block is a newline
+            }else {
+                htmlEndCol = htmlStartCol + lines[0].length - 1; //e.g. start at 1, add 8, end at 8
+            }
+        }else {
+            htmlEndLine = htmlStartLine; //Doesn't change, no line breaks in match
+            htmlEndCol = htmlStartCol + block.match.length - 1;
+        }
+
+        // Are we in this block?
+        if (lineNum < codeEndLine || (lineNum === codeEndLine && colNum < codeEndCol)) {
+            //Then we're in this block
+
+            var col;
+            if (lineNum === codeStartLine) { // If we're on the first line of this block
+                col = colNum - codeStartCol + (block.lang === "html" ? htmlStartCol : 1);
+            }else {
+                //If we're not on the first line, then code col is the same as the block col
+                col = colNum;
+            }
+
+            return {
+                lang: block.lang,
+                lineNum: lineNum - codeStartLine + (block.lang === "html" ? htmlStartLine : 1),
+                colNum: col
+            };
+        }
+
+        // Then we're not in this block, move on
+        codeStartLine = codeEndLine; //Update code line
+        codeStartCol = codeEndCol + 1; //Update code col
+
+        htmlStartLine = htmlEndLine; //Update html line
+        htmlStartCol = htmlEndCol + 1; //Update HTML col
+    }
+
+    //If we get here, error
+    throw new Error("Error when attempting to resolve local error location.");
+}
+
+function logToConsole (type, data) {
+    var consoleEl = document.getElementById("console-el");
+
+    var newMessage = document.createElement("div");
+    var messageContents = document.createElement("pre");
+    var messageRight = document.createElement("span");
+    messageRight.classList.add("message-right");
+    newMessage.classList.add("message");
+    newMessage.appendChild(messageContents);
+    if (type === "error") {
+        var blobOrigin = "blob:" + sandboxOrigin + "/";
+        var errorLine;
+        //Check if the error was in one of our files
+        if (data.fileName.slice(0, blobOrigin.length) === blobOrigin) {
+            if (data.colNum === 0) {
+                //In the case of a syntax error, colNum could be 0 (since columns are 1-indexed, this is a problem)
+                //We can't determine where the error occurred, so there's really no "right" way of handling it.
+                //We bring colNum back into the code to prevent errors later on, and let findLine have a guess at it.
+                data.colNum += 1;
+            }
+            errorLine = findLine(data.lineNum, data.colNum);
+            errorLine.file = errorLine.lang.toUpperCase();
+        }else { //Okay, this wasn't us, pass through
+            errorLine = data;
+            //Extract URL parts after the last /, the file name
+            var fileNameMatch = data.fileName.match(/\/([^/]+?)(?:\?.*)?$/);
+            errorLine.file = fileNameMatch && fileNameMatch[1];
+        }
+
+        newMessage.classList.add("error");
+        messageContents.appendChild(document.createTextNode(data.name + ": " + data.message));
+        var errorLocation = errorLine.file + ":" + errorLine.lineNum + ":" + errorLine.colNum;
+        messageRight.appendChild(document.createTextNode(errorLocation));
+        newMessage.appendChild(messageRight);
+    }else {
+        newMessage.classList.add("message", type === "console.log" ? "log" : "error", "lang-js");
+        messageContents.appendChild(document.createTextNode(data));
+        if (type === "console.log") { //Don't highlight console.error blocks
+            hljs.highlightBlock(messageContents);
+        }
+    }
+    consoleEl.appendChild(newMessage);
 }
 
 function vote () {
@@ -920,13 +1098,13 @@ function vote () {
 }
 
 function save (fork) {
-    //Update programData with the lastest textbox code
+    //Update programData with the latest textbox code
     programData.js = jsEditor.getValue();
     programData.css = cssEditor.getValue();
     programData.html = htmlEditor.getValue();
 
     var req = new XMLHttpRequest();
-    req.addEventListener("load", function (a) {
+    req.addEventListener("load", function (evt) {
         //Something went wrong:
         if (this.status >= 400) {
             var contentType = this.getResponseHeader("content-type").toLowerCase();
@@ -963,6 +1141,25 @@ function save (fork) {
 }
 
 document.addEventListener("DOMContentLoaded", function() {
+    sandboxOrigin = new URL(document.getElementById("preview").src).origin;
+
+    window.addEventListener("message", function (evt) {
+        if (evt.origin !== sandboxOrigin) {
+            return;
+        }
+
+        var data = JSON.parse(evt.data);
+        // Errors are sent 1 at a time
+        if (data.type === "error") {
+            logToConsole(data.type, data.data);
+        }else {
+            // But console. messages come in lists
+            for (var i = 0; i < data.messages.length; i++) {
+                logToConsole(data.type, data.messages[i]);
+            }
+        }
+    });
+
     ace.config.set("basePath", "/static/program/ace");
 
     ace.require("ace/ext/language_tools");
@@ -996,15 +1193,6 @@ document.addEventListener("DOMContentLoaded", function() {
     //Dragging far enough that the page gets resized is wonky :(
     var bottomDragger = document.getElementById("bottom-dragger");
     var bottomRow = document.querySelector("#editors tr.bottom");
-
-    //Fix styles in Firefox
-    if (document.getElementById("html-editor").getBoundingClientRect().height < 5) { //Something's probably wrong
-        var bottomConts = bottomRow.querySelectorAll(".editor-container");
-        for (var i = 0; i < bottomConts.length; i++) {
-            bottomConts[i].style.height = "100%"; //Go get em!
-        }
-    }
-
 
     var bottomDraggingState = {
         isDragging: false,
@@ -1048,7 +1236,7 @@ document.addEventListener("DOMContentLoaded", function() {
             [jsEditor, cssEditor, htmlEditor], // The editors to control
             function(settingKey, newValue) { // A callback to run whenever a setting is changed
                 if (settingKey === "editorLayout") {
-                    switchEditorLayout(newValue);
+                    // switchEditorLayout(newValue);
                 }
             }
         )

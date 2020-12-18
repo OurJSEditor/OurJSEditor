@@ -17,9 +17,61 @@
 <body>
     <iframe src="about:blank" id="output-frame"></iframe>
 
+    <script src="stringify.js"></script>
+
     <script>
-    var SIZE = 500;
     var outputFrame = document.getElementById("output-frame");
+
+    //Logs with this.type, needs to be used with .bind or similar
+    function logger() {
+        //Call the un-touched console.log with the arguments
+        console.log.apply(null, arguments);
+
+        var toLog = [];
+        for (var i = 0; i < arguments.length; i++) {
+            toLog.push(stringify(arguments[i]));
+        }
+
+        window.parent.postMessage(JSON.stringify({
+            type: this.type,
+            messages: toLog,
+        }), "*");
+    }
+
+    function interceptLogs(frame) {
+
+        // When there's an error in the window, send it to the main window
+        frame.contentWindow.addEventListener("error", function (evt) {
+            if (evt.error) {
+                window.parent.postMessage(JSON.stringify({
+                    type: "error",
+                    // Pass data from the error to the main page for displaying
+                    data: {
+                        lineNum: evt.lineno,
+                        colNum: evt.colno,
+                        message: evt.error.message,
+                        name: evt.error ? evt.error.name : "Error",
+                        fileName: evt.filename,
+                        //Also have .stack
+                    },
+                }), "*");
+            }else {
+                //Then we have very limited information we can send
+                window.parent.postMessage(JSON.stringify({
+                    type: "console.error",
+                    messages: [
+                        evt.message,
+                    ],
+                }), "*");
+            }
+        })
+
+        //Intercept console.log and console.error
+        frame.contentWindow.console.log = logger.bind({type: "console.log"});
+        frame.contentWindow.console.error = logger.bind({type: "console.error"});
+    }
+
+    var SIZE = 500; // The size of the square screenshot
 
     function saveScreenshot () {
         html2canvas(outputFrame.contentDocument.body, {
@@ -45,12 +97,12 @@
     window.addEventListener("message", function (msg) {
         var data = JSON.parse(msg.data);
         if (data.type === "execute") {
-            //This removes the frame element from the DOM (and then replaces it), clearing the user's old code.
-            frame.parentNode.replaceChild(frame, frame);
-
-            var outputDoc = frame.contentDocument;
-            outputDoc.write(data.code);
-            outputDoc.close();
+            frame.parentNode.removeChild(frame);
+            URL.revokeObjectURL(frame.src);
+            var blob = new Blob([data.code], {type: "text/html"});
+            frame.setAttribute("src", URL.createObjectURL(blob));
+            document.body.appendChild(frame);
+            interceptLogs(frame);
         }else if (data.type === "thumbnail-request") {
             if (typeof html2canvas === "undefined") {
                 var s = document.createElement("script");

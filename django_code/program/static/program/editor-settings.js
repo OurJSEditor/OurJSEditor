@@ -92,14 +92,14 @@ var POSSIBLE_OPTIONS = {
         placeholder: "fontFamily css"
     },
 
-    editorLayout: {
+    /*editorLayout: {
         label: "Editor Layout",
         dummy: true, // Not an Ace setting, and shouldn't be set as such
         values: {
             "Split": "split",
             "Tabbed": "tabbed",
         }
-    },
+    },*/
 };
 
 function parseValue (type, value) {
