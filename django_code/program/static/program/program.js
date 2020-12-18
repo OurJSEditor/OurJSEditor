@@ -1,3 +1,4 @@
+var sandboxOrigin;
 var jsEditor, htmlEditor, cssEditor;
 
 function makeRequest(method, url, listener, options) {
@@ -1021,6 +1022,8 @@ function findLine (lineNum, colNum) {
     throw new Error("Error when attempting to resolve local error location.");
 }
 
+//TODO: Label above console
+//TODO: Less padding around run button
 function logToConsole (type, data) {
     var consoleEl = document.getElementById("console-el");
 
@@ -1031,20 +1034,33 @@ function logToConsole (type, data) {
     newMessage.classList.add("message");
     newMessage.appendChild(messageContents);
     if (type === "error") {
-        console.log(data);
-        //TODO: check that the error was in one of our files before calling this function
-        //TODO: In the case of a syntax error, colNum will be 0 (since columns are 1-indexed, this is a problem)
-        var errorLine = findLine(data.lineNum, data.colNum);
+        var blobOrigin = "blob:" + sandboxOrigin + "/";
+        var errorLine;
+        //Check if the error was in one of our files
+        if (data.fileName.slice(0, blobOrigin.length) === blobOrigin) {
+            if (data.colNum === 0) {
+                //TODO: In the case of a syntax error, colNum will be 0 (since columns are 1-indexed, this is a problem)
+            }
+            errorLine = findLine(data.lineNum, data.colNum);
+            errorLine.file = errorLine.lang.toUpperCase();
+        }else { //Okay, this wasn't us, pass through
+            errorLine = data;
+            //Extract URL parts after the last /, the file name
+            var fileNameMatch = data.fileName.match(/\/([^/]+?)(?:\?.*)?$/);
+            errorLine.file = fileNameMatch && fileNameMatch[1];
+        }
 
         newMessage.classList.add("error");
         messageContents.appendChild(document.createTextNode(data.name + ": " + data.message));
-        var errorLocation = errorLine.lang.toUpperCase() + ":" + errorLine.lineNum + ":" + errorLine.colNum;
+        var errorLocation = errorLine.file + ":" + errorLine.lineNum + ":" + errorLine.colNum;
         messageRight.appendChild(document.createTextNode(errorLocation));
         newMessage.appendChild(messageRight);
     }else {
         newMessage.classList.add("message", type === "console.log" ? "log" : "error", "lang-js");
         messageContents.appendChild(document.createTextNode(data));
-        hljs.highlightBlock(messageContents);
+        if (type === "console.log") { //Don't highlight console.error blocks
+            hljs.highlightBlock(messageContents);
+        }
     }
     consoleEl.appendChild(newMessage);
 }
@@ -1124,6 +1140,25 @@ function save (fork) {
 }
 
 document.addEventListener("DOMContentLoaded", function() {
+    sandboxOrigin = new URL(document.getElementById("preview").src).origin;
+
+    window.addEventListener("message", function (evt) {
+        if (evt.origin !== sandboxOrigin) {
+            return;
+        }
+
+        var data = JSON.parse(evt.data);
+        // Errors are sent 1 at a time
+        if (data.type === "error") {
+            logToConsole(data.type, data.data);
+        }else {
+            // But console. messages come in lists
+            for (var i = 0; i < data.messages.length; i++) {
+                logToConsole(data.type, data.messages[i]);
+            }
+        }
+    });
+
     ace.config.set("basePath", "/static/program/ace");
 
     ace.require("ace/ext/language_tools");
@@ -1347,19 +1382,6 @@ document.addEventListener("DOMContentLoaded", function() {
     if (programData.unsaved || !programData.parent) {
         var p = document.getElementById("parent-program");
         p.parentNode.removeChild(p);
-    }
-});
-
-window.addEventListener("message", function (evt) {
-    var data = JSON.parse(evt.data);
-    // Errors are sent 1 at a time
-    if (data.type === "error") {
-        logToConsole(data.type, data.data);
-    }else {
-        // But console. messages come in lists
-        for (var i = 0; i < data.messages.length; i++) {
-            logToConsole(data.type, data.messages[i]);
-        }
     }
 });
 

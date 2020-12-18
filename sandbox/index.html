@@ -39,23 +39,32 @@
     }
 
     function interceptLogs(frame) {
+
         // When there's an error in the window, send it to the main window
         frame.contentWindow.addEventListener("error", function (evt) {
-            console.log(evt.error);
-
-            // alert(evt.error.name + ", " + evt.error.columnNumber + ", " + evt.error.lineNum);
-            window.parent.postMessage(JSON.stringify({
-                type: "error",
-                // Pass data from the error to the main page for displaying
-                data: {
-                    lineNum: evt.lineno,
-                    colNum: evt.colno,
-                    message: evt.error.message,
-                    name: evt.error.name,
-                    fileName: evt.filename,
-                    //Also have .stack
-                },
-            }), "*");
+            console.log(evt);
+            if (evt.error) {
+                window.parent.postMessage(JSON.stringify({
+                    type: "error",
+                    // Pass data from the error to the main page for displaying
+                    data: {
+                        lineNum: evt.lineno,
+                        colNum: evt.colno,
+                        message: evt.error.message,
+                        name: evt.error ? evt.error.name : "Error",
+                        fileName: evt.filename,
+                        //Also have .stack
+                    },
+                }), "*");
+            }else {
+                //Then we have very limited information we can send
+                window.parent.postMessage(JSON.stringify({
+                    type: "console.error",
+                    messages: [
+                        evt.message,
+                    ],
+                }), "*");
+            }
         })
 
         //Intercept console.log and console.error
