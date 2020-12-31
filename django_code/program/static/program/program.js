@@ -1079,7 +1079,7 @@ function vote () {
     var hasVoted = programData.hasVoted[voteType];
 
     var req = new XMLHttpRequest();
-    req.open(hasVoted ? "POST" : "DELETE", "/api/program/" + programData.id + "/vote?type=" + voteType);
+    req.open(hasVoted ? "POST" : "DELETE", "/api/program/" + programData.id + "/vote");
     req.setRequestHeader("X-CSRFToken", csrf_token);
     req.addEventListener("load", function () {
         var d = JSON.parse(this.response);
@@ -1098,7 +1098,9 @@ function vote () {
             document.getElementById(voteType + "-vote-count").innerHTML = programData.votes[voteType];
         }
     });
-    req.send();
+    req.send(JSON.stringify({
+        type: voteType
+    }));
 }
 
 function save (fork) {
