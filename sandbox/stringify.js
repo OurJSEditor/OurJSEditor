@@ -3,6 +3,9 @@
  * Stringify.
  * Inspect native browser objects and functions.
  */
+
+var txt = document.createElement("textarea");
+
 var stringify = (function () {
 
     var sortci = function(a, b) {
@@ -13,6 +16,11 @@ var stringify = (function () {
         return String(str).replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;').replace(/"/g, '&quot;');
     };
 
+    function htmlUnescapeEntities(html) {
+		txt.innerHTML = html;
+		return txt.value;
+	}
+    
     /**
      * Recursively stringify an object. Keeps track of which objects it has
      * visited to avoid hitting circular references, and a buffer for indentation.
@@ -49,7 +57,7 @@ var stringify = (function () {
             return o.toString().split('\n  ').join('\n' + buffer);
         }
         if (type == '[object String]') {
-            return '"' + htmlEntities(o.replace(/"/g, '\\"')) + '"';
+            return '"' + htmlUnescapeEntities(htmlEntities(o.replace(/"/g, '\\"'))) + '"';
         }
 
         // Check for circular references
