@@ -49,7 +49,7 @@ var stringify = (function () {
             return o.toString().split('\n  ').join('\n' + buffer);
         }
         if (type == '[object String]') {
-            return '"' + htmlEntities(o.replace(/"/g, '\\"')) + '"';
+            return '"' + o.replace(/"/g, '\\"') + '"';
         }
 
         // Check for circular references
