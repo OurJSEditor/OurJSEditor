@@ -140,6 +140,7 @@
     color: #888888;
 }
 
+/* TODO: if this was only to add padding to the bottom when the user-info display was at the bottom, then it can be removed */
 footer {
     min-height: 50px;
     width: 100%;

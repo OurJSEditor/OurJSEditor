@@ -13,7 +13,7 @@ footer {
     display: none !important;
 }
 
-#inner-wrapper {
+.inner-wrapper {
     padding: 35px 5vw;
     max-width: 900px;
     margin: 3% auto;

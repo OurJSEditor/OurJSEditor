@@ -40,7 +40,7 @@ export default class SignupForm extends Preact.Component {
             return;
         }
 
-        const response = await this.api.createAccount(this.state.name, this.state.username,
+        const response = await this.api.createAccount(this.state.name || this.state.username, this.state.username,
             this.state.password, this.state.email).catch(_ => ({
                 success: false, error: "Error sending request"
             }));
@@ -56,12 +56,6 @@ export default class SignupForm extends Preact.Component {
         return (
             <form className="basic-form" onSubmit={this.onSubmit.bind(this)}>
                 <h2>Sign up</h2>
-                <input
-                    type="text"
-                    placeholder="Name"
-                    maxLength="45"
-                    onChange={this.setField.bind(this, "name")}
-                    required />
                 <div class="validated-field">
                     <UsernameInput
                         onChange={this.onUsername.bind(this)}
@@ -75,20 +69,23 @@ export default class SignupForm extends Preact.Component {
                             height={ICON_SIZE} />}
                 </div>
                 <input
+                    type="text"
+                    placeholder="Name"
+                    maxLength="45"
+                    onChange={this.setField.bind(this, "name")} />
+                <input
                     type="email"
                     placeholder="Email"
                     onChange={this.setField.bind(this, "email")} />
                 <input
                     onChange={this.setField.bind(this, "password")}
                     type="password"
-                    placeholder="Password"
-                    minLength="8"
+                    placeholder="Password*"
                     required />
                 <input
                     onChange={this.setField.bind(this, "passwordRep")}
                     type="password"
-                    placeholder="Repeat password"
-                    minLength="8"
+                    placeholder="Repeat password*"
                     required />
                 <input type="submit" value="Sign up" />
                 <p class="error">{ this.state.error }</p>

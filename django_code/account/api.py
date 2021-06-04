@@ -37,13 +37,14 @@ def login(request):
 # /api/user/forget-password
 @api.StandardAPIErrors("POST")
 def forgot_password(request):
-    email = json.loads(request.body)["email"]
     username = json.loads(request.body)["username"]
     try:
-        user = User.objects.get(email=email, username=username)
+        user = User.objects.get(username=username)
     except User.DoesNotExist:
         # Other DoesNotExist errors 404, but we need this one to 400
         return api.error("No user found with matching email and username.", status=400)
+
+    email = user.email
 
     timezone = int(json.loads(request.body)["timezone"])
 
@@ -67,12 +68,13 @@ def forgot_password(request):
         "time": req_time,
     })
 
-    send_mail(
-        subject="OurJSEditor Reset Password Request",
-        from_email="email@ourjseditor.com",
-        recipient_list=[email],
-        message="Here's your password reset link: " + link,
-        html_message=message)
+    if (email != ""):
+        send_mail(
+            subject="OurJSEditor Reset Password Request",
+            from_email="email@ourjseditor.com",
+            recipient_list=[email],
+            message="Here's your password reset link: " + link,
+            html_message=message)
 
     return api.succeed({"user": {"id": user.profile.profile_id}})
 

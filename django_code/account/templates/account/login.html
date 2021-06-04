@@ -1,8 +1,9 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
+    <meta charset="utf-8">
     {% load static %}
-    <title>
+    <title id="title-tag">
         Login &mdash; OurJSEditor
     </title>
     <link rel="stylesheet" type="text/css" href="{% static 'user_profile/login.css' %}">
@@ -10,7 +11,7 @@
 <body>
     {% include "ourjseditor/user-info.html" %}
     <br>
-    <div id="inner-wrapper">
+    <div class="inner-wrapper">
         <div class="two-panel collapse-700">
             <div id="login-form"></div>
             <div id="signup-form"></div>

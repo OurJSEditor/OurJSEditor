@@ -4,19 +4,28 @@ body {
     background: #f7faff;
 }
 
-#inner-wrapper {
+.inner-wrapper {
     padding: 35px 5vw;
     max-width: 900px;
-    display: relative;
+    width: 100%;
     margin: 3% auto;
+    margin-top: calc(58px + 3%);
     background: white;
     border-radius: 5px;
     box-shadow: 0px 0px 10px 4px rgba(0, 0, 0, 0.1);
 }
 
+.inner-wrapper.one-col {
+    max-width: 500px;
+}
+
 .two-panel > * {
     width: 49%;
     display: block;
+}
+
+footer {
+    display: none !important;
 }
 
 .two-panel,
@@ -45,7 +54,7 @@ body {
     .collapse-700 > * {
         width: 100%;
     }
-    #inner-wrapper {
+    .inner-wrapper {
         margin: 30px 25px;
     }
 }

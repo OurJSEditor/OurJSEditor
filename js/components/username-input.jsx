@@ -19,10 +19,9 @@ export default class UsernameInput extends Preact.Component {
     render() {
         return <input
             type="text"
-            placeholder="Username"
+            placeholder="Username*"
             maxLength="45"
-            onChange={this.onChange.bind(this)}
-            required={this.props.required} />
+            onChange={this.onChange.bind(this)} />
     }
 }
 

@@ -36,10 +36,10 @@ def reset_password(request):
                 auth.login(request, user)
                 return redirect("/user/" + user.username)
             else:
-                return render(request, 'account/resetPassword.html', {"error": "Invalid token or user."})
+                return render(request, 'account/resetPassword.html', {"error": "Invalid password reset link."})
 
         except Profile.DoesNotExist:
-            return render(request, 'account/resetPassword.html', {"error": "Invalid user."})
+            return render(request, 'account/resetPassword.html', {"error": "Invalid password reset link."})
 
 
 def logout(request):
