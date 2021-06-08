@@ -800,12 +800,6 @@ function createCollaboratePopup() {
         });
     }
 
-    var liveCollabButton = document.getElementById("live-collab-button");
-    liveCollabButton.addEventListener("click", function (evt) {
-        TogetherJS(this);
-        liveCollabButton.textContent = liveCollabButton.textContent === "Start" ? "End" : "Start";
-    });
-
     document.getElementById("close-button-wrap").addEventListener("click", function () {
         collaboratePopup.style.display = "none";
     });
@@ -814,16 +808,9 @@ function createCollaboratePopup() {
     collaboratePopup.addEventListener("click", function (e) { e.stopImmediatePropagation(); });
 
     var collaboratorsList = document.getElementById("collaborators");
-    if (programData.unsaved) {
-        var unsavedMessage = document.createElement("span");
-        unsavedMessage.classList.add("sub-header");
-        unsavedMessage.appendChild(document.createTextNode("You can add collaborators once you've saved the program."));
-        collaboratorsList.appendChild(unsavedMessage);
-    }else {
-        var collaborators = programData.collaborators;
-        for (var i = 0; i < collaborators.length; i++) {
-            collaboratorsList.appendChild(makeCollaboratorRow(collaborators[i]));
-        }
+    var collaborators = programData.collaborators;
+    for (var i = 0; i < collaborators.length; i++) {
+        collaboratorsList.appendChild(makeCollaboratorRow(collaborators[i]));
     }
 }
 
@@ -1248,19 +1235,7 @@ document.addEventListener("DOMContentLoaded", function() {
         )
     );
 
-    createCollaboratePopup();
-    // Collaborate Button
-    document.getElementById("collaborate-button").addEventListener("click", function(e) {
-        e.preventDefault();
-
-        var collaboratePopup = document.getElementById("collaborate-popup");
-        if (collaboratePopup.style.display === "block") {
-            collaboratePopup.style.display = "none";
-        }else {
-            collaboratePopup.style.display = "block";
-        }
-    });
-
+    
     document.getElementById("run-button").addEventListener("click", runProgram);
     document.getElementById("save-button").addEventListener("click", function (e) {
         e.preventDefault();
@@ -1315,14 +1290,7 @@ document.addEventListener("DOMContentLoaded", function() {
         document.getElementById("save-button").style.display = "block";
     }
     if (!programData.unsaved) {
-        document.getElementById("fork-button").style.display = "block";
-        if (programData.canEditProgram) {
-            document.getElementById("publish-button").style.display = "block";
-        }
-        if (programData.author.id === userData.id) {
-            document.getElementById("delete-button").style.display = "block";
-        }
-    }
+            }
 
     titleLabel = document.getElementById("program-title");
     if (programData.canEditProgram) {
@@ -1342,6 +1310,14 @@ document.addEventListener("DOMContentLoaded", function() {
         //Set program author data
         document.getElementById("program-author-link").innerText = programData.author.displayName;
         document.getElementById("program-author-link").setAttribute("href", "/user/" + programData.author.username);
+
+        //Show buttons that need to be dynamically shown
+        if (programData.canEditProgram) {
+            document.getElementById("publish-button").style.display = "block";
+        }
+        if (programData.author.id === userData.id) {
+            document.getElementById("delete-button").style.display = "block";
+        }
 
         //Set vote count and event listeners.
         var voteTypes = ["informative", "artistic", "entertaining"];
@@ -1376,9 +1352,22 @@ document.addEventListener("DOMContentLoaded", function() {
 
         //Set View Fullscreen link
         document.getElementById("view-fullscreen-link").href = "/program/" + programData.id + "/fullscreen";
+
+        //Create the collaborator popup and button
+        createCollaboratePopup();
+        document.getElementById("collaborate-button").addEventListener("click", function(e) {
+            e.preventDefault();
+
+            var collaboratePopup = document.getElementById("collaborate-popup");
+            if (collaboratePopup.style.display === "block") {
+                collaboratePopup.style.display = "none";
+            }else {
+                collaboratePopup.style.display = "block";
+            }
+        });
     }else {
         //Page elements that get removed on a new program page
-        var toRemove = ["vote-table", "comment-wrap", "updated-date", "view-fullscreen", "program-author"];
+        var toRemove = ["vote-table", "comment-wrap", "updated-date", "view-fullscreen", "program-author", "fork-button", "collaborate-button"];
 
         for (var i = 0; i < toRemove.length; i++) {
             var el = document.getElementById(toRemove[i]);

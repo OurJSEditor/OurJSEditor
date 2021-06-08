@@ -307,7 +307,7 @@ body {
     border-radius: 5px;
     box-shadow: 0 2px 10px 1px rgba(0, 0, 0, 0.2);
     z-index: 2;
-    min-width: 500px;
+    min-width: 300px;
     height: 200px;
     font-size: 15px;
 }
@@ -320,26 +320,14 @@ body {
     line-height: 1em;
 }
 
-#collaborate-popup .left, #collaborate-popup .right {
-    width: 50%;
+#collaborate-popup .wrapper {
+    width: 100%;
     display: inline-block;
     padding: 15px;
     box-sizing: border-box;
     vertical-align: top;
     margin-right: -2px;
     text-align: center;
-}
-
-#collaborate-popup .divider {
-    width: 2px;
-    background: #b5b5b5;
-    margin: 0;
-    height: 100%;
-    display: inline-block;
-    /*Simulate space at above and below the divider, while keeping it the height of its container*/
-    box-sizing: border-box;
-    border-top: 5px solid white;
-    border-bottom: 5px solid white;
 }
 
 #collaborate-popup .header {
@@ -366,12 +354,6 @@ body {
     margin-right: 5px;
 }
 
-.sub-header {
-    font-size: 12px;
-    text-align: center;
-    display: inline-block;
-}
-
 /* .button CSS from confirm-buttons */
 .button {
     font-size: 13px;
@@ -394,12 +376,12 @@ body {
 }
 
 #add-collaborator-textbox {
-    width: 160px;
+    width: 200px;
     margin-right: -5px;
 }
 
 /*Things hidden initially by CSS, then revealed by Javascript*/
-#save-button, #delete-button, #publish-button, #fork-button, #back-cover, .confirm {
+#save-button, #delete-button, #publish-button, #back-cover, .confirm {
     display: none;
 }
 
