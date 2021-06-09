@@ -2,7 +2,7 @@ import re
 
 from django import http
 from django.conf import settings
-from django.core import urlresolvers
+from django.urls import is_valid_path
 from django.core.exceptions import ImproperlyConfigured
 from django.utils.deprecation import MiddlewareMixin
 
@@ -22,7 +22,7 @@ class RemoveSlashMiddleware(MiddlewareMixin):
             new_url = old_url[:-1]
 
             # If the url with a / would 404 and without a slash wouldn't
-            if (not urlresolvers.is_valid_path(old_url, urlconf)) and urlresolvers.is_valid_path(new_url, urlconf):
+            if (not is_valid_path(old_url, urlconf)) and is_valid_path(new_url, urlconf):
                 if settings.DEBUG and request.method == 'POST':
                     if old_url.startswith("/api/"):
                         return api.error("You made a POST request to a URL ending with a slash. Please repeat your request without the slash.")

@@ -6,6 +6,7 @@ from django.db import models
 from django.contrib.auth.models import User
 from django.db.models.signals import post_save
 from django.dispatch import receiver
+from django.urls import is_valid_path
 
 from program.models import Program
 from ourjseditor.util import get_id
@@ -20,6 +21,7 @@ def check_username(test_username, current_username):
         len(test_username) <= 45 and
         test_username != '' and
         not re.search(r"\W", test_username) and
+        not (test_username == "logout" or test_username == "login") and
         (test_username == current_username or not User.objects.filter(username=test_username).exists()) and
         not Program.objects.filter(program_id=test_username).exists() and
         not Profile.objects.filter(profile_id=test_username).exists()
