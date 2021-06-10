@@ -1,9 +1,8 @@
-
-from django.conf.urls import url
+from django.urls import re_path
 
 from . import views
 
 urlpatterns = [
-    url(r'^(\w+)$', views.index, name='index'),
-    url(r'^(\w+)/edit$', views.edit, name='edit'),
+    re_path(r'^(\w+)$', views.index, name='index'),
+    re_path(r'^(\w+)/edit$', views.edit, name='edit'),
 ]
