@@ -50,21 +50,34 @@ export default class ProgramList extends Preact.Component {
     }
 
     loadMorePrograms (newSort) {
-        const sort = typeof newSort === "string" ? newSort : this.state.sort;
+        // When this is called as a result of an event listener
+        //     a MouseEvent gets passed. This is not a new sort
+        if (newSort instanceof MouseEvent) {
+            newSort = undefined;
+        }
+        const sort = newSort || this.state.sort;
 
         const programList = cachedProgramLists[sort];
 
-        this.api.getPrograms(this.baseUrl + sort, programList.length, this.perPage).then(newPrograms => {
+        let toFetch = this.perPage;
+        // If we're loading more programs because of a sort change, request an extra program
+        if (newSort) {
+            console.log("loading more programs");
+            toFetch += 1;
+        }
+
+        this.api.getPrograms(this.baseUrl + sort, programList.length, toFetch).then(newPrograms => {
             programList.push(...newPrograms);
 
-            if (newPrograms.length < this.perPage) {
+            if (newPrograms.length < toFetch) {
                 this.setState({ "hasShowMoreButton": false });
                 programList.complete = true;
             }
 
             this.setState({
                 "programList": programList,
-                "sort": sort
+                "sort": sort,
+                "hasShowMoreButton": !cachedProgramLists[sort].complete
             });
 
             if (this.shouldUpdateURL && window.history.replaceState && window.location.pathname !== "/programs/" + sort) {

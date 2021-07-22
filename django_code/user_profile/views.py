@@ -6,7 +6,7 @@ from django.contrib.auth.models import User
 from django.http import HttpResponse
 from django.db.models import Q
 
-from program.models import get_programs
+from program.models import get_programs, PROGRAMS_PER_PAGE
 from user_profile.models import check_username
 
 
@@ -17,11 +17,11 @@ def index(request, username):
         user = User.objects.select_related('profile').get(username=username)
 
         list_options = {
-            'perPage': 20,
+            'perPage': PROGRAMS_PER_PAGE,
             'sort': 'new' if user == request.user else 'top' # If you're looking at your own profile, show new programs
         }
 
-        programs = get_programs(list_options['sort'], Q(user=user), published_only=False, limit=list_options['perPage'] + 1)
+        programs = get_programs(list_options['sort'], Q(user=user), published_only=False, initial_load=True)
         program_dicts = [p.to_dict(include_code=False) for p in programs]
 
         list_options["initialPrograms"] = program_dicts

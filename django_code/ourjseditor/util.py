@@ -25,15 +25,16 @@ def get_id():
     return id_string
 
 
-def get_as_int(dict_like, key, default_value):
-    value = dict_like.get(key, default_value)
+# Gets a value from a dict and casts it to an int,
+# Returning None (or a default value) if anything fails
+def get_as_int(dict_like, key, default=None):
     try:
-        value = int(value)
-    except ValueError:
+        return int(dict_like[key])
+    # KeyError if "key" isn't in dict_like
+    # ValueError if dict_like[key] isn't a number (e.g. "hello")
+    # TypeError if dict_like[key] isn't a string for some reason
+    except (KeyError, ValueError, TypeError):
         value = default_value
-
-    return value
-# Validates a username
 
 
 # Loosely adapted from https://github.com/encode/django-rest-framework/pull/1268

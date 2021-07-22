@@ -11,8 +11,8 @@ from ourjseditor import api
 
 # /api/user/username-valid/USERNAME
 @api.StandardAPIErrors("GET")
-def username_valid(request, username):
-    return api.succeed({"usernameValid": check_username(username, "")})
+def username_valid(request, test_username):
+    return api.succeed({"usernameValid": check_username(test_username, "")})
 
 
 # Return a user by username or id
@@ -110,15 +110,13 @@ def subscribed(request, user_id):
 def program_list(request, user_id, sort):
     if request.method == "POST":
         # It seems intutive that POSTing here would make a new program. However, that is not the case
-        return api.error("Make a new program by posting to /api/program/new")
+        return api.error("Make a new program by posting to /api/program/new", status=405)
 
     requested_user = get_user(user_id, and_profile=False)
 
-    offset = get_as_int(request.GET, "offset", 0)
-    limit = get_as_int(request.GET, "limit", 20)
-
-    if (limit > 20 or limit <= 0):
-        limit = 20
+    # If the value isn't found or can't be turned into a number, these will return None
+    offset = get_as_int(request.GET, "offset")
+    limit = get_as_int(request.GET, "limit")
 
     try:
         programs = get_programs(sort, Q(user=requested_user), offset=offset, limit=limit, published_only=False)

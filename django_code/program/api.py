@@ -226,11 +226,8 @@ def program(request, program_id):
 # /api/programs/SORT ?limit=20&offset=0
 @api.StandardAPIErrors("GET")
 def program_list(request, sort):
-    offset = get_as_int(request.GET, "offset", 0)
-    limit = get_as_int(request.GET, "limit", 20)
-
-    if (limit > 20 or limit <= 0):
-        limit = 20
+    offset = get_as_int(request.GET, "offset")
+    limit = get_as_int(request.GET, "limit")
 
     try:
         programs = get_programs(sort, offset=offset, limit=limit)
