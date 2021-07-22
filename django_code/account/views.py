@@ -7,7 +7,6 @@ from django.views.decorators.csrf import ensure_csrf_cookie
 from user_profile.models import Profile
 
 
-# Create your views here.
 @ensure_csrf_cookie
 def login(request):
     if request.method == 'GET':
@@ -22,15 +21,15 @@ def forgot_password(request):
 
 
 def reset_password(request):
-    if (request.method == "GET"):
+    if request.method == "GET":
         return render(request, 'account/resetPassword.html', request.GET.dict())
-    elif (request.method == "POST"):
+    elif request.method == "POST":
         profile_id = request.POST.get("user_id","")
         token = request.POST.get("token","")
 
         try:
             user = Profile.objects.get(profile_id=profile_id).user
-            if (token_generator.check_token(user, token)):
+            if token_generator.check_token(user, token):
                 user.set_password(request.POST.get("password"))
                 user.save()
                 auth.login(request, user)

@@ -5,7 +5,7 @@ from django.template.defaultfilters import escape
 from django.contrib.auth.models import User
 
 from ourjseditor import api
-from ourjseditor.util import base64toImageFile, get_as_int
+from ourjseditor.util import base64_to_file, get_as_int
 
 from notification.models import Notif
 from user_profile.models import Profile
@@ -176,7 +176,7 @@ def program(request, program_id):
             # Should it be possible to publish without an image or update the image without publishing
 
             try:
-                image = base64toImageFile(data["imageData"], "{}.png".format(requested_program.program_id))
+                image = base64_to_file(data["imageData"], "{}.png".format(requested_program.program_id))
             except TypeError as err:
                 if err.args[0] == "Image isn't a PNG":
                     return api.error("Image must be a PNG")

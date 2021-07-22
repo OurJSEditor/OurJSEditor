@@ -109,7 +109,7 @@ def get_programs(sort, filters=None, offset=0, limit=PROGRAMS_PER_PAGE, publishe
 
     # None is the case where limit isn't passed
     # limit and offset are user input that have been parsed to `int` (or None), but haven't been validated
-    if limit is None or limit <= 0: 
+    if limit is None or limit <= 0:
         limit = PROGRAMS_PER_PAGE
     if limit > PROGRAMS_PER_PAGE + 1:
         limit = PROGRAMS_PER_PAGE + 1

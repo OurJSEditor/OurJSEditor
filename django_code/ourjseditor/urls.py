@@ -14,7 +14,6 @@ from account import api as account_api
 from program import api as program_api
 from comment import api as comment_api
 from vote import api as vote_api
-
 from program.views import new_program as new_program_view
 
 from . import views

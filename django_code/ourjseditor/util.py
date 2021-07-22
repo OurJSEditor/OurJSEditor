@@ -34,7 +34,7 @@ def get_as_int(dict_like, key, default=None):
     # ValueError if dict_like[key] isn't a number (e.g. "hello")
     # TypeError if dict_like[key] isn't a string for some reason
     except (KeyError, ValueError, TypeError):
-        value = default_value
+        return default
 
 
 # Loosely adapted from https://github.com/encode/django-rest-framework/pull/1268
@@ -44,7 +44,7 @@ from PIL import Image
 from django.core.files.base import ContentFile
 
 
-def base64toImageFile(image_data, file_name):
+def base64_to_file(image_data, file_name):
     # Check if this is a base64 string
     try:
         if not isinstance(image_data, unicode):

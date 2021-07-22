@@ -10,11 +10,11 @@ from program.models import Program
 
 
 # 10 character random id. May conflict with comments
-chars = "abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789_-"
+CHARS = "abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789_-"
 def generate_notif_id():
     id_string = ""
     while len(id_string) < 10:
-        id_string += random.choice(chars)
+        id_string += random.choice(CHARS)
 
     try:
         Notif.objects.get(notif_id=id_string)

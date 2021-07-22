@@ -1,10 +1,3 @@
-from django.contrib.auth.models import User
-from django.contrib import auth
-from django.core.mail import send_mail
-from django.contrib.sites.models import Site
-from django.contrib.auth.tokens import default_token_generator as token_generator
-from django.template.loader import render_to_string
-
 import json
 import re
 import time
@@ -12,6 +5,13 @@ try:
     from urllib.parse import urlencode
 except ImportError:
     from urllib import urlencode
+
+from django.contrib.auth.models import User
+from django.contrib import auth
+from django.core.mail import send_mail
+from django.contrib.sites.models import Site
+from django.contrib.auth.tokens import default_token_generator as token_generator
+from django.template.loader import render_to_string
 
 from user_profile.models import check_username
 from ourjseditor import api
@@ -26,12 +26,12 @@ def login(request):
         password=data["password"]
     )
 
-    if user is not None:
-        auth.login(request, user)
-        return api.succeed({"username": user.username})
-    else:
+    if user is None:
         # At this point, error should be handled by Javascript
         return api.error("Username or password incorrect.", status=401)
+
+    auth.login(request, user)
+    return api.succeed({"username": user.username})
 
 
 # /api/user/forget-password
@@ -68,7 +68,7 @@ def forgot_password(request):
         "time": req_time,
     })
 
-    if (email != ""):
+    if email != "":
         send_mail(
             subject="OurJSEditor Reset Password Request",
             from_email="email@ourjseditor.com",
@@ -92,13 +92,13 @@ def new_user(request):
     password = data['password']
     display_name = data['displayName']
 
-    if (not check_username(username, "")):
+    if not check_username(username, ""):
         return api.error("Invalid username")
-    if (password == ""):
+    if password == "":
         return api.error("Password cannot be blank")
-    if (display_name == "" or len(display_name) > 45):
+    if display_name == "" or len(display_name) > 45:
         return api.error("Invalid display name")
-    if (not re.match(r"^([\w.+-]+@[a-zA-Z0-9-]+(?:\.[a-zA-Z0-9-]+)+)?$", email)):
+    if not re.match(r"^([\w.+-]+@[a-zA-Z0-9-]+(?:\.[a-zA-Z0-9-]+)+)?$", email):
         return api.error("Invalid email")
 
     user = User.objects.create_user(
