@@ -65,10 +65,6 @@ cp .env.local .env
 # Migrations allow Django to know about the state of the SQL database.
 # Running them the first time will create and configure a database for you.
 python manage.py migrate
-
-# Collect static resources
-# Django copies static resources from their respective directories in the project to one central place for serving
-python manage.py collectstatic
 ```
 
 You can now run a server!
