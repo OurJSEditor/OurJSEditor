@@ -18,8 +18,6 @@
     <script src="{% static 'program/beautify-web/beautify.js' %}"></script>
     <!-- Editor Settings -->
     <script src="{% static 'program/editor-settings.js' %}"></script>
-    <!-- Together -->
-    <script src="https://togetherjs.com/togetherjs-min.js"></script>
     <!-- Program Script -->
     <script src="{% static 'program/program.js' %}"></script>
     <!-- Program Style -->
@@ -35,19 +33,13 @@
                     <a><span class="icon icon-user-plus"></span> Collaborate</a>
                     <div id="collaborate-popup" class="popup" style="display: none">
                         <div id="close-button-wrap"><span class="icon icon-cancel clickable"></span></div>
-                        <div class="left">
+                        <div class="wrapper">
                             <div class="header">Collaborators</div>
                             <ul id="collaborators">
                                 <li id="add-collaborator">
                                     <span class="icon icon-user-plus clickable" id="add-collaborator-button"></span> <input type="text" id="add-collaborator-textbox"  placeholder="Add collaborator by username">
                                 </li>
                             </ul>
-                        </div><!--
-                        --><div class="divider"></div><!--
-                        --><div class="right">
-                        <div class="header">Start a live session</div>
-                        <div class="sub-header">Powered by Together.js</div>
-                            <button class="button" id="live-collab-button">Start</button>
                         </div>
                     </div>
                 </li>

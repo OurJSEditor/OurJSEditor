@@ -8,7 +8,7 @@ from django.shortcuts import render, redirect
 from django.http import HttpResponse
 from django.conf import settings
 
-from program.models import Program, get_programs
+from program.models import Program, get_programs, PROGRAMS_PER_PAGE
 from vote.models import Vote, vote_types
 
 with open(os.path.join(os.path.dirname(__file__), 'templates.json'), "r") as data_file:
@@ -60,10 +60,8 @@ def program_list(request, sort):
     if not sort:
         sort = "new" # Default sort. sort is actually passed in as None, so we can't use an argument default
 
-    per_page = 20 # Per DRY, there should be one place that specifies how many items are on a page. It is here!
-
     try:
-        programs = get_programs(sort, limit=per_page + 1) # Load and pass one extra program
+        programs = get_programs(sort, initial_load=True) # Load and pass one extra program on initial load
     except ValueError:
         return redirect("/programs")
 
@@ -72,7 +70,7 @@ def program_list(request, sort):
     return render(request, "program/list.html", {
         "listOptions": json.dumps({
             "initialPrograms": program_dicts,
-            "perPage": per_page,
+            "perPage": PROGRAMS_PER_PAGE,
             "sort": sort
         })
     })

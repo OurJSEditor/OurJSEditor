@@ -60,12 +60,12 @@ export default class Home extends Preact.Component {
                                   <div class="column">
                                     <img src="/static/images/ChatBubbles.png" alt="Chat bubbles" />
                                     <h2>Community Driven</h2>
-                                    <p>OurJSE is centered around the community. You can see and vote on other peoples projects.</p>
+                                    <p>OurJSEditor is centered around the community. You can see and vote on other peoples projects.</p>
                                   </div>
                                   <div class="column">
                                   <img src="/static/images/pencilTriangle.png" alt="Pencil and paper" />
                                     <h2>Lightweight & Customizable</h2>
-                                    <p>OurJSE is incredibly lightweight and completely customizable.</p>
+                                    <p>OurJSEditor is incredibly lightweight and completely customizable.</p>
                                   </div>
                                   <div class="column">
                                   <img src="/static/images/cogWrench.png" alt="Wrench and cog" />

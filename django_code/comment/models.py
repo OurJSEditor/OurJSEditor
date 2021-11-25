@@ -9,11 +9,11 @@ from program.models import Program
 
 
 # 10 character random id. May conflict with notifications
-chars = "abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789_-"
+CHARS = "abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789_-"
 def generate_comment_id():
     id_string = ""
     while len(id_string) < 10:
-        id_string += random.choice(chars)
+        id_string += random.choice(CHARS)
 
     try:
         Comment.objects.get(comment_id=id_string)

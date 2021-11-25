@@ -20,6 +20,7 @@ def check_username(test_username, current_username):
         len(test_username) <= 45 and
         test_username != '' and
         not re.search(r"\W", test_username) and
+        not (test_username == "logout" or test_username == "login") and
         (test_username == current_username or not User.objects.filter(username=test_username).exists()) and
         not Program.objects.filter(program_id=test_username).exists() and
         not Profile.objects.filter(profile_id=test_username).exists()

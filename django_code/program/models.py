@@ -93,6 +93,7 @@ class Program(models.Model):
 
         return program_dict
 
+PROGRAMS_PER_PAGE = 20
 
 # Called from:
 #   - program/view.program_list; get the first 20 programs by a sort
@@ -103,8 +104,22 @@ class Program(models.Model):
 
 # filters is a Q object
 # e.g. get_programs("top", Q(author=User.objects.get(username="Matthias")), published_only=True)
-def get_programs(sort, filters=None, offset=0, limit=20, published_only=True):
+def get_programs(sort, filters=None, offset=0, limit=PROGRAMS_PER_PAGE, published_only=True, initial_load=False):
     programs = Program.objects
+
+    # None is the case where limit isn't passed
+    # limit and offset are user input that have been parsed to `int` (or None), but haven't been validated
+    if limit is None or limit <= 0:
+        limit = PROGRAMS_PER_PAGE
+    if limit > PROGRAMS_PER_PAGE + 1:
+        limit = PROGRAMS_PER_PAGE + 1
+
+    if offset is None or offset < 0:
+        offset = 0
+
+    # If get_programs is called with limit=21 and initial_load=True, then limit would be 22, but that should never happen
+    if initial_load:
+        limit += 1
 
     if published_only:
         programs = programs.filter(last_published__isnull=False)

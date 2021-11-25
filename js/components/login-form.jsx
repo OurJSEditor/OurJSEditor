@@ -47,6 +47,8 @@ export default class LoginForm extends Preact.Component {
                     type="submit"
                     value="Log in" />
                 <p class="error">{ this.state.error }</p>
+
+                <a class="forgot-link" href="/user/forgot-password">Forgot password?</a>
             </form>
         );
     }

@@ -2,6 +2,20 @@
 This repository is for storing the code which powers [OurJSEditor.com](https://ourjseditor.com).
 Feel free to ask any questions or get help in the Discord server (linked from the home page).
 
+## Screenshots
+
+Browse community programs
+<img width="1532" alt="The OurJSEditor homepage, showing thumnails of Popular Programs and Recent from your subscriptions" src="https://user-images.githubusercontent.com/19734415/126849543-8414b49d-9474-4b82-bc22-08d8aafe2153.png">
+
+Edit and run in the browser
+<img width="1532" alt="OurJSEditor's split screen editor and program runner, showing a Minecraft clone." src="https://user-images.githubusercontent.com/19734415/126849617-10680835-2778-477f-8e6d-f8b7e7455646.png">
+
+Create your own profile
+<img width="1532" alt="A screenshot of Matthias's profile, including a bio and some programs thumbnails and vote counts." src="https://user-images.githubusercontent.com/19734415/126849867-196ad640-c945-4f18-9667-c96be51f7f37.png">
+
+Vote and comment on other people's programs
+<img width="1532" alt="A screenshot of the comment section under a program, discussing the program." src="https://user-images.githubusercontent.com/19734415/126849790-f203fe55-9b85-40fb-ba0c-7e1ae51913b6.png">
+
 ## Build Instructions
 
 #### Prerequisites
@@ -51,10 +65,6 @@ cp .env.local .env
 # Migrations allow Django to know about the state of the SQL database.
 # Running them the first time will create and configure a database for you.
 python manage.py migrate
-
-# Collect static resources
-# Django copies static resources from their respective directories in the project to one central place for serving
-python manage.py collectstatic
 ```
 
 You can now run a server!
