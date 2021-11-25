@@ -486,7 +486,16 @@ input, textarea {
 
 .comment table {
     border-collapse: collapse;
+    table-layout: fixed;
     width: 100%;
+}
+
+.comment td {
+    overflow: auto;
+}
+
+.comment code {
+    white-space: nowrap;
 }
 
 .comment-content {
@@ -519,6 +528,14 @@ input, textarea {
 
 .comment-comment {
     margin-left: 40px;
+}
+
+.comment-adding table {
+    table-layout: initial;
+}
+
+.comment-adding td {
+    overflow: initial;
 }
 
 .comment-adding td:last-child {
