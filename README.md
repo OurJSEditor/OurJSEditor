@@ -44,7 +44,7 @@ python3 -m venv OurEnv
 # Once it's activated, you should see `(OurEnv)` appended to the front of your terminal prompt.
 # **Use `deactivate` at any time to exit the virtual environment.**
 source OurEnv/bin/activate
-# WINDOWS: OurEnv/Scripts/activate.bat
+# WINDOWS: OurEnv\Scripts\activate
 
 # Install python requirements into the virtual environment
 pip install -r requirements.txt
