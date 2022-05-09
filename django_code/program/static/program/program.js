@@ -1028,15 +1028,16 @@ function logToConsole (type, data) {
     if (type === "error") {
         var blobOrigin = "blob:" + sandboxOrigin + "/";
         var errorLine;
+        console.log(data);
         //Check if the error was in one of our files
         if (data.fileName.slice(0, blobOrigin.length) === blobOrigin) {
-            if (data.colNum === 0) {
+            if (data.columnNumber === 0) {
                 //In the case of a syntax error, colNum could be 0 (since columns are 1-indexed, this is a problem)
                 //We can't determine where the error occurred, so there's really no "right" way of handling it.
                 //We bring colNum back into the code to prevent errors later on, and let findLine have a guess at it.
-                data.colNum += 1;
+                data.columnNumber += 1;
             }
-            errorLine = findLine(data.lineNum, data.colNum);
+            errorLine = findLine(data.lineNumber, data.columnNumber);
             errorLine.file = errorLine.lang.toUpperCase();
         }else { //Okay, this wasn't us, pass through
             errorLine = data;

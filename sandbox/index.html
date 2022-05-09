@@ -18,6 +18,7 @@
     <iframe src="about:blank" id="output-frame"></iframe>
 
     <script src="stringify.js?v=1.2.1"></script>
+    <script src="error-stack-parser.min.js?v=1.2.1"></script>
 
     <script>
     var outputFrame = document.getElementById("output-frame");
@@ -39,32 +40,41 @@
     }
 
     function interceptLogs(frame) {
-
         // When there's an error in the window, send it to the main window
         frame.contentWindow.addEventListener("error", function (evt) {
-            if (evt.error) {
-                window.parent.postMessage(JSON.stringify({
-                    type: "error",
-                    // Pass data from the error to the main page for displaying
-                    data: {
-                        lineNum: evt.lineno,
-                        colNum: evt.colno,
-                        message: evt.error.message,
-                        name: evt.error ? evt.error.name : "Error",
-                        fileName: evt.filename,
-                        //Also have .stack
-                    },
-                }), "*");
-            }else {
-                //Then we have very limited information we can send
-                window.parent.postMessage(JSON.stringify({
-                    type: "console.error",
-                    messages: [
-                        evt.message,
-                    ],
-                }), "*");
-            }
-        })
+            window.parent.postMessage(JSON.stringify({
+                type: "error",
+                // Pass data from the error to the main page for displaying
+                data: {
+                    // The big problem here is Chrome in when dealing with a syntax error
+                    //  It doesn't set evt.error.lineNum or colNum, and evt.error.stack similarly doesn't have line/col
+                    //  This is why we can't use ErrorStackParser here—it errors on this type of stack
+                    //  Luckily this information is still on the event
+                    lineNumber: evt.lineno,
+                    columnNumber: evt.colno,
+                    message: evt.error.message,
+                    name: evt.error.name,
+                    fileName: evt.filename,
+                },
+            }), "*");
+        });
+
+        frame.contentWindow.addEventListener("unhandledrejection", function (evt) {
+            var firstStackFrame = ErrorStackParser.parse(evt.reason)[0];
+            window.parent.postMessage(JSON.stringify({
+                type: "error",
+                // Pass data from the error to the main page for displaying
+                data: {
+                    // For uncaught exceptions, Chrome doesn't set line/col number or file name on evt.reason
+                    //  So we have to parse evt.reason.stack
+                    lineNumber: firstStackFrame.lineNumber,
+                    columnNumber: firstStackFrame.columnNumber,
+                    message: evt.reason.message,
+                    name: evt.reason.name,
+                    fileName: firstStackFrame.fileName,
+                },
+            }), "*");
+        });
 
         //Intercept console.log and console.error
         frame.contentWindow.console.log = logger.bind({type: "console.log"});
