@@ -146,6 +146,9 @@ function deleteProgram () {
             }
             alert(outputMessage);
         }else {
+            // Make sure onbeforeunload doesn't fire
+            programData.deleted = true;
+            // Redirect back to the user profile
             window.location.href = "/user/" + programData.author.username;
         }
     });
@@ -1235,7 +1238,6 @@ document.addEventListener("DOMContentLoaded", function() {
         )
     );
 
-    
     document.getElementById("run-button").addEventListener("click", runProgram);
     document.getElementById("save-button").addEventListener("click", function (e) {
         e.preventDefault();
@@ -1267,14 +1269,14 @@ document.addEventListener("DOMContentLoaded", function() {
 
     //Before unload listener
     window.addEventListener("beforeunload", function (e) {
-        var hasChanged =
+        var hasChanged = !programData.deleted &&
                 programData.js !== jsEditor.getValue() ||
                 programData.css !== cssEditor.getValue() ||
                 programData.html !== htmlEditor.getValue();
 
         if (hasChanged) {
             e.preventDefault();
-            e.returnValue = 'You have unsaved code changes.';
+            e.returnValue = "You have unsaved code changes.";
         }else {
             return undefined;
         }
@@ -1289,8 +1291,6 @@ document.addEventListener("DOMContentLoaded", function() {
     if (programData.canEditProgram) {
         document.getElementById("save-button").style.display = "block";
     }
-    if (!programData.unsaved) {
-            }
 
     titleLabel = document.getElementById("program-title");
     if (programData.canEditProgram) {

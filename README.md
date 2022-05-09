@@ -5,7 +5,7 @@ Feel free to ask any questions or get help in the Discord server (linked from th
 ## Screenshots
 
 Browse community programs
-<img width="1532" alt="The OurJSEditor homepage, showing thumnails of Popular Programs and Recent from your subscriptions" src="https://user-images.githubusercontent.com/19734415/126849543-8414b49d-9474-4b82-bc22-08d8aafe2153.png">
+<img width="1532" alt="The OurJSEditor homepage, showing thumbnails of Popular Programs and Recent from your subscriptions" src="https://user-images.githubusercontent.com/19734415/126849543-8414b49d-9474-4b82-bc22-08d8aafe2153.png">
 
 Edit and run in the browser
 <img width="1532" alt="OurJSEditor's split screen editor and program runner, showing a Minecraft clone." src="https://user-images.githubusercontent.com/19734415/126849617-10680835-2778-477f-8e6d-f8b7e7455646.png">
@@ -90,7 +90,7 @@ In general, when you make a request, the following steps occur:
 
  1. After being passed through Apache and WSGI to Django, the url gets matched against a bunch of regular expressions until Django finds a matching view.
     1. The entry point for this is django_code/ourjseditor/urls.py
-    2. This then checks all api urls, and then calls the urls.py files in the other apps. 
+    2. This then checks all api urls, and then calls the urls.py files in the other apps.
  2. Once a matching view is found, it is called with the `request` information.
  3. The view then renders a template, and returns it. (API endpoints don't use HTML templates, but return raw JSON text.)
  4. The template can request static content (CSS/JS).
