@@ -1,6 +1,7 @@
 # OurJSEditor
 This repository is for storing the code which powers [OurJSEditor.com](https://ourjseditor.com).
-Feel free to ask any questions or get help in the Discord server (linked from the home page).
+
+It is licensed under the AGPLv3 except where otherwise noted.
 
 ## Screenshots
 
