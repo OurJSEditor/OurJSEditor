@@ -5,6 +5,7 @@
 *.pyc
 .env
 /OurEnv
+/venv
 /node_modules
 /static
 /js/build
