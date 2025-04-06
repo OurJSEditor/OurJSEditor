@@ -2,6 +2,7 @@
   "name": "ourjseditor",
   "version": "1.0.0",
   "description": "This repository is for storing the server-side code which powers [OurJSEditor.com](https://ourjseditor.com).",
+  "license": "AGPL-3.0-only",
   "scripts": {
     "build": "webpack --mode=development",
     "build-prod": "webpack --mode=production",
