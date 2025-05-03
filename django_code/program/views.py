@@ -51,6 +51,7 @@ def program(request, program_id):
         data_dict["hasVoted"] = {t: bool(Vote.objects.filter(vote_type=t, voted_object_id=program_id, user_id=request.user.id).count()) for t in vote_types}
 
     return render(request, "program/index.html", {
+        "program_title": data_dict["title"],
         "data_dict": json.dumps(data_dict),
         "MEDIA_URL": settings.MEDIA_URL
     })
