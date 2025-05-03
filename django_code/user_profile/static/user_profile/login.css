@@ -19,6 +19,10 @@ body {
     max-width: 500px;
 }
 
+.inner-wrapper h3 {
+    line-height: 1.5;
+}
+
 .two-panel > * {
     width: 49%;
     display: block;

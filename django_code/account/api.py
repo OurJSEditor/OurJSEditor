@@ -20,18 +20,20 @@ from ourjseditor import api
 # /api/user/login
 @api.StandardAPIErrors("POST")
 def login(request):
-    data = json.loads(request.body)
-    user = auth.authenticate(
-        username=data["username"],
-        password=data["password"]
-    )
+    return api.error("Logging in is disabled", status=410)
 
-    if user is None:
-        # At this point, error should be handled by Javascript
-        return api.error("Username or password incorrect.", status=401)
+    # data = json.loads(request.body)
+    # user = auth.authenticate(
+    #     username=data["username"],
+    #     password=data["password"]
+    # )
 
-    auth.login(request, user)
-    return api.succeed({"username": user.username})
+    # if user is None:
+    #     # At this point, error should be handled by Javascript
+    #     return api.error("Username or password incorrect.", status=401)
+
+    # auth.login(request, user)
+    # return api.succeed({"username": user.username})
 
 
 # /api/user/forget-password
@@ -82,36 +84,38 @@ def forgot_password(request):
 # /api/user/new
 @api.StandardAPIErrors("POST")
 def new_user(request):
-    data = json.loads(request.body)
+    return api.error("Signing up is disabled", status=410)
 
-    username = data['username']
-    if "email" in data:
-        email = data['email']
-    else:
-        email = ''
-    password = data['password']
-    display_name = data['displayName']
+    # data = json.loads(request.body)
 
-    if not check_username(username, ""):
-        return api.error("Invalid username")
-    if password == "":
-        return api.error("Password cannot be blank")
-    if display_name == "" or len(display_name) > 45:
-        return api.error("Invalid display name")
-    if not re.match(r"^([\w.+-]+@[a-zA-Z0-9-]+(?:\.[a-zA-Z0-9-]+)+)?$", email):
-        return api.error("Invalid email")
+    # username = data['username']
+    # if "email" in data:
+    #     email = data['email']
+    # else:
+    #     email = ''
+    # password = data['password']
+    # display_name = data['displayName']
 
-    user = User.objects.create_user(
-        username,
-        email,
-        password,
-    )
-    user.profile.display_name = display_name
-    user.save()
+    # if not check_username(username, ""):
+    #     return api.error("Invalid username")
+    # if password == "":
+    #     return api.error("Password cannot be blank")
+    # if display_name == "" or len(display_name) > 45:
+    #     return api.error("Invalid display name")
+    # if not re.match(r"^([\w.+-]+@[a-zA-Z0-9-]+(?:\.[a-zA-Z0-9-]+)+)?$", email):
+    #     return api.error("Invalid email")
 
-    auth.login(request, user)
+    # user = User.objects.create_user(
+    #     username,
+    #     email,
+    #     password,
+    # )
+    # user.profile.display_name = display_name
+    # user.save()
 
-    return api.succeed({
-        "id": user.profile.profile_id,
-        "username": user.username
-    }, status=200)
+    # auth.login(request, user)
+
+    # return api.succeed({
+    #     "id": user.profile.profile_id,
+    #     "username": user.username
+    # }, status=200)
